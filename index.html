@@ -170,7 +170,7 @@
   </div>
 
   <script>
-    // Aapka exact GitHub Raw URL connect kar diya hai
+    // Aapka exact GitHub Raw URL
     const GITHUB_JSON_URL = 'https://raw.githubusercontent.com/7raahul/myotttimeline/refs/heads/main/data.json';
 
     let selectedMovieData = {};
@@ -201,12 +201,12 @@
         });
       } catch (err) {
         document.getElementById('movieGrid').innerHTML = `
-          <p style="color: #678;">Search any movie from top right to log your entries.</p>
+          <p style="color: #678;">Search any title from top right to log your entries.</p>
         `;
       }
     }
 
-    // 2. Free Public IMDb Search Integration (CORS Proxy Enabled)
+    // 2. Stable Search API (No CORS Issues)
     async function searchMedia() {
       const query = document.getElementById('searchInput').value.trim();
       const resultsDiv = document.getElementById('searchResults');
@@ -217,26 +217,24 @@
       }
 
       try {
-        const targetUrl = `https://v3.sg.media-imdb.com/suggestion/x/${encodeURIComponent(query)}.json`;
-        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`);
-        
+        const res = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`);
         if (!res.ok) throw new Error('API Request Failed');
 
-        const wrapper = await res.json();
-        const data = JSON.parse(wrapper.contents);
+        const data = await res.json();
 
         resultsDiv.innerHTML = '';
         resultsDiv.style.display = 'block';
 
-        if (!data.d || data.d.length === 0) {
+        if (!data || data.length === 0) {
           resultsDiv.innerHTML = '<div style="padding:10px; color:#678;">No results found</div>';
           return;
         }
 
-        data.d.slice(0, 5).forEach(item => {
-          const poster = item.i ? item.i.imageUrl : 'https://via.placeholder.com/150x225?text=No+Poster';
-          const title = item.l;
-          const year = item.y ? item.y : 'N/A';
+        data.slice(0, 5).forEach(item => {
+          const show = item.show;
+          const poster = show.image ? show.image.medium : 'https://via.placeholder.com/150x225?text=No+Poster';
+          const title = show.name;
+          const year = show.premiered ? show.premiered.split('-')[0] : 'N/A';
 
           const div = document.createElement('div');
           div.className = 'search-item';
