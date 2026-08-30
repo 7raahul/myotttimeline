@@ -106,6 +106,8 @@
             display: flex;
             gap: 12px;
             margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
         }
         .toolbar-btn {
             background: #01b4e4;
@@ -122,6 +124,80 @@
             transition: opacity 0.2s;
         }
         .toolbar-btn:hover { opacity: 0.9; }
+
+        /* --- BROWSE BY BAR STYLING --- */
+        .browse-by-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #031d33;
+            padding: 10px 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            border: 1px solid var(--border-color);
+        }
+        .browse-title {
+            color: var(--text-white);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-right: 5px;
+        }
+        .dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .browse-dropdown-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-white);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .browse-dropdown-btn:hover {
+            border-color: var(--accent);
+            background: rgba(1, 180, 228, 0.1);
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 0;
+            background: #0d253f;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            z-index: 99;
+            padding: 6px 0;
+        }
+        .dropdown-content.show {
+            display: block;
+        }
+        .dropdown-item {
+            color: #fff;
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 13px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+        .dropdown-item:hover {
+            background: var(--accent);
+            color: #032541;
+        }
 
         .search-container {
             margin-bottom: 25px;
@@ -375,7 +451,6 @@
         .circle-action-btn:hover, .circle-action-btn.active { background: var(--accent); }
         .circle-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
-        /* Horizontal Scrollable Rows */
         .poster-picker-row, .cast-row {
             display: flex;
             gap: 15px;
@@ -515,6 +590,65 @@
                 </button>
             </div>
 
+            <!-- BROWSE BY FILTER BAR -->
+            <div class="browse-by-container">
+                <span class="browse-title">BROWSE BY</span>
+                
+                <div class="dropdown-wrapper">
+                    <button class="browse-dropdown-btn" onclick="toggleDropdown('yearDropdown')">YEAR ▾</button>
+                    <div id="yearDropdown" class="dropdown-content">
+                        <button class="dropdown-item" onclick="filterBy('year', '2026')">2026</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2025')">2025</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2024')">2024</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2023')">2023</button>
+                    </div>
+                </div>
+
+                <div class="dropdown-wrapper">
+                    <button class="browse-dropdown-btn" onclick="toggleDropdown('ratingDropdown')">RATING ▾</button>
+                    <div id="ratingDropdown" class="dropdown-content">
+                        <button class="dropdown-item" onclick="filterBy('rating', '8')">8+ Stars</button>
+                        <button class="dropdown-item" onclick="filterBy('rating', '7')">7+ Stars</button>
+                        <button class="dropdown-item" onclick="filterBy('rating', '6')">6+ Stars</button>
+                    </div>
+                </div>
+
+                <div class="dropdown-wrapper">
+                    <button class="browse-dropdown-btn" onclick="toggleDropdown('popularDropdown')">POPULAR ▾</button>
+                    <div id="popularDropdown" class="dropdown-content">
+                        <button class="dropdown-item" onclick="filterBy('popular', 'trending')">Trending Now</button>
+                        <button class="dropdown-item" onclick="filterBy('popular', 'top_rated')">All-Time Top Rated</button>
+                    </div>
+                </div>
+
+                <div class="dropdown-wrapper">
+                    <button class="browse-dropdown-btn" onclick="toggleDropdown('genreDropdown')">GENRE ▾</button>
+                    <div id="genreDropdown" class="dropdown-content">
+                        <button class="dropdown-item" onclick="filterBy('genre', '28')">Action</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '35')">Comedy</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '18')">Drama</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '878')">Sci-Fi</button>
+                    </div>
+                </div>
+
+                <div class="dropdown-wrapper">
+                    <button class="browse-dropdown-btn" onclick="toggleDropdown('serviceDropdown')">SERVICE ▾</button>
+                    <div id="serviceDropdown" class="dropdown-content">
+                        <button class="dropdown-item" onclick="filterBy('service', 'netflix')">Netflix</button>
+                        <button class="dropdown-item" onclick="filterBy('service', 'prime')">Prime Video</button>
+                        <button class="dropdown-item" onclick="filterBy('service', 'disney')">Disney+</button>
+                    </div>
+                </div>
+
+                <div class="dropdown-wrapper">
+                    <button class="browse-dropdown-btn" onclick="toggleDropdown('otherDropdown')">OTHER ▾</button>
+                    <div id="otherDropdown" class="dropdown-content">
+                        <button class="dropdown-item" onclick="filterBy('other', 'upcoming')">Upcoming</button>
+                        <button class="dropdown-item" onclick="filterBy('other', 'now_playing')">Now Playing</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="Search for a movie, tv show, person..." oninput="searchMedia()">
             </div>
@@ -603,6 +737,44 @@
             loadTrendingData('tv', tvTrendingWindow, 1, true);
             renderLists();
             setupInfiniteScroll();
+
+            // Close dropdowns when clicking outside
+            window.onclick = function(event) {
+                if (!event.target.matches('.browse-dropdown-btn')) {
+                    document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+                }
+            }
+        }
+
+        function toggleDropdown(id) {
+            event.stopPropagation();
+            const dropdown = document.getElementById(id);
+            const isOpen = dropdown.classList.contains('show');
+            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+            if (!isOpen) {
+                dropdown.classList.add('show');
+            }
+        }
+
+        async function filterBy(type, value) {
+            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+            const container = document.getElementById('moviesGrid');
+            container.innerHTML = '<p style="color:var(--accent); padding:20px;">Filtering results...</p>';
+            
+            try {
+                let url = `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}`;
+                if (type === 'year') url += `&primary_release_year=${value}`;
+                if (type === 'rating') url += `&vote_average.gte=${value}`;
+                if (type === 'genre') url += `&with_genres=${value}`;
+                
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.results) {
+                    appendMediaCards(data.results, 'moviesGrid', 'movie', true);
+                }
+            } catch (err) {
+                console.error("Filter error:", err);
+            }
         }
 
         function switchTab(tabName, btn) {
@@ -800,8 +972,6 @@
                 const poster = details.poster_path ? IMAGE_BASE_URL + details.poster_path : '';
                 const cast = credits.cast ? credits.cast.slice(0, 10) : [];
                 const ratingPercent = details.vote_average ? Math.round(details.vote_average * 10) : 0;
-
-                // All available TMDB posters
                 const allPosters = imagesData.posters ? imagesData.posters : [];
 
                 let watchedList = JSON.parse(localStorage.getItem('cineVaultWatched')) || [];
