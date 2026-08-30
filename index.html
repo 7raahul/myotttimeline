@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My OTT Movie & Series Diary</title>
+    <title>CineVault - Ultimate OTT Diary & Planner</title>
     <style>
+        :root {
+            --bg-color: #0b0c10;
+            --card-bg: #1f2833;
+            --accent: #66fcf1;
+            --netflix: #e50914;
+            --text-main: #c5c6c7;
+            --text-white: #ffffff;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #0f1014;
-            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
             padding: 20px;
         }
@@ -16,104 +24,156 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #222;
+            border-bottom: 2px solid #1f2833;
             padding-bottom: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
-        h1, h2 {
-            color: #e50914;
+        h1 {
+            color: var(--accent);
             margin: 0;
+            font-size: 26px;
+            letter-spacing: 1px;
         }
         .visitor-badge {
-            background: #1f2128;
-            padding: 8px 15px;
-            border-radius: 20px;
+            background: linear-gradient(135deg, #1f2833, #0b0c10);
+            padding: 8px 16px;
+            border-radius: 30px;
             font-size: 14px;
-            border: 1px solid #333;
+            border: 1px solid var(--accent);
+            color: var(--text-white);
+            box-shadow: 0 0 10px rgba(102, 252, 241, 0.2);
         }
         .search-container {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            text-align: center;
         }
         input[type="text"] {
             width: 100%;
-            max-width: 450px;
-            padding: 12px;
+            max-width: 600px;
+            padding: 14px 20px;
             font-size: 16px;
-            background: #1a1c23;
-            border: 1px solid #333;
+            background: #1f2833;
+            border: 2px solid #45a29e;
             color: #fff;
-            border-radius: 6px;
-        }
-        /* OTT Tabs Styling */
-        .ott-tabs {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .ott-tab {
-            background: #1f2128;
-            border: 1px solid #333;
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            white-space: nowrap;
-            font-size: 14px;
+            border-radius: 30px;
+            outline: none;
             transition: 0.3s;
         }
+        input[type="text"]:focus {
+            box-shadow: 0 0 15px rgba(102, 252, 241, 0.4);
+        }
+        /* OTT Logos Navbar */
+        .ott-tabs {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            scrollbar-width: thin;
+        }
+        .ott-tab {
+            background: #1f2833;
+            border: 2px solid transparent;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+        .ott-tab img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
         .ott-tab.active, .ott-tab:hover {
-            background: #e50914;
-            border-color: #e50914;
+            border-color: var(--accent);
+            background: #2c3541;
+            transform: translateY(-2px);
+        }
+        /* Sub-filters (Trending / This Week / Popular) */
+        .sub-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .sub-btn {
+            background: #12151b;
+            border: 1px solid #45a29e;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .sub-btn.active-sub {
+            background: var(--accent);
+            color: #000;
+            font-weight: bold;
+        }
+        .section-title {
+            margin: 35px 0 15px 0;
+            font-size: 22px;
+            color: var(--text-white);
+            border-left: 5px solid var(--accent);
+            padding-left: 12px;
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
         }
         .card {
-            background: #1a1c23;
-            border-radius: 8px;
+            background: #1f2833;
+            border-radius: 10px;
             overflow: hidden;
             text-align: center;
-            padding-bottom: 10px;
             cursor: pointer;
-            transition: transform 0.2s;
-            border: 1px solid #262935;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #2c3541;
+            position: relative;
         }
         .card:hover {
-            transform: scale(1.03);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
         }
         .card img {
             width: 100%;
-            height: 230px;
+            height: 240px;
             object-fit: cover;
         }
         .card h4 {
             font-size: 14px;
-            margin: 10px 8px;
-            height: 38px;
+            margin: 10px 10px;
+            height: 36px;
             overflow: hidden;
+            color: var(--text-white);
         }
-        .card button {
-            background: #e50914;
+        .card-actions {
+            padding: 0 10px 12px 10px;
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+        .action-btn {
+            background: var(--netflix);
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 6px 10px;
             cursor: pointer;
-            border-radius: 4px;
-            font-size: 12px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: bold;
         }
-        .card button:hover {
-            background: #b20710;
-        }
-        .section-title {
-            margin: 30px 0 15px 0;
-            font-size: 20px;
-            border-left: 4px solid #e50914;
-            padding-left: 10px;
+        .schedule-btn {
+            background: #45a29e;
+            color: #000;
         }
         /* Modal Popup Styling */
         .modal {
@@ -124,98 +184,156 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.85);
+            background-color: rgba(0,0,0,0.9);
             overflow-y: auto;
         }
         .modal-content {
-            background-color: #1a1c23;
-            margin: 5% auto;
-            padding: 25px;
+            background-color: #161b22;
+            margin: 4% auto;
+            padding: 30px;
             width: 90%;
-            max-width: 600px;
-            border-radius: 10px;
-            border: 1px solid #333;
+            max-width: 750px;
+            border-radius: 12px;
+            border: 1px solid #30363d;
             position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         .close-btn {
-            color: #aaa;
+            color: #8b949e;
             position: absolute;
             right: 20px;
             top: 15px;
-            font-size: 28px;
+            font-size: 30px;
             font-weight: bold;
             cursor: pointer;
         }
         .close-btn:hover { color: #fff; }
-        .modal-details img {
-            width: 140px;
-            border-radius: 6px;
-            float: left;
-            margin-right: 20px;
+        .modal-header-flex {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .modal-header-flex img {
+            width: 180px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .modal-info {
+            flex: 1;
+        }
+        /* Cast Horizontal Scroll */
+        .cast-container {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 10px 0;
+            scrollbar-width: thin;
+        }
+        .cast-card {
+            min-width: 70px;
+            text-align: center;
+        }
+        .cast-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+        .cast-card p {
+            font-size: 11px;
+            margin: 5px 0 0 0;
+            color: #c5c6c7;
         }
         .feedback-box {
-            margin-top: 20px;
-            border-top: 1px solid #333;
-            padding-top: 15px;
+            margin-top: 25px;
+            border-top: 1px solid #30363d;
+            padding-top: 20px;
         }
         .feedback-box textarea {
             width: 100%;
-            height: 60px;
-            background: #111;
-            border: 1px solid #333;
+            height: 70px;
+            background: #0d1117;
+            border: 1px solid #30363d;
             color: #fff;
-            padding: 8px;
-            border-radius: 4px;
+            padding: 10px;
+            border-radius: 6px;
             resize: none;
+            outline: none;
         }
         .feedback-list {
             margin-top: 10px;
-            font-size: 13px;
-            color: #ccc;
-            max-height: 100px;
+            max-height: 120px;
             overflow-y: auto;
         }
         .feedback-item {
-            background: #111;
-            padding: 5px 8px;
-            border-radius: 3px;
-            margin-bottom: 5px;
+            background: #0d1117;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            border-left: 3px solid var(--accent);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>OTT Diary & Hub</h1>
-        <div class="visitor-badge">👥 Live Visitors: <span id="visitorCount">1</span></div>
+        <h1>🎬 CineVault OTT Hub</h1>
+        <div class="visitor-badge">🟢 Live Active Visitors: <span id="visitorCount">42</span></div>
     </header>
 
     <!-- Search Section -->
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search across all movies & TV shows..." oninput="searchMovies()">
+        <input type="text" id="searchInput" placeholder="Search across all platforms..." oninput="searchMovies()">
     </div>
     <div id="searchResults" class="grid"></div>
 
-    <!-- OTT Network Tabs -->
+    <!-- OTT Network Tabs with Original Logos -->
     <div class="ott-tabs">
-        <div class="ott-tab active" onclick="filterByOTT(8, 'Netflix')">Netflix</div>
-        <div class="ott-tab" onclick="filterByOTT(9, 'Prime Video')">Prime Video</div>
-        <div class="ott-tab" onclick="filterByOTT(337, 'Disney+')">Disney+ Hotstar</div>
-        <div class="ott-tab" onclick="filterByOTT(350, 'Apple TV+')">Apple TV+</div>
-        <div class="ott-tab" onclick="filterByOTT(232, 'Zee5')">Zee5</div>
-        <div class="ott-tab" onclick="filterByOTT(213, 'SonyLIV')">SonyLIV</div>
+        <div class="ott-tab active" onclick="switchOTT(8, 'Netflix', this)">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix"> Netflix
+        </div>
+        <div class="ott-tab" onclick="switchOTT(119, 'Prime Video', this)">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg" alt="Prime"> Prime Video
+        </div>
+        <div class="ott-tab" onclick="switchOTT(337, 'Disney+', this)">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="Disney+"> Disney+ Hotstar
+        </div>
+        <div class="ott-tab" onclick="switchOTT(350, 'Apple TV+', this)">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Logo.svg" alt="Apple TV"> Apple TV+
+        </div>
+        <div class="ott-tab" onclick="switchOTT(232, 'Zee5', this)">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Zee5-logo.svg" alt="Zee5"> Zee5
+        </div>
+        <div class="ott-tab" onclick="switchOTT(213, 'SonyLIV', this)">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/df/SonyLIV_logo.svg/512px-SonyLIV_logo.svg.png" alt="SonyLIV"> SonyLIV
+        </div>
     </div>
 
-    <h2 id="currentOttTitle" class="section-title">Netflix Trending & Popular</h2>
+    <!-- Sub-Filters inside active OTT -->
+    <div class="sub-filters">
+        <button class="sub-btn active-sub" onclick="setSubFilter('trending', this)">🔥 Trending</button>
+        <button class="sub-btn" onclick="setSubFilter('week', this)">📅 Released This Week</button>
+        <button class="sub-btn" onclick="setSubFilter('popular', this)">⭐ Most Popular</button>
+    </div>
+
+    <h2 id="currentOttTitle" class="section-title">Netflix - Trending Content</h2>
     <div id="ottGrid" class="grid"></div>
 
-    <!-- Timeline / Watched Diary -->
-    <div style="margin-top: 40px; border-top: 1px solid #222; padding-top: 20px;">
-        <h2>My Watched Diary (Timeline)</h2>
-        <div id="diaryGrid" class="grid"></div>
+    <!-- Watched Diary & Schedule Section -->
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 50px;">
+        <div style="flex: 1; min-width: 300px; border-top: 2px solid #1f2833; padding-top: 20px;">
+            <h2>📖 My Watched Diary</h2>
+            <div id="diaryGrid" class="grid"></div>
+        </div>
+        <div style="flex: 1; min-width: 300px; border-top: 2px solid #1f2833; padding-top: 20px;">
+            <h2>🗓️ Planned Schedule (Kal / Parsu Kya Dekhu)</h2>
+            <div id="scheduleGrid" class="grid"></div>
+        </div>
     </div>
 
-    <!-- Details & Feedback Modal -->
+    <!-- Detailed Rich Modal Popup -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -227,30 +345,68 @@
         const API_KEY = '9c95420163879f1c4726c540b305cbc6';
         const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
-        // Simulated Real-Time Visitor Count (Random realistic increment)
-        let visitors = Math.floor(Math.random() * 5) + 1;
-        document.getElementById('visitorCount').innerText = visitors;
+        let currentProviderId = 8;
+        let currentProviderName = 'Netflix';
+        let currentSubMode = 'trending';
 
-        // Default Load Netflix on Startup
-        filterByOTT(8, 'Netflix');
+        // Real-time Visitor Live Simulation (Varying dynamically)
+        let baseVisitors = Math.floor(Math.random() * 30) + 35;
+        document.getElementById('visitorCount').innerText = baseVisitors;
+        setInterval(() => {
+            let change = Math.floor(Math.random() * 5) - 2;
+            baseVisitors = Math.max(15, baseVisitors + change);
+            document.getElementById('visitorCount').innerText = baseVisitors;
+        }, 5000);
+
+        // Initial Load
+        switchOTT(8, 'Netflix', document.querySelector('.ott-tab'));
         loadDiary();
+        loadSchedule();
 
-        // Fetch Content by OTT Provider ID
-        async function filterByOTT(providerId, providerName) {
+        function switchOTT(providerId, providerName, element) {
             document.querySelectorAll('.ott-tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('currentOttTitleinnerText', `${providerName} Trending & Popular`);
+            if(element) element.classList.add('active');
+            
+            currentProviderId = providerId;
+            currentProviderName = providerName;
+            fetchOTTData();
+        }
+
+        function setSubFilter(mode, element) {
+            document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active-sub'));
+            element.classList.add('active-sub');
+            
+            currentSubMode = mode;
+            fetchOTTData();
+        }
+
+        async function fetchOTTData() {
+            document.getElementById('currentOttTitle').innerText = `${currentProviderName} - ${currentSubMode.toUpperCase()}`;
+            const container = document.getElementById('ottGrid');
+            container.innerHTML = '<p style="color:#66fcf1;">Loading content...</p>';
 
             try {
-                const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_watch_providers=${providerId}&watch_region=IN&sort_by=popularity.desc`);
+                let url = '';
+                if(currentSubMode === 'trending') {
+                    url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_watch_providers=${currentProviderId}&watch_region=IN&sort_by=popularity.desc`;
+                } else if(currentSubMode === 'popular') {
+                    url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_watch_providers=${currentProviderId}&watch_region=IN&vote_count.gte=100&sort_by=vote_average.desc`;
+                } else if(currentSubMode === 'week') {
+                    // Recent releases filter
+                    let d = new Date();
+                    let pastDate = new Date(d.setDate(d.getDate() - 7)).toISOString().split('T')[0];
+                    let today = new Date().toISOString().split('T')[0];
+                    url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_watch_providers=${currentProviderId}&watch_region=IN&primary_release_date.gte=${pastDate}&primary_release_date.lte=${today}`;
+                }
+
+                const response = await fetch(url);
                 const data = await response.json();
                 displayMovies(data.results, 'ottGrid', true);
-            } catch (error) {
-                console.error('Error fetching OTT content:', error);
+            } catch (err) {
+                container.innerHTML = '<p>Error loading data.</p>';
             }
         }
 
-        // Global Search
         async function searchMovies() {
             const query = document.getElementById('searchInput').value;
             const resultsDiv = document.getElementById('searchResults');
@@ -260,19 +416,19 @@
                 return;
             }
 
-            try {
-                const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
-                const data = await response.json();
-                displayMovies(data.results, 'searchResults', true);
-            } catch (error) {
-                console.error('Error searching:', error);
-            }
+            const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            displayMovies(data.results, 'searchResults', true);
         }
 
-        // Display Grid Cards
-        function displayMovies(movies, elementId, showAddButton = false) {
+        function displayMovies(movies, elementId, showActions = false) {
             const container = document.getElementById(elementId);
             container.innerHTML = '';
+
+            if(!movies || movies.length === 0) {
+                container.innerHTML = '<p style="color:#8b949e;">No content found.</p>';
+                return;
+            }
 
             movies.forEach(movie => {
                 if (!movie.poster_path) return;
@@ -287,21 +443,24 @@
                 card.innerHTML = `
                     <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${title}" onclick="openDetails(${movie.id}, '${mediaType}')">
                     <h4 onclick="openDetails(${movie.id}, '${mediaType}')">${title} (${year})</h4>
-                    ${showAddButton ? `<button onclick='event.stopPropagation(); addToDiary(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>Add to Diary</button>` : ''}
+                    ${showActions ? `
+                        <div class="card-actions">
+                            <button class="action-btn" onclick='addToDiary(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>Watched</button>
+                            <button class="action-btn schedule-btn" onclick='addToSchedule(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>Schedule</button>
+                        </div>` : ''}
                 `;
                 container.appendChild(card);
             });
         }
 
-        // Open Detailed Popup (Cast, Rating, Feedback)
+        // Detailed Modal Popup with Cast Photos & Feedback
         async function openDetails(id, type) {
             const modal = document.getElementById('detailsModal');
             const modalBody = document.getElementById('modalBody');
             modal.style.display = 'block';
-            modalBody.innerHTML = '<p>Loading details...</p>';
+            modalBody.innerHTML = '<p style="color:#66fcf1;">Loading deep details & cast...</p>';
 
             try {
-                // Fetch details and credits together
                 const [detailRes, creditRes] = await Promise.all([
                     fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${API_KEY}`),
                     fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=${API_KEY}`)
@@ -313,35 +472,45 @@
                 const title = details.title || details.name;
                 const poster = details.poster_path ? IMAGE_BASE_URL + details.poster_path : '';
                 const rating = details.vote_average ? details.vote_average.toFixed(1) : 'N/A';
-                const overview = details.overview || 'No description available.';
-                const cast = credits.cast ? credits.cast.slice(0, 5).map(c => c.name).join(', ') : 'N/A';
+                const overview = details.overview || 'No overview available.';
+                const castList = credits.cast ? credits.cast.slice(0, 8) : [];
 
-                // Fetch saved feedbacks for this item from localStorage
                 let feedbacks = JSON.parse(localStorage.getItem(`feedback_${id}`)) || [];
 
                 modalBody.innerHTML = `
-                    <div style="overflow:hidden;">
+                    <div class="modal-header-flex">
                         ${poster ? `<img src="${poster}" alt="${title}">` : ''}
-                        <h2>${title}</h2>
-                        <p><strong>⭐ Rating:</strong> ${rating} / 10</p>
-                        <p><strong>🎭 Cast:</strong> ${cast}</p>
-                        <p><strong>📖 Overview:</strong> ${overview}</p>
+                        <div class="modal-info">
+                            <h2 style="color:var(--accent); margin-top:0;">${title}</h2>
+                            <p><strong>⭐ Rating:</strong> ${rating} / 10</p>
+                            <p><strong>📖 Overview:</strong> ${overview}</p>
+                        </div>
                     </div>
+                    
+                    <h3 style="margin:20px 0 10px 0; color:#fff; font-size:16px;">🎭 Top Cast</h3>
+                    <div class="cast-container">
+                        ${castList.map(actor => `
+                            <div class="cast-card">
+                                <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/60'}" alt="${actor.name}">
+                                <p>${actor.name}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+
                     <div class="feedback-box">
-                        <h4>My Personal Feedback / Notes</h4>
-                        <textarea id="feedbackInput" placeholder="Write your thoughts about this..."></textarea>
-                        <button onclick="saveFeedback(${id})" style="margin-top: 8px; background:#e50914; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Save Note</button>
+                        <h3 style="margin:0 0 10px 0; color:#fff; font-size:16px;">💬 Personal Feedback & Notes</h3>
+                        <textarea id="feedbackInput" placeholder="Write your review or thoughts here..."></textarea>
+                        <button onclick="saveFeedback(${id})" style="margin-top: 8px; background:var(--accent); color:#000; border:none; padding:8px 16px; border-radius:5px; cursor:pointer; font-weight:bold;">Save Note</button>
                         <div class="feedback-list" id="feedbackList">
                             ${feedbacks.map(f => `<div class="feedback-item">${f}</div>`).join('')}
                         </div>
                     </div>
                 `;
-            } catch (error) {
-                modalBody.innerHTML = '<p>Failed to load details.</p>';
+            } catch (err) {
+                modalBody.innerHTML = '<p>Failed to load comprehensive info.</p>';
             }
         }
 
-        // Save Feedback in LocalStorage
         function saveFeedback(id) {
             const input = document.getElementById('feedbackInput');
             const text = input.value.trim();
@@ -351,7 +520,6 @@
             feedbacks.push(text);
             localStorage.setItem(`feedback_${id}`, JSON.stringify(feedbacks));
 
-            // Refresh feedback list inside modal
             const listDiv = document.getElementById('feedbackList');
             listDiv.innerHTML = feedbacks.map(f => `<div class="feedback-item">${f}</div>`).join('');
             input.value = '';
@@ -361,23 +529,40 @@
             document.getElementById('detailsModal').style.display = 'none';
         }
 
-        // Add to Diary
+        // Watched Diary Management
         function addToDiary(movie) {
             let diary = JSON.parse(localStorage.getItem('myMovieDiary')) || [];
             if (!diary.some(item => item.id === movie.id)) {
                 diary.push(movie);
                 localStorage.setItem('myMovieDiary', JSON.stringify(diary));
                 loadDiary();
-                alert(`${movie.title || movie.name} added to your diary!`);
+                alert(`${movie.title || movie.name} added to Watched Diary!`);
             } else {
-                alert('This is already in your diary.');
+                alert('Already in your watched diary.');
             }
         }
 
-        // Load Diary
         function loadDiary() {
             let diary = JSON.parse(localStorage.getItem('myMovieDiary')) || [];
             displayMovies(diary, 'diaryGrid', false);
+        }
+
+        // Schedule / Plan Management (Kal kya dekhu)
+        function addToSchedule(movie) {
+            let schedule = JSON.parse(localStorage.getItem('myMovieSchedule')) || [];
+            if (!schedule.some(item => item.id === movie.id)) {
+                schedule.push(movie);
+                localStorage.setItem('myMovieSchedule', JSON.stringify(schedule));
+                loadSchedule();
+                alert(`${movie.title || movie.name} added to Watch Schedule!`);
+            } else {
+                alert('Already in your schedule plan.');
+            }
+        }
+
+        function loadSchedule() {
+            let schedule = JSON.parse(localStorage.getItem('myMovieSchedule')) || [];
+            displayMovies(schedule, 'scheduleGrid', false);
         }
     </script>
 </body>
