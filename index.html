@@ -16,26 +16,26 @@
             --danger: #ff8000;
         }
 
-        /* --- MODERN CUSTOM SMOOTH SCROLLBAR --- */
+        /* --- TRANSPARENT / HIDDEN MAIN VERTICAL SCROLLBAR --- */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #031d33;
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: #1b4b70;
+            background: rgba(255, 255, 255, 0.1); /* Extremely transparent */
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent);
+            background: rgba(255, 255, 255, 0.3);
         }
 
         /* Firefox scrollbar support */
         * {
             scrollbar-width: thin;
-            scrollbar-color: #1b4b70 #031d33;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
         }
 
         body {
@@ -374,7 +374,7 @@
         .circle-action-btn:hover, .circle-action-btn.active { background: var(--accent); }
         .circle-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
-        /* Smooth Cast Row with Hidden Ugly Scrollbars */
+        /* Cast Row */
         .cast-row {
             display: flex;
             gap: 15px;
@@ -384,7 +384,11 @@
             -webkit-overflow-scrolling: touch;
         }
         .cast-row::-webkit-scrollbar {
-            height: 5px; /* Slimmer scrollbar for cast list */
+            height: 4px;
+        }
+        .cast-row::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
         }
         .cast-card {
             min-width: 130px;
