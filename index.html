@@ -173,6 +173,8 @@
             left: 0;
             background: #0d253f;
             min-width: 160px;
+            max-height: 220px;
+            overflow-y: auto;
             box-shadow: 0 8px 16px rgba(0,0,0,0.3);
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -396,7 +398,6 @@
             object-fit: cover;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             margin: 0 auto;
-            transition: transform 0.2s;
         }
         .tmdb-details h2 {
             margin: 0 0 10px 0;
@@ -451,7 +452,7 @@
         .circle-action-btn:hover, .circle-action-btn.active { background: var(--accent); }
         .circle-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
-        .poster-picker-row, .cast-row {
+        .cast-row {
             display: flex;
             gap: 15px;
             overflow-x: auto;
@@ -459,33 +460,12 @@
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
         }
-        .poster-picker-row::-webkit-scrollbar, .cast-row::-webkit-scrollbar {
+        .cast-row::-webkit-scrollbar {
             height: 4px;
         }
-        .poster-picker-row::-webkit-scrollbar-thumb, .cast-row::-webkit-scrollbar-thumb {
+        .cast-row::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.15);
             border-radius: 4px;
-        }
-        
-        .poster-thumb-card {
-            min-width: 100px;
-            height: 150px;
-            border-radius: 6px;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px solid transparent;
-            flex-shrink: 0;
-            background: #041525;
-            transition: border-color 0.2s, transform 0.2s;
-        }
-        .poster-thumb-card:hover {
-            transform: scale(1.05);
-            border-color: var(--accent);
-        }
-        .poster-thumb-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .cast-card {
@@ -594,6 +574,7 @@
             <div class="browse-by-container">
                 <span class="browse-title">BROWSE BY</span>
                 
+                <!-- YEAR DROPDOWN -->
                 <div class="dropdown-wrapper">
                     <button class="browse-dropdown-btn" onclick="toggleDropdown('yearDropdown')">YEAR ▾</button>
                     <div id="yearDropdown" class="dropdown-content">
@@ -601,50 +582,72 @@
                         <button class="dropdown-item" onclick="filterBy('year', '2025')">2025</button>
                         <button class="dropdown-item" onclick="filterBy('year', '2024')">2024</button>
                         <button class="dropdown-item" onclick="filterBy('year', '2023')">2023</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2022')">2022</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2021')">2021</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2020')">2020</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2019')">2019</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2018')">2018</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2017')">2017</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2016')">2016</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2015')">2015</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2014')">2014</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2013')">2013</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2012')">2012</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2011')">2011</button>
+                        <button class="dropdown-item" onclick="filterBy('year', '2010')">2010</button>
                     </div>
                 </div>
 
+                <!-- RATING DROPDOWN (1 TO 10) -->
                 <div class="dropdown-wrapper">
                     <button class="browse-dropdown-btn" onclick="toggleDropdown('ratingDropdown')">RATING ▾</button>
                     <div id="ratingDropdown" class="dropdown-content">
+                        <button class="dropdown-item" onclick="filterBy('rating', '10')">10 Stars</button>
+                        <button class="dropdown-item" onclick="filterBy('rating', '9')">9+ Stars</button>
                         <button class="dropdown-item" onclick="filterBy('rating', '8')">8+ Stars</button>
                         <button class="dropdown-item" onclick="filterBy('rating', '7')">7+ Stars</button>
                         <button class="dropdown-item" onclick="filterBy('rating', '6')">6+ Stars</button>
+                        <button class="dropdown-item" onclick="filterBy('rating', '5')">5+ Stars</button>
+                        <button class="dropdown-item" onclick="filterBy('rating', '4')">4+ Stars</button>
+                        <button class="dropdown-item" onclick="filterBy('rating', '3')">3+ Stars</button>
+                        <button class="dropdown-item" onclick="filterBy('rating', '2')">2+ Stars</button>
+                        <button class="dropdown-item" onclick="filterBy('rating', '1')">1+ Stars</button>
                     </div>
                 </div>
 
+                <!-- POPULAR DROPDOWN -->
                 <div class="dropdown-wrapper">
                     <button class="browse-dropdown-btn" onclick="toggleDropdown('popularDropdown')">POPULAR ▾</button>
                     <div id="popularDropdown" class="dropdown-content">
-                        <button class="dropdown-item" onclick="filterBy('popular', 'trending')">Trending Now</button>
-                        <button class="dropdown-item" onclick="filterBy('popular', 'top_rated')">All-Time Top Rated</button>
+                        <button class="dropdown-item" onclick="filterBy('popular', 'trending_now')">Trending Now</button>
+                        <button class="dropdown-item" onclick="filterBy('popular', 'this_week')">This Week</button>
+                        <button class="dropdown-item" onclick="filterBy('popular', 'this_month')">This Month</button>
                     </div>
                 </div>
 
+                <!-- GENRE DROPDOWN -->
                 <div class="dropdown-wrapper">
                     <button class="browse-dropdown-btn" onclick="toggleDropdown('genreDropdown')">GENRE ▾</button>
                     <div id="genreDropdown" class="dropdown-content">
                         <button class="dropdown-item" onclick="filterBy('genre', '28')">Action</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '12')">Adventure</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '16')">Animation</button>
                         <button class="dropdown-item" onclick="filterBy('genre', '35')">Comedy</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '80')">Crime</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '99')">Documentary</button>
                         <button class="dropdown-item" onclick="filterBy('genre', '18')">Drama</button>
-                        <button class="dropdown-item" onclick="filterBy('genre', '878')">Sci-Fi</button>
-                    </div>
-                </div>
-
-                <div class="dropdown-wrapper">
-                    <button class="browse-dropdown-btn" onclick="toggleDropdown('serviceDropdown')">SERVICE ▾</button>
-                    <div id="serviceDropdown" class="dropdown-content">
-                        <button class="dropdown-item" onclick="filterBy('service', 'netflix')">Netflix</button>
-                        <button class="dropdown-item" onclick="filterBy('service', 'prime')">Prime Video</button>
-                        <button class="dropdown-item" onclick="filterBy('service', 'disney')">Disney+</button>
-                    </div>
-                </div>
-
-                <div class="dropdown-wrapper">
-                    <button class="browse-dropdown-btn" onclick="toggleDropdown('otherDropdown')">OTHER ▾</button>
-                    <div id="otherDropdown" class="dropdown-content">
-                        <button class="dropdown-item" onclick="filterBy('other', 'upcoming')">Upcoming</button>
-                        <button class="dropdown-item" onclick="filterBy('other', 'now_playing')">Now Playing</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '10751')">Family</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '14')">Fantasy</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '36')">History</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '27')">Horror</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '10402')">Music</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '9648')">Mystery</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '10749')">Romance</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '878')">Science Fiction</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '53')">Thriller</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '10770')">TV Movie</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '10752')">War</button>
+                        <button class="dropdown-item" onclick="filterBy('genre', '37')">Western</button>
                     </div>
                 </div>
             </div>
@@ -738,7 +741,6 @@
             renderLists();
             setupInfiniteScroll();
 
-            // Close dropdowns when clicking outside
             window.onclick = function(event) {
                 if (!event.target.matches('.browse-dropdown-btn')) {
                     document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
@@ -766,6 +768,11 @@
                 if (type === 'year') url += `&primary_release_year=${value}`;
                 if (type === 'rating') url += `&vote_average.gte=${value}`;
                 if (type === 'genre') url += `&with_genres=${value}`;
+                if (type === 'popular') {
+                    if (value === 'trending_now') url = `https://api.themoviedb.org/3/trending/movie/day?api_key=${TMDB_API_KEY}`;
+                    if (value === 'this_week') url = `https://api.themoviedb.org/3/trending/movie/week?api_key=${TMDB_API_KEY}`;
+                    if (value === 'this_month') url = `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&sort_by=popularity.desc`;
+                }
                 
                 const res = await fetch(url);
                 const data = await res.json();
@@ -951,17 +958,15 @@
                     type = 'movie';
                 }
 
-                const [detailRes, creditRes, imageRes] = await Promise.all([
+                const [detailRes, creditRes] = await Promise.all([
                     fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_API_KEY}`),
-                    fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=${TMDB_API_KEY}`),
-                    fetch(`https://api.themoviedb.org/3/${type}/${id}/images?api_key=${TMDB_API_KEY}`)
+                    fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=${TMDB_API_KEY}`)
                 ]);
                 
                 if (!detailRes.ok) throw new Error(`HTTP error! status: ${detailRes.status}`);
 
                 const details = await detailRes.json();
                 const credits = await creditRes.ok ? await creditRes.json() : { crew: [], cast: [] };
-                const imagesData = await imageRes.ok ? await imageRes.json() : { posters: [], backdrops: [] };
 
                 details.media_type = type;
                 activeMovieObj = details;
@@ -972,7 +977,6 @@
                 const poster = details.poster_path ? IMAGE_BASE_URL + details.poster_path : '';
                 const cast = credits.cast ? credits.cast.slice(0, 10) : [];
                 const ratingPercent = details.vote_average ? Math.round(details.vote_average * 10) : 0;
-                const allPosters = imagesData.posters ? imagesData.posters : [];
 
                 let watchedList = JSON.parse(localStorage.getItem('cineVaultWatched')) || [];
                 let watchlist = JSON.parse(localStorage.getItem('cineVaultWatchlist')) || [];
@@ -1007,20 +1011,6 @@
                         </div>
                     </div>
 
-                    ${allPosters.length > 0 ? `
-                    <div style="margin-top:30px; margin-bottom:30px;">
-                        <h3 style="font-size:20px; margin-top:0; color:#fff; margin-bottom:10px;">Choose Poster / Thumbnail (${allPosters.length} Available)</h3>
-                        <p style="font-size:12px; color:var(--text-main); margin-bottom:15px;">Click any poster below to instantly update the main poster.</p>
-                        <div class="poster-picker-row">
-                            ${allPosters.map(p => `
-                                <div class="poster-thumb-card" onclick="changeActivePoster('${IMAGE_BASE_URL + p.file_path}')">
-                                    <img src="${IMAGE_BASE_URL + p.file_path}" alt="Poster Option" loading="lazy">
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    ` : ''}
-
                     <div style="margin-top:30px;">
                         <h3 style="font-size:20px; margin-top:0; color:#fff; margin-bottom:15px;">Top Billed Cast</h3>
                         <div class="cast-row">
@@ -1037,13 +1027,6 @@
             } catch (err) {
                 console.error("Failed to load details:", err);
                 fullPageBody.innerHTML = `<p style="text-align:center; color:orange; padding:40px;">Failed to load details. (${err.message})</p>`;
-            }
-        }
-
-        function changeActivePoster(newUrl) {
-            const posterImg = document.getElementById('mainHeroPoster');
-            if (posterImg) {
-                posterImg.src = newUrl;
             }
         }
 
