@@ -138,6 +138,41 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
   .compact-filter select{width:100%;min-width:0}
   .compact-apply{margin:8px}
 }
+
+/* Dark native dropdowns */
+.browse-compact,
+.browse-compact select,
+.browse-compact option{
+  color-scheme:dark;
+}
+.browse-compact select{
+  background-color:#0a1520 !important;
+  color:#d9e4ee !important;
+}
+.browse-compact select option{
+  background:#0a1520 !important;
+  color:#d9e4ee !important;
+}
+.browse-compact select option:checked{
+  background:#183246 !important;
+  color:#fff !important;
+}
+
+.native-filter-source{position:absolute !important;width:1px !important;height:1px !important;opacity:0 !important;pointer-events:none !important}
+.custom-filter{position:relative;border-left:1px solid var(--line);flex:0 0 auto}
+.custom-filter-btn{height:46px;min-width:116px;padding:0 34px 0 14px;border:0;background:transparent;color:#b8c7d5;font-size:.78rem;letter-spacing:1.3px;cursor:pointer;position:relative;white-space:nowrap;text-align:left}
+.custom-filter-btn:after{content:"";position:absolute;right:14px;top:50%;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #8094a7;transform:translateY(-25%)}
+.custom-filter-btn:hover,.custom-filter.open .custom-filter-btn{background:rgba(255,255,255,.035);color:#fff}
+.custom-filter-menu{display:none;position:absolute;left:-1px;top:calc(100% + 6px);min-width:190px;max-height:320px;overflow:auto;padding:6px;z-index:5000;background:#0a1520;border:1px solid #294052;border-radius:10px;box-shadow:0 18px 45px rgba(0,0,0,.55)}
+.custom-filter.open .custom-filter-menu{display:block}
+.custom-filter-option{display:block;width:100%;padding:10px 11px;border:0;border-radius:7px;background:transparent;color:#c9d6e1;text-align:left;font-size:.78rem;cursor:pointer}
+.custom-filter-option:hover{background:#183246;color:#fff}
+.custom-filter-option.selected{background:#183246;color:#fff;font-weight:800}
+@media(max-width:900px){
+ .custom-filter{flex:1}
+ .custom-filter-btn{width:100%;min-width:0}
+ .custom-filter-menu{left:0;right:0;min-width:0;width:max-content;max-width:calc(100vw - 24px)}
+}
 </style>
 </head>
 <body>
@@ -182,27 +217,42 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
     <div class="browse-compact" aria-label="Browse filters">
       <span class="browse-label">BROWSE BY</span>
       <div class="compact-filter">
-        <select id="browseType" aria-label="Type">
+        <select id="browseType" aria-label="Type" class="native-filter-source" aria-hidden="true" tabindex="-1">
           <option value="movie">MOVIES</option>
           <option value="tv">TV SHOWS</option>
-        </select>
+        </select><div class="custom-filter" data-select="browseType">
+      <button type="button" class="custom-filter-btn" aria-haspopup="listbox" aria-expanded="false">MOVIES</button>
+      <div class="custom-filter-menu" role="listbox"></div>
+    </div>
       </div>
       <div class="compact-filter">
-        <select id="browseYear" aria-label="Year"></select>
+        <select id="browseYear" aria-label="Year" class="native-filter-source" aria-hidden="true" tabindex="-1"></select><div class="custom-filter" data-select="browseYear">
+      <button type="button" class="custom-filter-btn" aria-haspopup="listbox" aria-expanded="false">YEAR</button>
+      <div class="custom-filter-menu" role="listbox"></div>
+    </div>
       </div>
       <div class="compact-filter">
-        <select id="browseRating" aria-label="Rating"></select>
+        <select id="browseRating" aria-label="Rating" class="native-filter-source" aria-hidden="true" tabindex="-1"></select><div class="custom-filter" data-select="browseRating">
+      <button type="button" class="custom-filter-btn" aria-haspopup="listbox" aria-expanded="false">RATING</button>
+      <div class="custom-filter-menu" role="listbox"></div>
+    </div>
       </div>
       <div class="compact-filter">
-        <select id="browseMode" aria-label="Popular">
+        <select id="browseMode" aria-label="Popular" class="native-filter-source" aria-hidden="true" tabindex="-1">
           <option value="popular">POPULAR</option>
           <option value="top_rated">HIGH RATED</option>
           <option value="today">TODAY POPULAR</option>
           <option value="month">THIS MONTH POPULAR</option>
-        </select>
+        </select><div class="custom-filter" data-select="browseMode">
+      <button type="button" class="custom-filter-btn" aria-haspopup="listbox" aria-expanded="false">POPULAR</button>
+      <div class="custom-filter-menu" role="listbox"></div>
+    </div>
       </div>
       <div class="compact-filter">
-        <select id="browseGenre" aria-label="Genre"></select>
+        <select id="browseGenre" aria-label="Genre" class="native-filter-source" aria-hidden="true" tabindex="-1"></select><div class="custom-filter" data-select="browseGenre">
+      <button type="button" class="custom-filter-btn" aria-haspopup="listbox" aria-expanded="false">GENRE</button>
+      <div class="custom-filter-menu" role="listbox"></div>
+    </div>
       </div>
       <button class="compact-apply" onclick="applyBrowse()">APPLY</button>
     </div>
@@ -329,6 +379,51 @@ function fillGenres(id,type="movie",all=true){
   const s=$(id);s.innerHTML=all?'<option value="">All Genres</option>':'';
   (GENRES[type]||GENRES.movie).forEach(g=>s.insertAdjacentHTML("beforeend",`<option value="${g.id}">${g.n}</option>`));
 }
+function initCustomFilters(){
+  const filters=document.querySelectorAll(".custom-filter");
+  filters.forEach(w=>{
+    const id=w.dataset.select, sel=$(id), btn=w.querySelector(".custom-filter-btn"), menu=w.querySelector(".custom-filter-menu");
+    if(!sel||!btn||!menu)return;
+    const rebuild=()=>{
+      menu.innerHTML="";
+      [...sel.options].forEach((opt,idx)=>{
+        const b=document.createElement("button");
+        b.type="button"; b.className="custom-filter-option"+(opt.selected?" selected":"");
+        b.textContent=opt.textContent;
+        b.setAttribute("role","option");
+        b.onclick=()=>{
+          sel.value=opt.value;
+          sel.dispatchEvent(new Event("change",{bubbles:true}));
+          sync();
+          closeCustomFilters();
+        };
+        menu.appendChild(b);
+      });
+      sync();
+    };
+    const sync=()=>{
+      const opt=sel.options[sel.selectedIndex];
+      btn.textContent=opt?opt.textContent:"Select";
+      menu.querySelectorAll(".custom-filter-option").forEach((b,i)=>b.classList.toggle("selected",i===sel.selectedIndex));
+    };
+    btn.onclick=e=>{
+      e.stopPropagation();
+      const wasOpen=w.classList.contains("open");
+      closeCustomFilters();
+      if(!wasOpen){w.classList.add("open");btn.setAttribute("aria-expanded","true");}
+    };
+    sel.addEventListener("change",sync);
+    rebuild();
+  });
+  document.addEventListener("click",closeCustomFilters);
+}
+function closeCustomFilters(){
+  document.querySelectorAll(".custom-filter.open").forEach(w=>{
+    w.classList.remove("open");
+    const b=w.querySelector(".custom-filter-btn"); if(b)b.setAttribute("aria-expanded","false");
+  });
+}
+
 function initControls(){
   fillYears("browseYear");fillYears("pickerYear",true);fillRatings("browseRating");fillRatings("pickerRating");
   fillGenres("browseGenre","movie");fillGenres("pickerGenre","movie");
@@ -772,7 +867,7 @@ function scrollToId(id){const el=$(id);if(el)el.scrollIntoView({behavior:"smooth
 function home(){window.scrollTo({top:0,behavior:"smooth"});$("search").value="";loadTrending()}
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),2400)}
 
-initControls();setupInfiniteScroll();loadTrending();renderTimeline();
+initControls();initCustomFilters();initCustomFilters();setupInfiniteScroll();loadTrending();renderTimeline();
 </script>
 </body>
 </html>
