@@ -242,65 +242,49 @@
             border-radius: 4px;
         }
 
-        /* Modal Style */
-        .modal {
+        /* Full Page Detail View */
+        #fullPageView {
             display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(3, 37, 65, 0.85);
-            overflow-y: auto;
+            background-color: var(--bg-color);
+            min-height: calc(100vh - 80px);
         }
-        .modal-content {
-            background-color: #0d253f;
-            margin: 3% auto;
-            width: 92%;
-            max-width: 900px;
-            border-radius: 12px;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-            overflow: hidden;
+        .back-to-home-btn {
+            background: #031d33;
+            border: 1px solid var(--accent);
             color: #fff;
-        }
-        .close-btn {
-            color: #fff;
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            font-size: 20px;
-            background: rgba(0,0,0,0.6);
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
-            z-index: 10;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .close-btn:hover { background: var(--danger); }
+        .back-to-home-btn:hover { background: var(--accent); color: #032541; }
 
         .tmdb-hero {
             position: relative;
             background-size: cover;
             background-position: center;
-            padding: 40px 20px;
+            padding: 50px 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
         }
         .tmdb-hero::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(3, 37, 65, 0.85);
+            background: rgba(3, 37, 65, 0.9);
         }
         .tmdb-hero-content {
             position: relative;
             z-index: 2;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
         }
         @media (min-width: 768px) {
             .tmdb-hero-content {
@@ -309,8 +293,8 @@
             }
         }
         .tmdb-poster {
-            width: 220px;
-            height: 330px;
+            width: 240px;
+            height: 360px;
             border-radius: 8px;
             object-fit: cover;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
@@ -318,7 +302,8 @@
         }
         .tmdb-details h2 {
             margin: 0 0 10px 0;
-            font-size: 28px;
+            font-size: 32px;
+            color: #fff;
         }
         .tmdb-meta {
             display: flex;
@@ -332,6 +317,7 @@
             align-items: center;
             gap: 10px;
             font-weight: bold;
+            color: #fff;
         }
         .score-circle {
             width: 50px;
@@ -367,10 +353,6 @@
         .circle-action-btn:hover, .circle-action-btn.active { background: var(--accent); }
         .circle-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
-        .modal-body-section {
-            padding: 30px;
-            background: #032541;
-        }
         .cast-row {
             display: flex;
             gap: 15px;
@@ -402,6 +384,17 @@
         .cast-card h5 { font-weight: bold; }
 
         /* Picker Choice & Date Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(3, 37, 65, 0.85);
+            overflow-y: auto;
+        }
         .picker-modal-box, .date-modal-box {
             background: #0d253f;
             margin: 20% auto;
@@ -449,8 +442,8 @@
 
     <header>
         <div class="nav-left">
-            <h1 onclick="switchTab('movies', document.getElementById('navMoviesBtn'))">TMDB <span>CineVault</span></h1>
-            <div class="nav-links">
+            <h1 onclick="goHome()">TMDB <span>CineVault</span></h1>
+            <div class="nav-links" id="mainNavLinks">
                 <button id="navMoviesBtn" class="nav-link-item active" onclick="switchTab('movies', this)">Movies</button>
                 <button class="nav-link-item" onclick="switchTab('tv', this)">TV Shows</button>
                 <button class="nav-link-item" onclick="switchTab('diary', this)">Watched Diary</button>
@@ -461,59 +454,64 @@
     </header>
 
     <div class="wrapper">
-        <div class="action-toolbar">
-            <button class="toolbar-btn" onclick="openPickerChoiceModal()">
-                🎲 Random Picker
-            </button>
-        </div>
-
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search for a movie, tv show, person..." oninput="searchMedia()">
-        </div>
-        <div id="searchResults" class="grid"></div>
-
-        <div id="tab-movies" class="content-section active-tab">
-            <div class="trending-header">
-                <h2 class="section-title">Trending Movies</h2>
-                <div class="toggle-pill">
-                    <button class="pill-btn active" onclick="switchTrending('movie', 'day', this)">Today</button>
-                    <button class="pill-btn" onclick="switchTrending('movie', 'week', this)">This Week</button>
-                </div>
+        <!-- Main Home Application View -->
+        <div id="homeMainView">
+            <!-- Action Toolbar -->
+            <div class="action-toolbar">
+                <button class="toolbar-btn" onclick="openPickerChoiceModal()">
+                    🎲 Random Picker
+                </button>
             </div>
-            <div id="moviesGrid" class="grid"></div>
-            <div id="moviesLoader" class="loader-trigger">Loading more movies...</div>
-        </div>
 
-        <div id="tab-tv" class="content-section">
-            <div class="trending-header">
-                <h2 class="section-title">Trending TV Shows</h2>
-                <div class="toggle-pill">
-                    <button class="pill-btn active" onclick="switchTrending('tv', 'day', this)">Today</button>
-                    <button class="pill-btn" onclick="switchTrending('tv', 'week', this)">This Week</button>
-                </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search for a movie, tv show, person..." oninput="searchMedia()">
             </div>
-            <div id="tvGrid" class="grid"></div>
-            <div id="tvLoader" class="loader-trigger">Loading more TV shows...</div>
+            <div id="searchResults" class="grid"></div>
+
+            <!-- Tab Content Sections -->
+            <div id="tab-movies" class="content-section active-tab">
+                <div class="trending-header">
+                    <h2 class="section-title">Trending Movies</h2>
+                    <div class="toggle-pill">
+                        <button class="pill-btn active" onclick="switchTrending('movie', 'day', this)">Today</button>
+                        <button class="pill-btn" onclick="switchTrending('movie', 'week', this)">This Week</button>
+                    </div>
+                </div>
+                <div id="moviesGrid" class="grid"></div>
+                <div id="moviesLoader" class="loader-trigger">Loading more movies...</div>
+            </div>
+
+            <div id="tab-tv" class="content-section">
+                <div class="trending-header">
+                    <h2 class="section-title">Trending TV Shows</h2>
+                    <div class="toggle-pill">
+                        <button class="pill-btn active" onclick="switchTrending('tv', 'day', this)">Today</button>
+                        <button class="pill-btn" onclick="switchTrending('tv', 'week', this)">This Week</button>
+                    </div>
+                </div>
+                <div id="tvGrid" class="grid"></div>
+                <div id="tvLoader" class="loader-trigger">Loading more TV shows...</div>
+            </div>
+
+            <div id="tab-diary" class="content-section">
+                <h2 class="section-title" style="margin-bottom:15px;">📖 Watched Diary</h2>
+                <div id="diaryContainer"><p style="font-size: 13px;">No media watched yet.</p></div>
+            </div>
+
+            <div id="tab-watchlist" class="content-section">
+                <h2 class="section-title" style="margin-bottom:15px;">🗓️ Watchlist / Schedule</h2>
+                <div id="watchlistContainer"><p style="font-size: 13px;">No media in watchlist.</p></div>
+            </div>
         </div>
 
-        <div id="tab-diary" class="content-section">
-            <h2 class="section-title" style="margin-bottom:15px;">📖 Watched Diary</h2>
-            <div id="diaryContainer"><p style="font-size: 13px;">No media watched yet.</p></div>
-        </div>
-
-        <div id="tab-watchlist" class="content-section">
-            <h2 class="section-title" style="margin-bottom:15px;">🗓️ Watchlist / Schedule</h2>
-            <div id="watchlistContainer"><p style="font-size: 13px;">No media in watchlist.</p></div>
+        <!-- Full Page Detail View -->
+        <div id="fullPageView">
+            <button class="back-to-home-btn" onclick="goHome()">&#8592; Back</button>
+            <div id="fullPageBody"></div>
         </div>
     </div>
 
-    <div id="detailsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&#10005;</span>
-            <div id="modalBody"></div>
-        </div>
-    </div>
-
+    <!-- Picker Choice Modal -->
     <div id="pickerChoiceModal" class="modal">
         <div class="picker-modal-box">
             <h3 style="margin-top:0; font-size:16px;">Random Picker</h3>
@@ -524,6 +522,7 @@
         </div>
     </div>
 
+    <!-- Date Picker Modal -->
     <div id="dateModal" class="modal">
         <div class="date-modal-box">
             <h3 id="dateModalTitle" style="margin-top:0; font-size:16px;">Select Date</h3>
@@ -565,6 +564,12 @@
             if(btn) btn.classList.add('active');
             currentTab = tabName;
             document.getElementById('tab-' + tabName).classList.add('active-tab');
+        }
+
+        function goHome() {
+            document.getElementById('fullPageView').style.display = 'none';
+            document.getElementById('homeMainView').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function switchTrending(type, windowType, pillBtnElement) {
@@ -713,10 +718,13 @@
         }
 
         async function openDetails(id, type) {
-            const modal = document.getElementById('detailsModal');
-            const modalBody = document.getElementById('modalBody');
-            modal.style.display = 'block';
-            modalBody.innerHTML = '<p style="text-align:center; padding:40px; color:var(--accent);">Loading details...</p>';
+            document.getElementById('homeMainView').style.display = 'none';
+            const fullPageView = document.getElementById('fullPageView');
+            const fullPageBody = document.getElementById('fullPageBody');
+            
+            fullPageView.style.display = 'block';
+            fullPageBody.innerHTML = '<p style="text-align:center; padding:60px; color:var(--accent);">Loading details...</p>';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
             try {
                 if (type !== 'movie' && type !== 'tv') {
@@ -748,7 +756,7 @@
                 let isWatched = watchedList.some(m => m.id === id);
                 let isInWatchlist = watchlist.some(m => m.id === id);
 
-                modalBody.innerHTML = `
+                fullPageBody.innerHTML = `
                     <div class="tmdb-hero" style="background-image: url('${backdrop}')">
                         <div class="tmdb-hero-content">
                             <img src="${poster}" class="tmdb-poster" alt="${title}">
@@ -770,14 +778,14 @@
                                     </button>
                                 </div>
 
-                                <h3 style="font-size:16px; margin:15px 0 5px 0;">Overview</h3>
-                                <p style="font-size:13px; line-height:1.5; color: #dbdbdb; margin:0;">${details.overview || 'No description available.'}</p>
+                                <h3 style="font-size:16px; margin:15px 0 5px 0; color:#fff;">Overview</h3>
+                                <p style="font-size:14px; line-height:1.6; color: #dbdbdb; margin:0;">${details.overview || 'No description available.'}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="modal-body-section">
-                        <h3 style="font-size:18px; margin-top:0; color:#fff;">Top Billed Cast</h3>
+                    <div style="margin-top:30px;">
+                        <h3 style="font-size:20px; margin-top:0; color:#fff; margin-bottom:15px;">Top Billed Cast</h3>
                         <div class="cast-row">
                             ${cast.map(actor => `
                                 <div class="cast-card">
@@ -791,7 +799,7 @@
                 `;
             } catch (err) {
                 console.error("Failed to load details:", err);
-                modalBody.innerHTML = `<p style="text-align:center; color:orange; padding:30px;">Failed to load details. (${err.message})</p>`;
+                fullPageBody.innerHTML = `<p style="text-align:center; color:orange; padding:40px;">Failed to load details. (${err.message})</p>`;
             }
         }
 
@@ -822,10 +830,6 @@
             closeDateModal();
             renderLists();
             openDetails(activeMovieObj.id, activeMovieObj.media_type);
-        }
-
-        function closeModal() {
-            document.getElementById('detailsModal').style.display = 'none';
         }
 
         function renderLists() {
