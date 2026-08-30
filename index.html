@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineVault - Ultimate Movie & Series Hub</title>
+    <title>CineVault - Letterboxd Style</title>
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #131b2e;
-            --accent: #38bdf8;
-            --accent-glow: rgba(56, 189, 248, 0.3);
-            --danger: #f43f5e;
-            --success: #10b981;
-            --text-main: #94a3b8;
-            --text-white: #f8fafc;
-            --border-color: #1e293b;
+            --bg-color: #14181c;
+            --card-bg: #1b222c;
+            --accent: #00e054;
+            --accent-hover: #00c046;
+            --text-main: #9ab;
+            --text-white: #fff;
+            --border-color: #2c3440;
+            --danger: #ff8000;
         }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 30px 20px;
+            padding: 20px 10px;
         }
         .wrapper {
-            max-width: 1300px;
+            max-width: 1000px;
             margin: 0 auto;
         }
         header {
@@ -32,170 +31,85 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
         }
         h1 {
             color: var(--text-white);
             margin: 0;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 800;
-            letter-spacing: -0.5px;
         }
-        h1 span {
-            color: var(--accent);
-        }
-        .visitor-badge {
-            background: var(--card-bg);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            border: 1px solid var(--border-color);
-            color: var(--text-white);
-        }
+        h1 span { color: var(--accent); }
+        
         .search-container {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-align: center;
         }
         input[type="text"] {
             width: 100%;
-            max-width: 700px;
-            padding: 16px 24px;
-            font-size: 16px;
+            max-width: 600px;
+            padding: 14px 20px;
+            font-size: 15px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             color: #fff;
-            border-radius: 14px;
+            border-radius: 8px;
             outline: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-sizing: border-box;
         }
-        input[type="text"]:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px var(--accent-glow);
-        }
+        input[type="text"]:focus { border-color: var(--accent); }
+
         .section-title {
-            margin: 45px 0 20px 0;
-            font-size: 22px;
+            margin: 35px 0 15px 0;
+            font-size: 18px;
             color: var(--text-white);
             font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-            gap: 22px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        @media (min-width: 768px) {
+            .grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
         }
         .card {
             background: var(--card-bg);
-            border-radius: 14px;
+            border-radius: 8px;
             overflow: hidden;
             text-align: center;
             cursor: pointer;
-            transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-            border: 1px solid var(--border-color);
-            position: relative;
+            transition: transform 0.2s, border-color 0.2s;
+            border: 2px solid transparent;
         }
         .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            transform: translateY(-5px);
             border-color: var(--accent);
         }
         .card img {
             width: 100%;
-            height: 275px;
+            height: 220px;
             object-fit: cover;
         }
         .card h4 {
-            font-size: 14px;
-            margin: 12px 10px 4px 10px;
-            height: 38px;
+            font-size: 13px;
+            margin: 10px 8px;
+            height: 32px;
             overflow: hidden;
             color: var(--text-white);
-            font-weight: 600;
-        }
-        .card-actions {
-            padding: 0 12px 14px 12px;
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-        }
-        .action-btn {
-            background: #1e293b;
-            color: var(--text-white);
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            cursor: pointer;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 700;
-            transition: all 0.2s;
-        }
-        .action-btn:hover {
-            background: var(--accent);
-            color: #0b0f19;
-            border-color: var(--accent);
-        }
-        .schedule-btn:hover {
-            background: var(--success);
-            border-color: var(--success);
-            color: #fff;
         }
 
         .content-section {
-            background: rgba(19, 27, 46, 0.5);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 25px;
-            margin-top: 40px;
-        }
-
-        .diary-card-row {
-            display: flex;
-            align-items: center;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 14px 20px;
-            margin-bottom: 14px;
-            gap: 20px;
-            transition: all 0.2s ease;
-        }
-        .diary-card-row:hover {
-            border-color: var(--accent);
-            transform: translateX(4px);
-        }
-        .diary-card-row img {
-            width: 55px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .diary-info {
-            flex: 1;
-        }
-        .diary-info h4 {
-            margin: 0 0 6px 0;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .diary-info h4:hover { color: var(--accent); }
-        .badge {
-            background: #1e293b;
-            color: var(--accent);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            display: inline-block;
-            border: 1px solid var(--border-color);
-            font-weight: 600;
+            padding: 20px;
+            margin-top: 30px;
         }
 
-        /* Modern Sleek Modal Popup */
+        /* Letterboxd Style Modal */
         .modal {
             display: none;
             position: fixed;
@@ -204,218 +118,158 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(11, 15, 25, 0.85);
-            backdrop-filter: blur(10px);
+            background-color: rgba(10, 13, 16, 0.9);
+            backdrop-filter: blur(8px);
             overflow-y: auto;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
         .modal-content {
-            background-color: var(--card-bg);
-            margin: 4% auto;
-            padding: 30px;
-            width: 90%;
-            max-width: 850px;
-            border-radius: 20px;
+            background-color: #12181f;
+            margin: 3% auto;
+            width: 92%;
+            max-width: 800px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
             position: relative;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
-            transform: translateY(30px) scale(0.95);
-            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease;
-            opacity: 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            overflow: hidden;
         }
-        .modal.show { opacity: 1; }
-        .modal.show .modal-content { transform: translateY(0) scale(1); opacity: 1; }
-        
         .close-btn {
-            color: var(--text-main);
+            color: #fff;
             position: absolute;
-            right: 20px;
-            top: 20px;
-            font-size: 22px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            background: #1e293b;
-            width: 36px;
-            height: 36px;
+            right: 15px;
+            top: 15px;
+            font-size: 20px;
+            background: rgba(0,0,0,0.6);
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid var(--border-color);
+            cursor: pointer;
             z-index: 10;
+            border: 1px solid var(--border-color);
         }
-        .close-btn:hover { color: #fff; background: var(--danger); border-color: var(--danger); }
-        
-        /* Fixed Banner Layout */
-        .modal-banner {
+        .close-btn:hover { background: var(--danger); }
+
+        /* Letterboxd Banner Layout */
+        .lb-banner {
             position: relative;
             width: 100%;
-            height: 320px;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 25px;
-            border: 1px solid var(--border-color);
-            background: #000;
+            height: 240px;
+            background-size: cover;
+            background-position: center;
         }
-        .modal-banner img.backdrop-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.5);
+        @media (min-width: 768px) {
+            .lb-banner { height: 350px; }
         }
-        .modal-banner-overlay {
+        .lb-banner::after {
+            content: '';
             position: absolute;
-            bottom: 20px;
-            left: 25px;
-            right: 25px;
-            display: flex;
-            align-items: flex-end;
-            gap: 20px;
+            bottom: 0; left: 0; right: 0;
+            height: 100px;
+            background: linear-gradient(to top, #12181f, transparent);
+        }
+        .lb-header-details {
+            padding: 0 20px 20px 20px;
+            margin-top: -50px;
+            position: relative;
             z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        .modal-poster {
-            width: 120px;
-            height: 180px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 2px solid var(--accent);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
-            flex-shrink: 0;
-            background: #1e293b;
+        @media (min-width: 600px) {
+            .lb-header-details { flex-direction: row; align-items: flex-end; justify-content: space-between; }
         }
-        .modal-title-box h2 {
-            margin: 0 0 8px 0;
-            color: #fff;
-            font-size: 28px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+        .lb-title-group h2 {
+            margin: 0 0 5px 0;
+            color: var(--text-white);
+            font-size: 22px;
             font-weight: 800;
         }
-        .rating-badge {
-            background: rgba(19, 27, 46, 0.85);
-            border: 1px solid var(--border-color);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #fbbf24;
-            display: inline-block;
-            backdrop-filter: blur(6px);
-            font-weight: 700;
+        @media (min-width: 768px) {
+            .lb-title-group h2 { font-size: 30px; }
         }
-        .modal-section-heading {
-            font-size: 16px;
-            color: var(--text-white);
-            margin: 25px 0 12px 0;
-            font-weight: 700;
-        }
-
-        /* Clean Cast Container without ugly scrollbars */
-        .cast-container {
-            display: flex;
-            gap: 15px;
-            overflow-x: auto;
-            padding: 5px 2px 15px 2px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent) var(--border-color);
-        }
-        .cast-container::-webkit-scrollbar {
-            height: 6px;
-        }
-        .cast-container::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-        .cast-card {
-            min-width: 95px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .cast-card img {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--border-color);
-            transition: 0.3s;
-            background: #1e293b;
-        }
-        .cast-card:hover img {
-            border-color: var(--accent);
-            transform: scale(1.05);
-        }
-        .cast-card p {
-            font-size: 12px;
-            margin: 8px 0 0 0;
+        .lb-title-group p {
+            margin: 0;
+            font-size: 14px;
             color: var(--text-main);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 95px;
+        }
+        .lb-poster-thumb {
+            width: 100px;
+            height: 150px;
+            border-radius: 6px;
+            border: 2px solid #fff;
+            object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            display: none;
+        }
+        @media (min-width: 600px) {
+            .lb-poster-thumb { display: block; }
         }
 
-        .feedback-box {
-            margin-top: 30px;
-            background: #0b0f19;
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
+        /* Letterboxd Action Bar (Watch, Like, Watchlist) */
+        .lb-action-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #18202a;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+        }
+        .lb-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .lb-action-btn svg { width: 22px; height: 22px; fill: currentColor; }
+        .lb-action-btn:hover, .lb-action-btn.active { color: var(--accent); }
+
+        /* Rating Stars Section */
+        .lb-rating-section {
+            text-align: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .stars {
+            display: inline-flex;
+            gap: 5px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #456;
+        }
+        .stars span.active { color: #00e054; }
+
+        .lb-body-section {
             padding: 20px;
         }
-        .feedback-box textarea {
-            width: 100%;
-            height: 80px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 12px;
-            border-radius: 10px;
-            resize: none;
-            outline: none;
-            font-size: 14px;
-            box-sizing: border-box;
-            transition: 0.2s;
-        }
-        .feedback-box textarea:focus { border-color: var(--accent); }
-        .feedback-list {
-            margin-top: 15px;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-        .feedback-item {
-            background: var(--card-bg);
-            padding: 10px 14px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 13px;
-            border-left: 3px solid var(--accent);
-            border: 1px solid var(--border-color);
-        }
-
-        .date-picker-box {
-            background: #0b0f19;
-            border: 1px solid var(--border-color);
-            padding: 16px;
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
+        .cast-row {
+            display: flex;
             gap: 12px;
-            margin-bottom: 20px;
-            width: 100%;
-            box-sizing: border-box;
+            overflow-x: auto;
+            padding-bottom: 10px;
         }
-        input[type="date"] {
-            background: var(--card-bg);
+        .cast-item {
+            min-width: 75px;
+            text-align: center;
+            font-size: 11px;
+        }
+        .cast-item img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
             border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 15px;
-            outline: none;
-            color-scheme: dark;
-            cursor: pointer;
-            width: 100%;
         }
-        input[type="date"]:focus { border-color: var(--accent); }
     </style>
 </head>
 <body>
@@ -423,29 +277,21 @@
     <div class="wrapper">
         <header>
             <h1>Cine<span>Vault</span></h1>
-            <div class="visitor-badge">🟢 Active Visitors: 54</div>
+            <div id="syncStatus" style="font-size: 13px; color: var(--accent);">🟢 Synced</div>
         </header>
 
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search across thousands of movies & TV series..." oninput="searchMovies()">
+            <input type="text" id="searchInput" placeholder="Search movies, tv series..." oninput="searchMovies()">
         </div>
         <div id="searchResults" class="grid"></div>
 
-        <h2 class="section-title">🔥 Trending & Released Masterpieces</h2>
-        <div id="trendingGrid" class="grid"></div>
-
         <div class="content-section">
-            <h2 class="section-title" style="margin-top: 0;">📖 My Watched Diary Timeline</h2>
-            <div id="diaryTimelineContainer"></div>
-        </div>
-
-        <div class="content-section">
-            <h2 class="section-title" style="margin-top: 0;">🗓️ Planned Watch Schedule (Kal / Parsu Kya Dekhu)</h2>
-            <div id="scheduleGrid" class="grid"></div>
+            <h2 class="section-title" style="margin-top:0;">🔥 Trending Masterpieces</h2>
+            <div id="trendingGrid" class="grid"></div>
         </div>
     </div>
 
-    <!-- Details Modal -->
+    <!-- Letterboxd Style Modal -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -453,320 +299,149 @@
         </div>
     </div>
 
-    <!-- Date Picker Modal -->
-    <div id="dateModal" class="modal">
-        <div class="modal-content" style="max-width: 420px; text-align: center; margin: 15% auto;">
-            <span class="close-btn" onclick="closeDateModal()">&times;</span>
-            <h3 style="color: var(--text-white); margin-top:0;">Select Watch Date</h3>
-            <p id="dateModalMovieTitle" style="color: var(--accent); font-weight: 600; margin-bottom: 20px;"></p>
-            <div class="date-picker-box">
-                <input type="date" id="customWatchDate">
-            </div>
-            <button onclick="confirmAddToDiary()" style="background: var(--accent); color: #0b0f19; font-weight: bold; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 14px; width: 100%; transition: 0.2s;">Confirm & Add to Timeline</button>
-        </div>
-    </div>
-
     <script>
-        const API_KEY = '9c95420163879f1c4726c540b305cbc6';
+        const TMDB_API_KEY = '9c95420163879f1c4726c540b305cbc6';
         const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
         const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/original';
 
-        let pendingMovieObj = null;
+        loadTrending();
 
-        loadMassiveCatalog();
-        loadDiaryTimeline();
-        loadSchedule();
-
-        async function loadMassiveCatalog() {
-            const container = document.getElementById('trendingGrid');
-            container.innerHTML = '<p style="color:var(--accent);">Loading massive collection...</p>';
+        async function loadTrending() {
             try {
-                const [trendRes, popMovieRes, popTvRes] = await Promise.all([
-                    fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY}`),
-                    fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=1`),
-                    fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&page=1`)
-                ]);
-
-                const trendData = await trendRes.json();
-                const movieData = await popMovieRes.json();
-                const tvData = await popTvRes.json();
-
-                let combined = [...trendData.results, ...movieData.results, ...tvData.results];
-                let uniqueMovies = Array.from(new Set(combined.map(a => a.id)))
-                    .map(id => combined.find(a => a.id === id));
-
-                displayMovies(uniqueMovies, 'trendingGrid', true);
+                const res = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}`);
+                const data = await res.json();
+                displayMovies(data.results, 'trendingGrid');
             } catch (err) {
-                container.innerHTML = '<p style="color:var(--danger);">Failed to load collection.</p>';
+                console.error(err);
             }
         }
 
         async function searchMovies() {
             const query = document.getElementById('searchInput').value;
             const resultsDiv = document.getElementById('searchResults');
-            
-            if (query.trim() === '') {
-                resultsDiv.innerHTML = '';
-                return;
-            }
+            if (!query.trim()) { resultsDiv.innerHTML = ''; return; }
 
             try {
-                const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
-                const data = await response.json();
-                displayMovies(data.results, 'searchResults', true);
-            } catch (err) {
-                console.error(err);
-            }
+                const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                displayMovies(data.results, 'searchResults');
+            } catch (err) { console.error(err); }
         }
 
-        function displayMovies(movies, elementId, showActions = false) {
+        function displayMovies(movies, elementId) {
             const container = document.getElementById(elementId);
             container.innerHTML = '';
-
-            if(!movies || movies.length === 0) {
-                container.innerHTML = '<p style="color:#94a3b8;">No items found.</p>';
-                return;
-            }
-
             movies.forEach(movie => {
                 if (!movie.poster_path) return;
-
                 const title = movie.title || movie.name;
-                const date = movie.release_date || movie.first_air_date || 'N/A';
-                const year = date !== 'N/A' ? date.split('-')[0] : '';
+                const date = movie.release_date || movie.first_air_date || '';
+                const year = date ? date.split('-')[0] : '';
                 const mediaType = movie.media_type || (movie.title ? 'movie' : 'tv');
 
                 const card = document.createElement('div');
                 card.className = 'card';
+                card.onclick = () => openDetails(movie.id, mediaType);
                 card.innerHTML = `
-                    <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${title}" onclick="openDetails(${movie.id}, '${mediaType}')">
-                    <h4 onclick="openDetails(${movie.id}, '${mediaType}')">${title} ${year ? '('+year+')' : ''}</h4>
-                    ${showActions ? `
-                        <div class="card-actions">
-                            <button class="action-btn" onclick='openDateSelector(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>+ Watched</button>
-                            <button class="action-btn schedule-btn" onclick='addToSchedule(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>Schedule</button>
-                        </div>` : ''}
+                    <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${title}">
+                    <h4>${title} ${year ? '('+year+')' : ''}</h4>
                 `;
                 container.appendChild(card);
             });
-        }
-
-        function openDateSelector(movie) {
-            pendingMovieObj = movie;
-            const title = movie.title || movie.name;
-            document.getElementById('dateModalMovieTitle').innerText = title;
-            document.getElementById('customWatchDate').value = new Date().toISOString().split('T')[0];
-            
-            const modal = document.getElementById('dateModal');
-            modal.style.display = 'block';
-            setTimeout(() => modal.classList.add('show'), 10);
-        }
-
-        function closeDateModal() {
-            const modal = document.getElementById('dateModal');
-            modal.classList.remove('show');
-            setTimeout(() => modal.style.display = 'none', 300);
-        }
-
-        function confirmAddToDiary() {
-            const watchDate = document.getElementById('customWatchDate').value;
-            if(!watchDate) {
-                alert('Please pick a date!');
-                return;
-            }
-
-            let diary = JSON.parse(localStorage.getItem('myMovieDiaryTimeline')) || [];
-            diary = diary.filter(item => item.id !== pendingMovieObj.id);
-            
-            pendingMovieObj.watchedDate = watchDate;
-            diary.push(pendingMovieObj);
-            diary.sort((a, b) => new Date(b.watchedDate) - new Date(a.watchedDate));
-
-            localStorage.setItem('myMovieDiaryTimeline', JSON.stringify(diary));
-            closeDateModal();
-            loadDiaryTimeline();
-        }
-
-        function loadDiaryTimeline() {
-            const container = document.getElementById('diaryTimelineContainer');
-            let diary = JSON.parse(localStorage.getItem('myMovieDiaryTimeline')) || [];
-
-            if(diary.length === 0) {
-                container.innerHTML = '<p style="color: #94a3b8; font-size: 14px;">Your timeline is empty. Click "+ Watched" on any movie or series to log it here!</p>';
-                return;
-            }
-
-            let grouped = {};
-            diary.forEach(item => {
-                let year = item.watchedDate ? item.watchedDate.split('-')[0] : 'Unknown';
-                if(!grouped[year]) grouped[year] = [];
-                grouped[year].push(item);
-            });
-
-            let html = '';
-            Object.keys(grouped).sort((a,b) => b - a).forEach(year => {
-                html += `<div style="margin-bottom: 20px;"><div style="color: var(--accent); font-weight: 700; margin-bottom: 12px; font-size: 15px;">📅 Watched in ${year}</div>`;
-                grouped[year].forEach(movie => {
-                    const title = movie.title || movie.name;
-                    const poster = movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : '';
-                    const mediaType = movie.media_type || (movie.title ? 'movie' : 'tv');
-
-                    html += `
-                        <div class="diary-card-row">
-                            <img src="${poster}" alt="${title}">
-                            <div class="diary-info">
-                                <h4 onclick="openDetails(${movie.id}, '${mediaType}')">${title}</h4>
-                                <span class="badge">Watched on: ${movie.watchedDate}</span>
-                            </div>
-                            <button onclick="removeFromDiary(${movie.id})" style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:6px 14px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; transition:0.2s;">Remove</button>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
-            });
-
-            container.innerHTML = html;
-        }
-
-        function removeFromDiary(id) {
-            let diary = JSON.parse(localStorage.getItem('myMovieDiaryTimeline')) || [];
-            diary = diary.filter(item => item.id !== id);
-            localStorage.setItem('myMovieDiaryTimeline', JSON.stringify(diary));
-            loadDiaryTimeline();
         }
 
         async function openDetails(id, type) {
             const modal = document.getElementById('detailsModal');
             const modalBody = document.getElementById('modalBody');
             modal.style.display = 'block';
-            setTimeout(() => modal.classList.add('show'), 10);
-            
-            modalBody.innerHTML = '<p style="color:var(--accent); text-align:center; padding:40px;">Loading immersive details...</p>';
+            modalBody.innerHTML = '<p style="text-align:center; padding:40px; color:var(--accent);">Loading...</p>';
 
             try {
                 const [detailRes, creditRes] = await Promise.all([
-                    fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${API_KEY}`),
-                    fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=${API_KEY}`)
+                    fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_API_KEY}`),
+                    fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=${TMDB_API_KEY}`)
                 ]);
-
                 const details = await detailRes.json();
                 const credits = await creditRes.json();
 
                 const title = details.title || details.name;
+                const year = (details.release_date || details.first_air_date || '').split('-')[0];
                 const backdrop = details.backdrop_path ? BACKDROP_BASE_URL + details.backdrop_path : '';
                 const poster = details.poster_path ? IMAGE_BASE_URL + details.poster_path : '';
-                const rating = details.vote_average ? details.vote_average.toFixed(1) : 'N/A';
-                const overview = details.overview || 'No description available.';
-                const castList = credits.cast ? credits.cast.slice(0, 12) : [];
-
-                let feedbacks = JSON.parse(localStorage.getItem(`feedback_${id}`)) || [];
+                const director = credits.crew ? (credits.crew.find(c => c.job === 'Director') || {}).name : 'N/A';
+                const cast = credits.cast ? credits.cast.slice(0, 10) : [];
 
                 modalBody.innerHTML = `
-                    <div class="modal-banner">
-                        ${backdrop ? `<img src="${backdrop}" class="backdrop-img" alt="Banner">` : ''}
-                        <div class="modal-banner-overlay">
-                            ${poster ? `<img src="${poster}" class="modal-poster" alt="${title}">` : '<div class="modal-poster"></div>'}
-                            <div class="modal-title-box">
-                                <h2>${title}</h2>
-                                <div class="rating-badge">⭐ ${rating} / 10</div>
-                            </div>
+                    <div class="lb-banner" style="background-image: url('${backdrop}')"></div>
+                    <div class="lb-header-details">
+                        <div class="lb-title-group">
+                            <h2>${title}</h2>
+                            <p>${year} ${director !== 'nic' && director ? '· Directed by ' + director : ''}</p>
                         </div>
+                        <img src="${poster}" class="lb-poster-thumb" alt="${title}">
                     </div>
 
-                    <div style="margin-top: 15px;">
-                        <h3 class="modal-section-heading" style="margin-top:0;">📖 Overview</h3>
-                        <p style="color: var(--text-main); line-height: 1.6; font-size: 14px; margin: 0;">${overview}</p>
+                    <div class="lb-action-bar">
+                        <button class="lb-action-btn" onclick="toggleAction(this)">
+                            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                            Watch
+                        </button>
+                        <button class="lb-action-btn" onclick="toggleAction(this)">
+                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            Like
+                        </button>
+                        <button class="lb-action-btn" onclick="toggleAction(this)">
+                            <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/></svg>
+                            Watchlist
+                        </button>
                     </div>
 
-                    <h3 class="modal-section-heading">🎭 Top Cast & Characters</h3>
-                    <div class="cast-container">
-                        ${castList.map(actor => `
-                            <div class="cast-card">
-                                <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/90'}" alt="${actor.name}">
-                                <p title="${actor.name}">${actor.name}</p>
-                            </div>
-                        `).join('')}
+                    <div class="lb-rating-section">
+                        <div class="stars" id="starContainer">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                        </div>
+                        <div style="font-size: 11px; margin-top: 5px; color: var(--text-main);">Rate</div>
                     </div>
 
-                    <div class="feedback-box">
-                        <h3 class="modal-section-heading" style="margin-top:0;">💬 Personal Feedback & Notes</h3>
-                        <textarea id="feedbackInput" placeholder="Write your personal review or notes here..."></textarea>
-                        <button onclick="saveFeedback(${id})" style="margin-top: 10px; background:var(--accent); color:#0b0f19; border:none; padding:8px 18px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:13px; transition:0.2s;">Save Note</button>
-                        <div class="feedback-list" id="feedbackList">
-                            ${feedbacks.length > 0 ? feedbacks.map(f => `<div class="feedback-item">${f}</div>`).join('') : '<p style="color:#94a3b8; font-size:13px; margin:5px 0 0 0;">No personal notes saved yet.</p>'}
+                    <div class="lb-body-section">
+                        <h3 style="color:#fff; font-size:15px; margin-top:0;">Overview</h3>
+                        <p style="font-size:13px; line-height:1.5; color: var(--text-main);">${details.overview || 'No description available.'}</p>
+                        
+                        <h3 style="color:#fff; font-size:15px; margin-top:20px;">Top Cast</h3>
+                        <div class="cast-row">
+                            ${cast.map(actor => `
+                                <div class="cast-item">
+                                    <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/70'}" alt="${actor.name}">
+                                    <div style="margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${actor.name}">${actor.name}</div>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                 `;
+
+                setupStarRating();
             } catch (err) {
-                modalBody.innerHTML = '<p style="color:var(--danger); text-align:center;">Failed to load details.</p>';
+                modalBody.innerHTML = '<p style="text-align:center; color:orange; padding:30px;">Failed to load details.</p>';
             }
         }
 
-        function saveFeedback(id) {
-            const input = document.getElementById('feedbackInput');
-            const text = input.value.trim();
-            if(!text) return;
-
-            let feedbacks = JSON.parse(localStorage.getItem(`feedback_${id}`)) || [];
-            feedbacks.push(text);
-            localStorage.setItem(`feedback_${id}`, JSON.stringify(feedbacks));
-
-            const listDiv = document.getElementById('feedbackList');
-            listDiv.innerHTML = feedbacks.map(f => `<div class="feedback-item">${f}</div>`).join('');
-            input.value = '';
+        function toggleAction(btn) {
+            btn.classList.toggle('active');
         }
 
-        function closeModal() {
-            const modal = document.getElementById('detailsModal');
-            modal.classList.remove('show');
-            setTimeout(() => modal.style.display = 'none', 300);
-        }
-
-        function addToSchedule(movie) {
-            let schedule = JSON.parse(localStorage.getItem('myMovieSchedule')) || [];
-            if (!schedule.some(item => item.id === movie.id)) {
-                schedule.push(movie);
-                localStorage.setItem('myMovieSchedule', JSON.stringify(schedule));
-                loadSchedule();
-                alert(`${movie.title || movie.name} added to your schedule!`);
-            } else {
-                alert('Already in your schedule plan.');
-            }
-        }
-
-        function loadSchedule() {
-            let schedule = JSON.parse(localStorage.getItem('myMovieSchedule')) || [];
-            const container = document.getElementById('scheduleGrid');
-            container.innerHTML = '';
-
-            if(schedule.length === 0) {
-                container.innerHTML = '<p style="color: #94a3b8; font-size: 14px;">No items scheduled yet. Click "Schedule" on any movie or series.</p>';
-                return;
-            }
-
-            schedule.forEach(movie => {
-                const title = movie.title || movie.name;
-                const poster = movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : '';
-                const mediaType = movie.media_type || (movie.title ? 'movie' : 'tv');
-
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <img src="${poster}" alt="${title}" onclick="openDetails(${movie.id}, '${mediaType}')">
-                    <h4 onclick="openDetails(${movie.id}, '${mediaType}')">${title}</h4>
-                    <div class="card-actions">
-                        <button class="action-btn" style="border-color:var(--danger); color:var(--danger);" onclick="removeFromSchedule(${movie.id})">Remove</button>
-                    </div>
-                `;
-                container.appendChild(card);
+        function setupStarRating() {
+            const stars = document.querySelectorAll('#starContainer span');
+            stars.forEach((star, index) => {
+                star.onclick = () => {
+                    stars.forEach((s, i) => {
+                        if (i <= index) s.classList.add('active');
+                        else s.classList.remove('active');
+                    });
+                };
             });
         }
 
-        function removeFromSchedule(id) {
-            let schedule = JSON.parse(localStorage.getItem('myMovieSchedule')) || [];
-            schedule = schedule.filter(item => item.id !== id);
-            localStorage.setItem('myMovieSchedule', JSON.stringify(schedule));
-            loadSchedule();
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
         }
     </script>
 </body>
