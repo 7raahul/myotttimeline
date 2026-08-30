@@ -15,6 +15,29 @@
             --border-color: #2c3440;
             --danger: #ff8000;
         }
+
+        /* --- MODERN CUSTOM SMOOTH SCROLLBAR --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #031d33;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1b4b70;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* Firefox scrollbar support */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #1b4b70 #031d33;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
@@ -117,7 +140,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* Trending Switcher Header */
         .trending-header {
             display: flex;
             align-items: center;
@@ -242,7 +264,6 @@
             border-radius: 4px;
         }
 
-        /* Full Page Detail View */
         #fullPageView {
             display: none;
             background-color: var(--bg-color);
@@ -353,11 +374,17 @@
         .circle-action-btn:hover, .circle-action-btn.active { background: var(--accent); }
         .circle-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
+        /* Smooth Cast Row with Hidden Ugly Scrollbars */
         .cast-row {
             display: flex;
             gap: 15px;
             overflow-x: auto;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .cast-row::-webkit-scrollbar {
+            height: 5px; /* Slimmer scrollbar for cast list */
         }
         .cast-card {
             min-width: 130px;
@@ -368,6 +395,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
             text-align: left;
             padding-bottom: 10px;
+            flex-shrink: 0;
         }
         .cast-card img {
             width: 100%;
@@ -383,7 +411,6 @@
         }
         .cast-card h5 { font-weight: bold; }
 
-        /* Picker Choice & Date Modal */
         .modal {
             display: none;
             position: fixed;
@@ -454,9 +481,7 @@
     </header>
 
     <div class="wrapper">
-        <!-- Main Home Application View -->
         <div id="homeMainView">
-            <!-- Action Toolbar -->
             <div class="action-toolbar">
                 <button class="toolbar-btn" onclick="openPickerChoiceModal()">
                     🎲 Random Picker
@@ -468,7 +493,6 @@
             </div>
             <div id="searchResults" class="grid"></div>
 
-            <!-- Tab Content Sections -->
             <div id="tab-movies" class="content-section active-tab">
                 <div class="trending-header">
                     <h2 class="section-title">Trending Movies</h2>
@@ -504,14 +528,12 @@
             </div>
         </div>
 
-        <!-- Full Page Detail View -->
         <div id="fullPageView">
             <button class="back-to-home-btn" onclick="goHome()">&#8592; Back</button>
             <div id="fullPageBody"></div>
         </div>
     </div>
 
-    <!-- Picker Choice Modal -->
     <div id="pickerChoiceModal" class="modal">
         <div class="picker-modal-box">
             <h3 style="margin-top:0; font-size:16px;">Random Picker</h3>
@@ -522,7 +544,6 @@
         </div>
     </div>
 
-    <!-- Date Picker Modal -->
     <div id="dateModal" class="modal">
         <div class="date-modal-box">
             <h3 id="dateModalTitle" style="margin-top:0; font-size:16px;">Select Date</h3>
