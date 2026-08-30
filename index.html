@@ -33,14 +33,25 @@ header{position:sticky;top:0;z-index:1000;background:rgba(7,16,25,.84);backdrop-
 .btn.secondary{background:#172636}.btn.danger{background:rgba(255,89,100,.1);border-color:rgba(255,89,100,.3);color:#ff9ba2}
 
 /* Compact Hero Banner */
-.hero{min-height:360px;margin:20px 0 30px;border:1px solid var(--line);border-radius:24px;overflow:hidden;position:relative;background:linear-gradient(90deg,#071019 4%,rgba(7,16,25,.88) 42%,rgba(7,16,25,.15)),linear-gradient(0deg,#071019 0%,transparent 45%),url("https://image.tmdb.org/t/p/original/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg") center/cover;display:flex;align-items:end;box-shadow:var(--shadow)}
-.hero-content{padding:36px 40px;max-width:650px;position:relative;width:100%}
+.hero{min-height:390px;margin:20px 0 30px;border:1px solid var(--line);border-radius:24px;overflow:hidden;position:relative;background:#0a151f;display:flex;align-items:stretch;box-shadow:var(--shadow)}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 50%,rgba(44,211,125,.08),transparent 34%),linear-gradient(90deg,#071019 0%,#071019 46%,rgba(7,16,25,.72) 72%,rgba(7,16,25,.38) 100%);pointer-events:none}
+.hero-content{padding:42px 44px;max-width:760px;position:relative;width:58%;z-index:2;display:flex;flex-direction:column;justify-content:center}
+.hero-recommendation-label{color:var(--accent);font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:1.8px;margin-bottom:10px}
+.hero-item-title{font-size:clamp(2rem,4vw,3.65rem);line-height:.98;letter-spacing:-2px;margin:0 0 14px;max-width:650px}
+.hero-item-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.hero-item-meta span{background:rgba(17,31,45,.92);border:1px solid var(--line);padding:7px 10px;border-radius:9px;font-size:.76rem;color:#d4dde5}
+.hero-item-meta .hero-rating{color:var(--gold);font-weight:900}
+.hero-poster-wrap{position:absolute;right:38px;top:26px;bottom:26px;width:min(250px,27%);z-index:2;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.hero-poster{height:100%;max-width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:15px;border:1px solid rgba(255,255,255,.13);box-shadow:0 22px 55px rgba(0,0,0,.48);transition:.25s}
+.hero-poster-wrap:hover .hero-poster{transform:translateY(-4px) scale(1.015)}
+.hero-nav-buttons{position:absolute;right:30px;bottom:24px;z-index:4}
+
 
 /* Hero Right Poster Meta Card style */
-.hero-meta-badge{position:absolute;top:25px;right:30px;background:rgba(7,16,25,.85);border:1px solid var(--line);padding:10px 16px;border-radius:14px;backdrop-filter:blur(10px);display:flex;flex-direction:column;gap:3px;z-index:3;max-width:240px;text-align:right}
-.hero-meta-badge .hm-title{font-size:.9rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
-.hero-meta-badge .hm-sub{font-size:.75rem;color:var(--gold);font-weight:700}
-.hero-meta-badge .hm-date{font-size:.7rem;color:var(--muted);font-weight:600}
+
+
+
+
 
 /* Modern Bottom Hero Navigation Buttons */
 .hero-nav-buttons{position:absolute;bottom:20px;right:30px;display:flex;gap:8px;z-index:3}
@@ -104,14 +115,13 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
 @media(max-width:950px){.grid{grid-template-columns:repeat(4,1fr)}.filter-grid{grid-template-columns:repeat(2,1fr)}.type-cards{grid-template-columns:repeat(2,1fr)}.detail-body{grid-template-columns:1fr}.detail-side{display:none}}
 @media(max-width:700px){
   .nav{flex-wrap:wrap;padding:10px 0}.search{order:3;flex-basis:100%;max-width:none;margin:10px 0 0}.nav-actions{margin-left:auto}.nav-btn{font-size:.75rem;padding:8px 10px}
-  .hero{min-height:340px}.hero-content{padding:24px}.hero h1{letter-spacing:-1.5px}
-  .hero-meta-badge{display:none}
+  .hero{min-height:330px}.hero-content{padding:28px 22px;width:68%;justify-content:flex-end}.hero-item-title{font-size:2rem;letter-spacing:-1px}.hero-poster-wrap{right:16px;top:22px;bottom:22px;width:30%}.hero-nav-buttons{right:16px;bottom:14px}
   .grid{grid-template-columns:repeat(3,1fr);gap:11px}.section-head{align-items:flex-start;flex-direction:column}
   .filter-grid,.picker-grid{grid-template-columns:1fr}.type-cards{grid-template-columns:1fr 1fr}
   .detail-hero{height:470px}.detail-wrap{grid-template-columns:120px 1fr;gap:15px;margin-top:-110px;padding:0 20px}.detail-poster{width:120px}.detail-main h1{font-size:1.8rem;letter-spacing:-1px}.detail-body{padding:25px 20px}.cast-grid{grid-template-columns:repeat(4,1fr)}.episode-grid{grid-template-columns:1fr}
   .timeline:before{left:8px}.timeline-item,.timeline-item:nth-child(even){width:100%;margin-left:0;padding:10px 0 10px 30px;text-align:left}.timeline-item:nth-child(odd) .timeline-dot,.timeline-item:nth-child(even) .timeline-dot{left:1px;right:auto}.timeline-card{width:100%}
 }
-@media(max-width:450px){.grid{grid-template-columns:repeat(2,1fr)}.cast-grid{grid-template-columns:repeat(3,1fr)}.hero{margin-top:15px}.type-cards{grid-template-columns:1fr}.detail-wrap{display:block}.detail-poster{margin-bottom:15px}.detail-main{padding-bottom:0}.close{right:14px}.back{left:14px}}
+@media(max-width:450px){.hero{min-height:300px}.hero-content{width:100%;padding:24px 18px;background:linear-gradient(90deg,rgba(7,16,25,.98),rgba(7,16,25,.72));}.hero-poster-wrap{opacity:.42;right:8px;width:42%;top:18px;bottom:18px}.hero-item-title{font-size:1.8rem;max-width:65%}.hero-item-meta{max-width:62%}.hero-nav-buttons{bottom:10px}.grid{grid-template-columns:repeat(2,1fr)}.cast-grid{grid-template-columns:repeat(3,1fr)}.hero{margin-top:15px}.type-cards{grid-template-columns:1fr}.detail-wrap{display:block}.detail-poster{margin-bottom:15px}.detail-main{padding-bottom:0}.close{right:14px}.back{left:14px}}
 @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
 </style>
 </head>
@@ -134,18 +144,21 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
 <main class="container" id="homePage">
   <section class="hero" id="watchNextHero">
     <div class="hero-content">
-      <div class="eyebrow" id="heroEyebrow">Featured Recommendation</div>
-      <h1 id="heroTitle">Find what to<br>watch next.</h1>
-      <button class="btn primary" onclick="scrollToId('browse')">Browse by Type</button>
+      <div class="hero-recommendation-label">Trending Recommendation</div>
+      <h1 class="hero-item-title" id="heroItemTitle">Loading trending title…</h1>
+      <div class="hero-item-meta">
+        <span class="hero-rating" id="heroItemRating">⭐ —</span>
+        <span id="heroItemType">—</span>
+        <span id="heroItemDate">📅 —</span>
+      </div>
+      <button class="btn primary" id="heroOpenBtn" onclick="openHeroDetails()">View Details</button>
     </div>
-    <div class="hero-meta-badge" id="heroMetaBadge">
-      <div class="hm-title" id="hmTitle">Loading...</div>
-      <div class="hm-sub" id="hmRating">⭐ —</div>
-      <div class="hm-date" id="hmDate">—</div>
+    <div class="hero-poster-wrap" onclick="openHeroDetails()">
+      <img class="hero-poster" id="heroPoster" src="" alt="Trending recommendation">
     </div>
     <div class="hero-nav-buttons">
-      <button class="hero-nav-btn" onclick="prevHeroItem()" title="Previous">‹</button>
-      <button class="hero-nav-btn" onclick="nextHeroItem()" title="Next">›</button>
+      <button class="hero-nav-btn" onclick="prevHeroItem()" title="Previous trending title">‹</button>
+      <button class="hero-nav-btn" onclick="nextHeroItem()" title="Next trending title">›</button>
     </div>
   </section>
 
@@ -335,14 +348,22 @@ function updateWatchNextHero(items){
 function displayHeroItem(){
   if(!heroCandidates.length)return;
   const x=heroCandidates[heroIndex];
-  const name=titleOf(x), type=typeOf(x), bg=backdrop(x.backdrop_path)||poster(x.poster_path);
-  const hero=$("watchNextHero");
-  if(hero&&bg) hero.style.backgroundImage=`linear-gradient(90deg,#071019 4%,rgba(7,16,25,.86) 42%,rgba(7,16,25,.18)),linear-gradient(0deg,#071019 0%,transparent 45%),url("${bg}")`;
-  $("heroEyebrow").textContent=`Featured Recommendation`;
-  $("heroTitle").innerHTML=`Find what to<br>watch next.`;
-  $("hmTitle").textContent=name;
-  $("hmRating").textContent=`⭐ ${x.vote_average?Number(x.vote_average).toFixed(1):"N/A"} (${type==="movie"?"Movie":"Series"})`;
-  $("hmDate").textContent=x.release_date||x.first_air_date ? prettyDate(x.release_date||x.first_air_date) : "—";
+  const name=titleOf(x), type=typeOf(x), date=x.release_date||x.first_air_date||"";
+  const posterUrl=poster(x.poster_path)||backdrop(x.backdrop_path);
+  $("heroItemTitle").textContent=name;
+  $("heroItemRating").textContent=`⭐ ${x.vote_average?Number(x.vote_average).toFixed(1):"N/A"}/10`;
+  $("heroItemType").textContent=type==="movie"?"🎬 Movie":"📺 TV Series";
+  $("heroItemDate").textContent=date?`📅 ${prettyDate(date)}`:"📅 Release date unavailable";
+  const img=$("heroPoster");
+  img.src=posterUrl||"";
+  img.alt=name;
+  img.style.display=posterUrl?"block":"none";
+  $("heroOpenBtn").disabled=!x.id;
+}
+function openHeroDetails(){
+  if(!heroCandidates.length)return;
+  const x=heroCandidates[heroIndex];
+  openDetails(x.id,typeOf(x));
 }
 
 function nextHeroItem(){
