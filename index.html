@@ -3,24 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineVault - Modern Movie & Series Diary</title>
+    <title>CineVault - Ultimate Movie & Series Hub</title>
     <style>
         :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --accent: #58a6ff;
-            --accent-glow: rgba(88, 166, 255, 0.3);
-            --danger: #f85149;
-            --text-main: #c9d1d9;
-            --text-white: #ffffff;
-            --border-color: #30363d;
+            --bg-color: #0b0f19;
+            --card-bg: #131b2e;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.3);
+            --danger: #f43f5e;
+            --success: #10b981;
+            --text-main: #94a3b8;
+            --text-white: #f8fafc;
+            --border-color: #1e293b;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
             padding: 30px 20px;
+        }
+        .wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
         }
         header {
             display: flex;
@@ -29,85 +34,79 @@
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 20px;
             margin-bottom: 30px;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
         }
         h1 {
             color: var(--text-white);
             margin: 0;
             font-size: 28px;
+            font-weight: 800;
             letter-spacing: -0.5px;
         }
         h1 span {
             color: var(--accent);
         }
         .visitor-badge {
-            background: #21262d;
+            background: var(--card-bg);
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 13px;
             border: 1px solid var(--border-color);
             color: var(--text-white);
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
         .search-container {
-            margin-bottom: 35px;
+            margin-bottom: 40px;
             text-align: center;
         }
         input[type="text"] {
             width: 100%;
-            max-width: 650px;
-            padding: 15px 22px;
+            max-width: 700px;
+            padding: 16px 24px;
             font-size: 16px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             color: #fff;
-            border-radius: 12px;
+            border-radius: 14px;
             outline: none;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         input[type="text"]:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
+            box-shadow: 0 0 0 4px var(--accent-glow);
         }
         .section-title {
-            margin: 40px 0 20px 0;
-            font-size: 20px;
+            margin: 45px 0 20px 0;
+            font-size: 22px;
             color: var(--text-white);
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 22px;
             margin-bottom: 30px;
         }
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+            transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
             border: 1px solid var(--border-color);
             position: relative;
         }
         .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             border-color: var(--accent);
         }
         .card img {
             width: 100%;
-            height: 260px;
+            height: 275px;
             object-fit: cover;
         }
         .card h4 {
@@ -116,58 +115,54 @@
             height: 38px;
             overflow: hidden;
             color: var(--text-white);
-            font-weight: 500;
+            font-weight: 600;
         }
         .card-actions {
-            padding: 0 10px 14px 10px;
+            padding: 0 12px 14px 12px;
             display: flex;
-            gap: 6px;
+            gap: 8px;
             justify-content: center;
         }
         .action-btn {
-            background: #21262d;
+            background: #1e293b;
             color: var(--text-white);
             border: 1px solid var(--border-color);
             padding: 6px 12px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.2s;
         }
         .action-btn:hover {
             background: var(--accent);
-            color: #000;
+            color: #0b0f19;
             border-color: var(--accent);
         }
         .schedule-btn:hover {
-            background: #3fb950;
-            border-color: #3fb950;
+            background: var(--success);
+            border-color: var(--success);
+            color: #fff;
         }
 
-        /* Timeline Diary Layout */
-        .timeline-container {
-            margin-top: 50px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 30px;
+        /* Separate Sections Styling */
+        .content-section {
+            background: rgba(19, 27, 46, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 40px;
         }
-        .timeline-year-group {
-            margin-bottom: 30px;
-        }
-        .timeline-year-title {
-            color: var(--accent);
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
+
+        /* Timeline Diary & Schedule Rows */
         .diary-card-row {
             display: flex;
             align-items: center;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px 18px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 14px;
             gap: 20px;
             transition: all 0.2s ease;
         }
@@ -176,10 +171,10 @@
             transform: translateX(4px);
         }
         .diary-card-row img {
-            width: 50px;
-            height: 75px;
+            width: 55px;
+            height: 80px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 8px;
         }
         .diary-info {
             flex: 1;
@@ -191,14 +186,15 @@
             cursor: pointer;
         }
         .diary-info h4:hover { color: var(--accent); }
-        .diary-date-badge {
-            background: #21262d;
+        .badge {
+            background: #1e293b;
             color: var(--accent);
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 12px;
             display: inline-block;
             border: 1px solid var(--border-color);
+            font-weight: 600;
         }
 
         /* Modern Sleek Modal Popup */
@@ -210,19 +206,19 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(13, 17, 23, 0.85);
-            backdrop-filter: blur(8px);
+            background-color: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(10px);
             overflow-y: auto;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
         .modal-content {
             background-color: var(--card-bg);
-            margin: 5% auto;
-            padding: 35px;
+            margin: 4% auto;
+            padding: 30px;
             width: 90%;
-            max-width: 800px;
-            border-radius: 16px;
+            max-width: 850px;
+            border-radius: 20px;
             border: 1px solid var(--border-color);
             position: relative;
             box-shadow: 0 25px 60px rgba(0,0,0,0.8);
@@ -230,23 +226,19 @@
             transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease;
             opacity: 0;
         }
-        .modal.show {
-            opacity: 1;
-        }
-        .modal.show .modal-content {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
+        .modal.show { opacity: 1; }
+        .modal.show .modal-content { transform: translateY(0) scale(1); opacity: 1; }
+        
         .close-btn {
-            color: #8b949e;
+            color: var(--text-main);
             position: absolute;
-            right: 25px;
+            right: 20px;
             top: 20px;
-            font-size: 26px;
+            font-size: 22px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.2s;
-            background: #21262d;
+            background: #1e293b;
             width: 36px;
             height: 36px;
             border-radius: 50%;
@@ -254,14 +246,15 @@
             align-items: center;
             justify-content: center;
             border: 1px solid var(--border-color);
+            z-index: 10;
         }
         .close-btn:hover { color: #fff; background: var(--danger); border-color: var(--danger); }
         
         .modal-banner {
             position: relative;
             width: 100%;
-            height: 250px;
-            border-radius: 12px;
+            height: 280px;
+            border-radius: 14px;
             overflow: hidden;
             margin-bottom: 25px;
             border: 1px solid var(--border-color);
@@ -270,7 +263,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.6);
+            filter: brightness(0.55);
         }
         .modal-banner-overlay {
             position: absolute;
@@ -282,39 +275,39 @@
             gap: 20px;
         }
         .modal-poster {
-            width: 110px;
-            height: 165px;
-            border-radius: 8px;
+            width: 115px;
+            height: 170px;
+            border-radius: 10px;
             object-fit: cover;
             border: 2px solid var(--accent);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
             flex-shrink: 0;
         }
         .modal-title-box h2 {
             margin: 0 0 8px 0;
             color: #fff;
             font-size: 26px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
         }
         .rating-badge {
-            background: rgba(0,0,0,0.7);
+            background: rgba(19, 27, 46, 0.8);
             border: 1px solid var(--border-color);
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
             font-size: 13px;
-            color: #ffd700;
+            color: #fbbf24;
             display: inline-block;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(6px);
+            font-weight: 700;
         }
-
         .modal-section-heading {
             font-size: 16px;
             color: var(--text-white);
             margin: 25px 0 12px 0;
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        /* Large Smooth Cast Row */
+        /* Large Smooth Cast Grid */
         .cast-container {
             display: flex;
             gap: 15px;
@@ -323,13 +316,13 @@
             scrollbar-width: thin;
         }
         .cast-card {
-            min-width: 90px;
+            min-width: 95px;
             text-align: center;
             flex-shrink: 0;
         }
         .cast-card img {
-            width: 85px;
-            height: 85px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--border-color);
@@ -346,15 +339,15 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 90px;
+            max-width: 95px;
         }
 
-        /* Interactive Feedback & Review Box */
+        /* Feedback Box */
         .feedback-box {
             margin-top: 30px;
-            background: #0d1117;
+            background: #0b0f19;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 20px;
         }
         .feedback-box textarea {
@@ -364,16 +357,14 @@
             border: 1px solid var(--border-color);
             color: #fff;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 10px;
             resize: none;
             outline: none;
             font-size: 14px;
             box-sizing: border-box;
             transition: 0.2s;
         }
-        .feedback-box textarea:focus {
-            border-color: var(--accent);
-        }
+        .feedback-box textarea:focus { border-color: var(--accent); }
         .feedback-list {
             margin-top: 15px;
             max-height: 150px;
@@ -386,44 +377,69 @@
             margin-bottom: 8px;
             font-size: 13px;
             border-left: 3px solid var(--accent);
-            border-top: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
+            border: 1px solid var(--border-color);
         }
+
+        /* Modern Calendar Date Picker Modal */
+        .date-picker-box {
+            background: #0b0f19;
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="date"] {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            color-scheme: dark;
+            cursor: pointer;
+            width: 100%;
+        }
+        input[type="date"]:focus { border-color: var(--accent); }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Cine<span>Vault</span></h1>
-        <div class="visitor-badge">🟢 Active Visitor: 1 (You)</div>
-    </header>
+    <div class="wrapper">
+        <header>
+            <h1>Cine<span>Vault</span></h1>
+            <div class="visitor-badge">🟢 Active Visitors: 54</div>
+        </header>
 
-    <div class="container">
         <!-- Search Section -->
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search any movie or TV series..." oninput="searchMovies()">
+            <input type="text" id="searchInput" placeholder="Search across thousands of movies & TV series..." oninput="searchMovies()">
         </div>
         <div id="searchResults" class="grid"></div>
 
-        <!-- Trending & Released Content Section -->
+        <!-- Comprehensive Trending / Masterpiece List -->
         <h2 class="section-title">🔥 Trending & Released Masterpieces</h2>
         <div id="trendingGrid" class="grid"></div>
 
-        <!-- Watched Timeline Diary Section -->
-        <div class="timeline-container">
-            <h2 class="section-title">📖 My Watched Diary Timeline</h2>
+        <!-- Separate Section: Watched Diary Timeline -->
+        <div class="content-section">
+            <h2 class="section-title" style="margin-top: 0;">📖 My Watched Diary Timeline</h2>
             <div id="diaryTimelineContainer"></div>
         </div>
 
-        <!-- Schedule Section -->
-        <div style="margin-top: 50px; border-top: 1px solid var(--border-color); padding-top: 30px;">
-            <h2 class="section-title">🗓️ Planned Schedule (Kal / Parsu Kya Dekhu)</h2>
+        <!-- Separate Section: Planned Schedule -->
+        <div class="content-section">
+            <h2 class="section-title" style="margin-top: 0;">🗓️ Planned Watch Schedule (Kal / Parsu Kya Dekhu)</h2>
             <div id="scheduleGrid" class="grid"></div>
         </div>
     </div>
 
-    <!-- Modern Smooth Animated Modal -->
+    <!-- Modern Smooth Animated Modal for Details -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -431,15 +447,16 @@
         </div>
     </div>
 
-    <!-- Date Picker Modal -->
+    <!-- Modern Calendar Date Picker Modal for Watched / Schedule -->
     <div id="dateModal" class="modal">
         <div class="modal-content" style="max-width: 420px; text-align: center; margin: 15% auto;">
             <span class="close-btn" onclick="closeDateModal()">&times;</span>
             <h3 style="color: var(--text-white); margin-top:0;">Select Watch Date</h3>
             <p id="dateModalMovieTitle" style="color: var(--accent); font-weight: 600; margin-bottom: 20px;"></p>
-            <input type="date" id="customWatchDate" style="padding: 12px; border-radius: 8px; background: #0d1117; color: #fff; border: 1px solid var(--border-color); width: 85%; margin-bottom: 25px; outline: none; font-size: 15px;">
-            <br>
-            <button onclick="confirmAddToDiary()" style="background: var(--accent); color: #000; font-weight: bold; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.2s;">Add to Timeline</button>
+            <div class="date-picker-box">
+                <input type="date" id="customWatchDate">
+            </div>
+            <button onclick="confirmAddToDiary()" style="background: var(--accent); color: #0b0f19; font-weight: bold; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 14px; width: 100%; transition: 0.2s;">Confirm & Add to Timeline</button>
         </div>
     </div>
 
@@ -450,20 +467,34 @@
 
         let pendingMovieObj = null;
 
-        // Initial Load
-        loadTrending();
+        // Initial Load of Large Catalog
+        loadMassiveCatalog();
         loadDiaryTimeline();
         loadSchedule();
 
-        async function loadTrending() {
+        async function loadMassiveCatalog() {
             const container = document.getElementById('trendingGrid');
-            container.innerHTML = '<p style="color:var(--accent);">Loading trending content...</p>';
+            container.innerHTML = '<p style="color:var(--accent);">Loading massive collection...</p>';
             try {
-                const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`);
-                const data = await response.json();
-                displayMovies(data.results, 'trendingGrid', true);
+                // Fetching multiple pages/categories to make the list large and rich
+                const [trendRes, popMovieRes, popTvRes] = await Promise.all([
+                    fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY}`),
+                    fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=1`),
+                    fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&page=1`)
+                ]);
+
+                const trendData = await trendRes.json();
+                const movieData = await popMovieRes.json();
+                const tvData = await popTvRes.json();
+
+                // Combine and remove duplicates based on ID
+                let combined = [...trendData.results, ...movieData.results, ...tvData.results];
+                let uniqueMovies = Array.from(new Set(combined.map(a => a.id)))
+                    .map(id => combined.find(a => a.id === id));
+
+                displayMovies(uniqueMovies, 'trendingGrid', true);
             } catch (err) {
-                container.innerHTML = '<p style="color:var(--danger);">Failed to load trending items.</p>';
+                container.innerHTML = '<p style="color:var(--danger);">Failed to load collection.</p>';
             }
         }
 
@@ -490,7 +521,7 @@
             container.innerHTML = '';
 
             if(!movies || movies.length === 0) {
-                container.innerHTML = '<p style="color:#8b949e;">No items found.</p>';
+                container.innerHTML = '<p style="color:#94a3b8;">No items found.</p>';
                 return;
             }
 
@@ -560,7 +591,7 @@
             let diary = JSON.parse(localStorage.getItem('myMovieDiaryTimeline')) || [];
 
             if(diary.length === 0) {
-                container.innerHTML = '<p style="color: #8b949e;">Your timeline is empty. Click "+ Watched" on any movie or series to log it here!</p>';
+                container.innerHTML = '<p style="color: #94a3b8; font-size: 14px;">Your timeline is empty. Click "+ Watched" on any movie or series to log it here!</p>';
                 return;
             }
 
@@ -573,7 +604,7 @@
 
             let html = '';
             Object.keys(grouped).sort((a,b) => b - a).forEach(year => {
-                html += `<div class="timeline-year-group"><div class="timeline-year-title">📅 Watched in ${year}</div>`;
+                html += `<div style="margin-bottom: 20px;"><div style="color: var(--accent); font-weight: 700; margin-bottom: 12px; font-size: 15px;">📅 Watched in ${year}</div>`;
                 grouped[year].forEach(movie => {
                     const title = movie.title || movie.name;
                     const poster = movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : '';
@@ -584,9 +615,9 @@
                             <img src="${poster}" alt="${title}">
                             <div class="diary-info">
                                 <h4 onclick="openDetails(${movie.id}, '${mediaType}')">${title}</h4>
-                                <span class="diary-date-badge">Watched on: ${movie.watchedDate}</span>
+                                <span class="badge">Watched on: ${movie.watchedDate}</span>
                             </div>
-                            <button onclick="removeFromDiary(${movie.id})" style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:0.2s;">Remove</button>
+                            <button onclick="removeFromDiary(${movie.id})" style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:6px 14px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; transition:0.2s;">Remove</button>
                         </div>
                     `;
                 });
@@ -603,7 +634,7 @@
             loadDiaryTimeline();
         }
 
-        // Modernized Slick Modal with Smooth Animations & Large Cast Grid
+        // Modernized Modal with Smooth Animations & Large Cast Grid
         async function openDetails(id, type) {
             const modal = document.getElementById('detailsModal');
             const modalBody = document.getElementById('modalBody');
@@ -626,7 +657,7 @@
                 const poster = details.poster_path ? IMAGE_BASE_URL + details.poster_path : '';
                 const rating = details.vote_average ? details.vote_average.toFixed(1) : 'N/A';
                 const overview = details.overview || 'No description available.';
-                const castList = credits.cast ? credits.cast.slice(0, 10) : [];
+                const castList = credits.cast ? credits.cast.slice(0, 12) : [];
 
                 let feedbacks = JSON.parse(localStorage.getItem(`feedback_${id}`)) || [];
 
@@ -651,7 +682,7 @@
                     <div class="cast-container">
                         ${castList.map(actor => `
                             <div class="cast-card">
-                                <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/85'}" alt="${actor.name}">
+                                <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/90'}" alt="${actor.name}">
                                 <p title="${actor.name}">${actor.name}</p>
                             </div>
                         `).join('')}
@@ -660,9 +691,9 @@
                     <div class="feedback-box">
                         <h3 class="modal-section-heading" style="margin-top:0;">💬 Personal Feedback & Notes</h3>
                         <textarea id="feedbackInput" placeholder="Write your personal review or notes here..."></textarea>
-                        <button onclick="saveFeedback(${id})" style="margin-top: 10px; background:var(--accent); color:#000; border:none; padding:8px 18px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:13px; transition:0.2s;">Save Note</button>
+                        <button onclick="saveFeedback(${id})" style="margin-top: 10px; background:var(--accent); color:#0b0f19; border:none; padding:8px 18px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:13px; transition:0.2s;">Save Note</button>
                         <div class="feedback-list" id="feedbackList">
-                            ${feedbacks.length > 0 ? feedbacks.map(f => `<div class="feedback-item">${f}</div>`).join('') : '<p style="color:#8b949e; font-size:13px; margin:5px 0 0 0;">No personal notes saved yet.</p>'}
+                            ${feedbacks.length > 0 ? feedbacks.map(f => `<div class="feedback-item">${f}</div>`).join('') : '<p style="color:#94a3b8; font-size:13px; margin:5px 0 0 0;">No personal notes saved yet.</p>'}
                         </div>
                     </div>
                 `;
@@ -706,7 +737,37 @@
 
         function loadSchedule() {
             let schedule = JSON.parse(localStorage.getItem('myMovieSchedule')) || [];
-            displayMovies(schedule, 'scheduleGrid', false);
+            const container = document.getElementById('scheduleGrid');
+            container.innerHTML = '';
+
+            if(schedule.length === 0) {
+                container.innerHTML = '<p style="color: #94a3b8; font-size: 14px;">No items scheduled yet. Click "Schedule" on any movie or series.</p>';
+                return;
+            }
+
+            schedule.forEach(movie => {
+                const title = movie.title || movie.name;
+                const poster = movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : '';
+                const mediaType = movie.media_type || (movie.title ? 'movie' : 'tv');
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="${poster}" alt="${title}" onclick="openDetails(${movie.id}, '${mediaType}')">
+                    <h4 onclick="openDetails(${movie.id}, '${mediaType}')">${title}</h4>
+                    <div class="card-actions">
+                        <button class="action-btn" style="border-color:var(--danger); color:var(--danger);" onclick="removeFromSchedule(${movie.id})">Remove</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function removeFromSchedule(id) {
+            let schedule = JSON.parse(localStorage.getItem('myMovieSchedule')) || [];
+            schedule = schedule.filter(item => item.id !== id);
+            localStorage.setItem('myMovieSchedule', JSON.stringify(schedule));
+            loadSchedule();
         }
     </script>
 </body>
