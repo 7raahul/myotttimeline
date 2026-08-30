@@ -63,7 +63,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
     <a class="logo" href="#" onclick="home();return false">Cine<i>Verse</i></a>
     <div class="search"><input id="search" type="search" placeholder="Search movies & TV shows..."><span>⌕</span></div>
     <div class="nav-actions">
-      <button class="nav-btn" onclick="scrollToId('timelineSection')">Timeline</button>
+      <button class="nav-btn" onclick="openTimelinePage()">Timeline</button>
       <button class="nav-btn" onclick="openPicker()">🎲 Random</button>
     </div>
   </div>
@@ -78,7 +78,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
       <div class="actions">
         <button class="btn primary" onclick="scrollToId('browse')">Browse by Type</button>
         <button class="btn secondary" onclick="openPicker()">🎲 Random Picker</button>
-        <button class="btn secondary" onclick="scrollToId('timelineSection')">View Timeline</button>
+        <button class="btn secondary" onclick="openTimelinePage()">View Timeline</button>
       </div>
     </div>
   </section>
@@ -140,6 +140,16 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
 
 <div class="modal" id="detailModal">
   <div class="details" id="details"></div>
+</div>
+
+<div class="modal" id="timelineModal">
+  <div class="details" style="min-height:100vh">
+    <div style="position:sticky;top:0;z-index:5;background:rgba(7,16,25,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding:14px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div><div class="eyebrow">Your viewing history</div><h2 style="margin:3px 0 0">Watched & Scheduled Timeline</h2></div>
+      <button class="btn secondary" onclick="closeTimelinePage()">← Back</button>
+    </div>
+    <div style="padding:28px 5% 60px"><div id="timelinePageContent"></div></div>
+  </div>
 </div>
 
 <div class="picker-overlay" id="pickerOverlay">
@@ -349,9 +359,13 @@ function renderDetails(d,type){
           <span class="info-chip rating-chip">⭐ ${r}/10</span><span class="info-chip">📅 ${date?date.slice(0,4):"—"}</span><span class="info-chip">${type==="movie"?"🎬 Movie":"📺 Series"}</span><span class="info-chip">⏱ ${runtime}</span>
         </div>
         <div class="genres">${genres.map(g=>`<span class="genre">${esc(g.name)}</span>`).join("")}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <input id="detailDatePicker" type="date" style="height:40px;background:#09131d;border:1px solid var(--line);border-radius:10px;color:#fff;padding:0 10px" value="${watchedData||schedData||new Date().toISOString().slice(0,10)}">
+          <span style="align-self:center;color:var(--muted);font-size:.72rem">Choose date & year</span>
+        </div>
         <div class="detail-actions">
-          <button class="btn primary" onclick="markWatched(${d.id},'${type}',${JSON.stringify(t).replace(/</g,"\\u003c")})">✓ ${watchedData?"Update Watched Date":"Mark as Watched"}</button>
-          <button class="btn secondary" onclick="scheduleTitle(${d.id},'${type}',${JSON.stringify(t).replace(/</g,"\\u003c")})">📅 ${schedData?"Change Schedule":"Schedule to Watch"}</button>
+          <button class="btn primary" onclick="markWatched(${d.id},'${type}',${JSON.stringify(t).replace(/</g,"\u003c")},document.getElementById('detailDatePicker').value)">✓ ${watchedData?"Update Watched Date":"Mark as Watched"}</button>
+          <button class="btn secondary" onclick="scheduleTitle(${d.id},'${type}',${JSON.stringify(t).replace(/</g,"\u003c")},document.getElementById('detailDatePicker').value)">📅 ${schedData?"Change Schedule":"Schedule to Watch"}</button>
           ${watchedData?`<button class="btn danger" onclick="removeWatched(${d.id},'${type}')">Remove Watched</button>`:""}
           ${schedData?`<button class="btn danger" onclick="removeScheduled(${d.id},'${type}')">Remove Schedule</button>`:""}
         </div>
@@ -375,55 +389,102 @@ function renderDetails(d,type){
       </aside>
     </div>`;
 }
-function closeDetails(){$("detailModal").classList.remove("show");document.body.style.overflow=""}
+function closeDetails(){$("detailModal").classList.remove("show");if($("timelineModal").classList.contains("show")||$("pickerOverlay").classList.contains("show"))document.body.style.overflow="hidden";else document.body.style.overflow=""}
 $("detailModal").addEventListener("click",e=>{if(e.target.id==="detailModal")closeDetails()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDetails();closePicker()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDetails();closePicker();closeTimelinePage()}});
 
 function datePrompt(label,current=""){
-  const val=prompt(`${label}\nEnter date as YYYY-MM-DD:`,current||new Date().toISOString().slice(0,10));
-  if(val===null)return null;if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(val)){toast("Use YYYY-MM-DD");return null}
-  const d=new Date(val+"T12:00:00");if(Number.isNaN(d.getTime())){toast("Invalid date");return null}return val;
+  const val=window.prompt(label+"\nEnter date as YYYY-MM-DD:",current||new Date().toISOString().slice(0,10));
+  if(val===null)return null;
+  const clean=val.trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(clean)){toast("Use date format YYYY-MM-DD");return null}
+  const d=new Date(clean+"T12:00:00");
+  if(Number.isNaN(d.getTime()) || d.toISOString().slice(0,10)!==clean){toast("Invalid date");return null}
+  return clean;
 }
+
 function save(k,obj){localStorage.setItem(k,JSON.stringify(obj))}
 function key(id,type){return id+"_"+type}
-function markWatched(id,type,title){
+function markWatched(id,type,title,selectedDate=""){
   const old=watched[key(id,type)]||"";
-  const val=datePrompt("When did you watch this?",old);
+  const val=selectedDate||datePrompt("When did you watch this?",old);
   if(!val)return;
-  watched[key(id,type)]=val;save("cine_watched",watched);toast(`Watched date saved: ${prettyDate(val)}`);renderTimeline();openDetails(id,type);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(val)){toast("Please select a valid date");return}
+  watched[key(id,type)]=val;
+  save("cine_watched",watched);
+  toast("Watched date saved: "+prettyDate(val));
+  renderTimeline();
+  if(document.getElementById("timelineModal")?.classList.contains("show")) openTimelinePage();
+  openDetails(id,type);
 }
-function scheduleTitle(id,type,title){
-  const old=scheduled[key(id,type)]||"";
-  const val=datePrompt("When do you want to watch this?",old);
-  if(!val)return;
-  scheduled[key(id,type)]=val;save("cine_scheduled",scheduled);toast(`Scheduled: ${prettyDate(val)}`);renderTimeline();openDetails(id,type);
-}
-function removeWatched(id,type){delete watched[key(id,type)];save("cine_watched",watched);toast("Removed from watched");renderTimeline();openDetails(id,type)}
-function removeScheduled(id,type){delete scheduled[key(id,type)];save("cine_scheduled",scheduled);toast("Removed from schedule");renderTimeline();openDetails(id,type)}
-function prettyDate(s){if(!s)return"—";return new Date(s+"T12:00:00").toLocaleDateString(undefined,{day:"2-digit",month:"long",year:"numeric"})}
 
-async function hydrateTimeline(entries){
-  const out=[];
-  for(const e of entries){
-    try{const d=await api(`/${e.type}/${e.id}`,{language:"en-US"});out.push({...e,data:d})}catch(_){}
-  }
-  return out;
+function scheduleTitle(id,type,title,selectedDate=""){
+  const old=scheduled[key(id,type)]||"";
+  const val=selectedDate||datePrompt("When do you want to watch this?",old);
+  if(!val)return;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(val)){toast("Please select a valid date");return}
+  scheduled[key(id,type)]=val;
+  save("cine_scheduled",scheduled);
+  toast("Scheduled: "+prettyDate(val));
+  renderTimeline();
+  if(document.getElementById("timelineModal")?.classList.contains("show")) openTimelinePage();
+  openDetails(id,type);
 }
-async function renderTimeline(){
-  const root=$("timelineSection");
-  const a=Object.entries(watched).map(([k,date])=>{const [id,type]=k.split("_");return{id:+id,type,date,status:"watched"}})
-    .concat(Object.entries(scheduled).map(([k,date])=>{const [id,type]=k.split("_");return{id:+id,type,date,status:"scheduled"}}))
-    .sort((a,b)=>new Date(a.date)-new Date(b.date));
-  if(!a.length){root.innerHTML=`<div class="empty-timeline">No watched or scheduled titles yet.<br>Open a poster and use <b>Mark as Watched</b> or <b>Schedule to Watch</b>.</div>`;return}
-  root.innerHTML=`<div class="timeline" id="timelineInner"></div>`;
-  const hydrated=await hydrateTimeline(a);
-  $("timelineInner").innerHTML=hydrated.map(e=>{
-    const d=e.data,t=typeOf(d);
-    return `<div class="timeline-item"><span class="timeline-dot"></span><div class="timeline-date">${prettyDate(e.date)}</div>
-      <div class="timeline-card" onclick="openDetails(${e.id},'${e.type}')">${imgHTML(poster(d.poster_path),titleOf(d))}<div class="timeline-info"><b>${esc(titleOf(d))}</b><small>${e.type==="movie"?"Movie":"Series"} · ⭐ ${d.vote_average?Number(d.vote_average).toFixed(1):"N/A"}</small><span class="status ${e.status}">${e.status==="watched"?"WATCHED":"SCHEDULED"}</span></div></div>
+
+function removeWatched(id,type){
+  delete watched[key(id,type)];save("cine_watched",watched);toast("Removed from watched");renderTimeline();
+  if(document.getElementById("timelineModal")?.classList.contains("show")) openTimelinePage();
+  openDetails(id,type);
+}
+function removeScheduled(id,type){
+  delete scheduled[key(id,type)];save("cine_scheduled",scheduled);toast("Removed from schedule");renderTimeline();
+  if(document.getElementById("timelineModal")?.classList.contains("show")) openTimelinePage();
+  openDetails(id,type);
+}
+
+function timelineEntries(){
+  return Object.entries(watched).map(([k,date])=>{
+    const [id,type]=k.split("_");return{id:+id,type,date,status:"watched"};
+  }).concat(Object.entries(scheduled).map(([k,date])=>{
+    const [id,type]=k.split("_");return{id:+id,type,date,status:"scheduled"};
+  })).sort((a,b)=>new Date(a.date)-new Date(b.date));
+}
+
+async function buildTimelineHTML(entries){
+  if(!entries.length)return '<div class="empty-timeline">No watched or scheduled titles yet.<br>Open a poster and use <b>Mark as Watched</b> or <b>Schedule to Watch</b>.</div>';
+  const hydrated=await hydrateTimeline(entries);
+  const valid=hydrated.filter(e=>e.data);
+  return '<div class="timeline">'+valid.map(e=>{
+    const d=e.data;
+    return `<div class="timeline-item"><span class="timeline-dot"></span>
+      <div class="timeline-date">${prettyDate(e.date)}</div>
+      <div class="timeline-card" onclick="openDetails(${e.id},'${e.type}')">
+        ${imgHTML(poster(d.poster_path),titleOf(d))}
+        <div class="timeline-info"><b>${esc(titleOf(d))}</b>
+        <small>${e.type==="movie"?"Movie":"Series"} · ⭐ ${d.vote_average?Number(d.vote_average).toFixed(1):"N/A"}</small>
+        <span class="status ${e.status}">${e.status==="watched"?"WATCHED":"SCHEDULED"}</span></div>
+      </div>
     </div>`;
-  }).join("");
+  }).join('')+'</div>';
 }
+
+async function renderTimeline(){
+  const root=document.getElementById("timelineSection");
+  if(root)root.innerHTML=await buildTimelineHTML(timelineEntries());
+}
+
+async function openTimelinePage(){
+  document.getElementById("timelineModal").classList.add("show");
+  document.body.style.overflow="hidden";
+  document.getElementById("timelinePageContent").innerHTML='<div class="message"><strong>Loading timeline…</strong></div>';
+  document.getElementById("timelinePageContent").innerHTML=await buildTimelineHTML(timelineEntries());
+}
+function closeTimelinePage(){
+  document.getElementById("timelineModal").classList.remove("show");
+  if(!document.getElementById("detailModal").classList.contains("show")&&!document.getElementById("pickerOverlay").classList.contains("show"))document.body.style.overflow="";
+}
+document.getElementById("timelineModal").addEventListener("click",e=>{if(e.target.id==="timelineModal")closeTimelinePage()});
+
 function openPicker(){$("pickerOverlay").classList.add("show");$("pickerResult").innerHTML="";document.body.style.overflow="hidden"}
 function closePicker(){$("pickerOverlay").classList.remove("show");if(!$("detailModal").classList.contains("show"))document.body.style.overflow=""}
 async function pickRandom(){
