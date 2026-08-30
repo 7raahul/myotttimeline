@@ -421,6 +421,7 @@
             <div id="syncStatus" style="font-size: 13px; color: var(--accent);">🟢 Active</div>
         </header>
 
+        <!-- Clean Menu Bar -->
         <div class="menu-bar">
             <button class="menu-btn active" onclick="switchTab('movies', this)">🎬 Movies</button>
             <button class="menu-btn" onclick="switchTab('tv', this)">📺 TV Shows</button>
@@ -428,6 +429,7 @@
             <button class="menu-btn" onclick="switchTab('watchlist', this)">🗓️ Watchlist</button>
         </div>
 
+        <!-- Action Toolbar (Random Picker & Search) -->
         <div class="action-toolbar">
             <button class="toolbar-btn" onclick="openPickerChoiceModal()">
                 🎲 Random Picker
@@ -439,6 +441,7 @@
         </div>
         <div id="searchResults" class="grid"></div>
 
+        <!-- Tab Content Sections -->
         <div id="tab-movies" class="content-section active-tab" style="background:transparent; border:none; padding:0;">
             <h2 class="section-title" style="margin-top:0;">Top Movies</h2>
             <div id="moviesGrid" class="grid"></div>
@@ -462,6 +465,7 @@
         </div>
     </div>
 
+    <!-- Letterboxd Style Details Modal -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&#10005;</span>
@@ -469,6 +473,7 @@
         </div>
     </div>
 
+    <!-- Picker Choice Modal (Movie or TV Show) -->
     <div id="pickerChoiceModal" class="modal">
         <div class="picker-modal-box">
             <h3 style="color:#fff; margin-top:0; font-size:16px;">Random Picker</h3>
@@ -479,6 +484,7 @@
         </div>
     </div>
 
+    <!-- Date Picker Modal -->
     <div id="dateModal" class="modal">
         <div class="date-modal-box">
             <h3 id="dateModalTitle" style="color:#fff; margin-top:0; font-size:16px;">Select Date</h3>
@@ -641,7 +647,6 @@
             modalBody.innerHTML = '<p style="text-align:center; padding:40px; color:var(--accent);">Loading details...</p>';
 
             try {
-                // Ensure type is valid (fallback to movie if undefined/person)
                 if (type !== 'movie' && type !== 'tv') {
                     type = 'movie';
                 }
@@ -665,6 +670,7 @@
                 const poster = details.poster_path ? IMAGE_BASE_URL + details.poster_path : '';
                 const director = credits.crew ? (credits.crew.find(c => c.job === 'Director') || {}).name : '';
                 const cast = credits.cast ? credits.cast.slice(0, 10) : [];
+                const rating = details.vote_average ? details.vote_average.toFixed(1) : 'N/A';
 
                 let watchedList = JSON.parse(localStorage.getItem('cineVaultWatched')) || [];
                 let watchlist = JSON.parse(localStorage.getItem('cineVaultWatchlist')) || [];
@@ -672,7 +678,9 @@
                 let isInWatchlist = watchlist.some(m => m.id === id);
 
                 modalBody.innerHTML = `
-                    <div class="lb-banner" style="background-image: url('${backdrop}')"></div>
+                    <div class="lb-banner" style="background-image: url('${backdrop}')">
+                        <div class="card-rating" style="position: absolute; top: 12px; right: 12px; font-size: 13px; padding: 5px 10px;">★ ${rating}</div>
+                    </div>
                     <div class="lb-header-details">
                         <div class="lb-title-group">
                             <h2>${title}</h2>
