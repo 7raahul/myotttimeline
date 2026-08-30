@@ -23,15 +23,21 @@ body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(53,208,127,.08),t
 button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
 .container{width:min(1400px,92%);margin:auto}
 header{position:sticky;top:0;z-index:1000;background:rgba(7,16,25,.84);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
-.nav{min-height:70px;display:flex;align-items:center;gap:18px}
+.nav{min-height:70px;display:flex;align-items:center;gap:18px;justify-content:space-between}
 .logo{font-size:1.35rem;font-weight:900;letter-spacing:-.8px;white-space:nowrap}.logo i{font-style:normal;color:var(--accent)}
-.search{flex:1;max-width:600px;margin:auto;position:relative}.search input{width:100%;height:44px;border:1px solid var(--line);background:#0a141e;border-radius:999px;color:var(--text);padding:0 45px 0 17px;outline:0}.search input:focus{border-color:var(--accent)}.search span{position:absolute;right:16px;top:10px;color:var(--muted)}
-.nav-actions{display:flex;gap:8px}.nav-btn,.pill,.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:9px 14px}.nav-btn.active,.pill.active,.btn.primary{background:var(--accent);border-color:var(--accent);color:#04100a;font-weight:800}.btn.secondary{background:#172636}.btn.danger{background:rgba(255,89,100,.1);border-color:rgba(255,89,100,.3);color:#ff9ba2}
+.search{flex:1;max-width:450px;margin:0 20px;position:relative}.search input{width:100%;height:40px;border:1px solid var(--line);background:#0a141e;border-radius:999px;color:var(--text);padding:0 45px 0 17px;outline:0}.search input:focus{border-color:var(--accent)}.search span{position:absolute;right:16px;top:8px;color:var(--muted)}
+.nav-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav-btn,.pill,.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:8px 13px;font-size:.82rem;font-weight:700;transition:.2s}
+.nav-btn:hover,.pill:hover{border-color:var(--accent);background:var(--panel2)}
+.nav-btn.active,.pill.active,.btn.primary{background:var(--accent);border-color:var(--accent);color:#04100a;font-weight:800}
+.btn.secondary{background:#172636}.btn.danger{background:rgba(255,89,100,.1);border-color:rgba(255,89,100,.3);color:#ff9ba2}
 
 .hero{min-height:440px;margin:26px 0 35px;border:1px solid var(--line);border-radius:28px;overflow:hidden;position:relative;background:linear-gradient(90deg,#071019 4%,rgba(7,16,25,.88) 38%,rgba(7,16,25,.15)),linear-gradient(0deg,#071019 0%,transparent 45%),url("https://image.tmdb.org/t/p/original/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg") center/cover;display:flex;align-items:end;box-shadow:var(--shadow)}
 .hero-content{padding:52px;max-width:700px;position:relative;width:100%}
-.hero-nav-buttons{position:absolute;right:30px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:3}
-.hero-nav-btn{width:42px;height:42px;border-radius:50%;background:rgba(7,16,25,.75);border:1px solid var(--line);color:#fff;font-size:1.1rem;display:grid;place-items:center;cursor:pointer;transition:.2s}
+
+/* Modern Bottom Hero Navigation Buttons */
+.hero-nav-buttons{position:absolute;bottom:25px;right:30px;display:flex;gap:10px;z-index:3}
+.hero-nav-btn{width:38px;height:38px;border-radius:50%;background:rgba(7,16,25,.8);border:1px solid var(--line);color:#fff;font-size:1.1rem;display:grid;place-items:center;cursor:pointer;transition:.2s}
 .hero-nav-btn:hover{background:var(--accent);color:#04100a;border-color:var(--accent)}
 
 .eyebrow{color:var(--accent);font-size:.76rem;font-weight:900;text-transform:uppercase;letter-spacing:1.6px}.hero h1{font-size:clamp(2.4rem,6vw,5.4rem);line-height:.9;letter-spacing:-4px;margin:12px 0 18px}.hero p{color:#b8c5d1;line-height:1.7;max-width:620px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
@@ -90,7 +96,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
 @media(max-width:1200px){.grid{grid-template-columns:repeat(5,1fr)}.cast-grid{grid-template-columns:repeat(5,1fr)}.episode-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:950px){.grid{grid-template-columns:repeat(4,1fr)}.filter-grid{grid-template-columns:repeat(2,1fr)}.type-cards{grid-template-columns:repeat(2,1fr)}.detail-body{grid-template-columns:1fr}.detail-side{display:none}}
 @media(max-width:700px){
-  .nav{flex-wrap:wrap;padding:10px 0}.search{order:3;flex-basis:100%;max-width:none}.nav-actions{margin-left:auto}.nav-btn{font-size:.75rem;padding:8px 10px}
+  .nav{flex-wrap:wrap;padding:10px 0}.search{order:3;flex-basis:100%;max-width:none;margin:10px 0 0}.nav-actions{margin-left:auto}.nav-btn{font-size:.75rem;padding:8px 10px}
   .hero{min-height:430px}.hero-content{padding:28px}.hero h1{letter-spacing:-2px}
   .grid{grid-template-columns:repeat(3,1fr);gap:11px}.section-head{align-items:flex-start;flex-direction:column}
   .filter-grid,.picker-grid{grid-template-columns:1fr}.type-cards{grid-template-columns:1fr 1fr}
@@ -108,6 +114,9 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
     <a class="logo" href="#" onclick="home();return false">Cine<i>Verse</i></a>
     <div class="search"><input id="search" type="search" placeholder="Search movies & TV shows..."><span>⌕</span></div>
     <div class="nav-actions">
+      <button class="pill active" onclick="loadTrending('all',this)">All</button>
+      <button class="pill" onclick="loadTrending('movie',this)">Movies</button>
+      <button class="pill" onclick="loadTrending('tv',this)">TV Shows</button>
       <button class="nav-btn" onclick="openTimelinePage()">Timeline</button>
       <button class="nav-btn" onclick="openPicker()">🎲 Random</button>
     </div>
@@ -154,11 +163,6 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
   <section class="section">
     <div class="section-head">
       <div><h2 id="resultTitle">Trending Now</h2><p id="resultSub">What's popular this week.</p></div>
-      <div class="tabs">
-        <button class="pill active" onclick="loadTrending('all',this)">All</button>
-        <button class="pill" onclick="loadTrending('movie',this)">Movies</button>
-        <button class="pill" onclick="loadTrending('tv',this)">TV Shows</button>
-      </div>
     </div>
     <div class="grid" id="results"></div>
     <div id="loadMoreSentinel" style="height:2px;margin-top:28px"></div>
@@ -342,7 +346,7 @@ function prevHeroItem(){
 
 async function loadTrending(type="all",btn=null){
   state={...state,page:1,total:1,mode:"trending",type,query:"",items:[]};
-  document.querySelectorAll(".section .tabs .pill").forEach(b=>b.classList.remove("active"));if(btn)btn.classList.add("active");
+  document.querySelectorAll("header .nav-actions .pill").forEach(b=>b.classList.remove("active"));if(btn)btn.classList.add("active");
   $("resultTitle").textContent="Trending Now";$("resultSub").textContent="What's popular this week.";showSkeleton();
   try{
     const d=await api(`/trending/${type}/week`,{language:"en-US",page:1});
@@ -402,7 +406,7 @@ async function search(q){
   try{const d=await api("/search/multi",{query:q,language:"en-US",include_adult:false,page:1});state.total=Math.min(d.total_pages||1,20);state.items=(d.results||[]).filter(x=>x.media_type==="movie"||x.media_type==="tv");renderItems()}catch(e){toast("Search failed")}
 }
 let searchTimer;
-$("search").addEventListener("input",e=>{clearTimeout(searchTimer);const q=e.target.value.trim();searchTimer=setTimeout(()=>q.length>=2?search(q):loadTrending("all",document.querySelector(".section .tabs .pill")),400)});
+$("search").addEventListener("input",e=>{clearTimeout(searchTimer);const q=e.target.value.trim();searchTimer=setTimeout(()=>q.length>=2?search(q):loadTrending("all",document.querySelector("header .nav-actions .pill")),400)});
 $("search").addEventListener("keydown",e=>{if(e.key==="Escape"){e.target.value="";loadTrending()}if(e.key==="Enter"){clearTimeout(searchTimer);const q=e.target.value.trim();if(q)search(q)}});
 
 async function discover(page=1){
