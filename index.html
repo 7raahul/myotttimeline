@@ -23,7 +23,7 @@
             padding: 20px 10px;
         }
         .wrapper {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
         }
         header {
@@ -68,12 +68,12 @@
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
         }
         @media (min-width: 768px) {
-            .grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
         }
         .card {
             background: var(--card-bg);
@@ -90,8 +90,11 @@
         }
         .card img {
             width: 100%;
-            height: 220px;
+            height: 200px;
             object-fit: cover;
+        }
+        @media (min-width: 768px) {
+            .card img { height: 230px; }
         }
         .card h4 {
             font-size: 13px;
@@ -107,6 +110,23 @@
             border-radius: 12px;
             padding: 20px;
             margin-top: 30px;
+        }
+
+        .row-item {
+            display: flex;
+            align-items: center;
+            background: #14181c;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            gap: 15px;
+        }
+        .row-item img {
+            width: 45px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 4px;
         }
 
         /* Letterboxd Style Modal */
@@ -152,27 +172,26 @@
         }
         .close-btn:hover { background: var(--danger); }
 
-        /* Letterboxd Banner Layout */
         .lb-banner {
             position: relative;
             width: 100%;
-            height: 240px;
+            height: 220px;
             background-size: cover;
             background-position: center;
         }
         @media (min-width: 768px) {
-            .lb-banner { height: 350px; }
+            .lb-banner { height: 320px; }
         }
         .lb-banner::after {
             content: '';
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            height: 100px;
+            height: 80px;
             background: linear-gradient(to top, #12181f, transparent);
         }
         .lb-header-details {
             padding: 0 20px 20px 20px;
-            margin-top: -50px;
+            margin-top: -45px;
             position: relative;
             z-index: 2;
             display: flex;
@@ -189,16 +208,12 @@
             font-weight: 800;
         }
         @media (min-width: 768px) {
-            .lb-title-group h2 { font-size: 30px; }
+            .lb-title-group h2 { font-size: 28px; }
         }
-        .lb-title-group p {
-            margin: 0;
-            font-size: 14px;
-            color: var(--text-main);
-        }
+        .lb-title-group p { margin: 0; font-size: 13px; color: var(--text-main); }
         .lb-poster-thumb {
-            width: 100px;
-            height: 150px;
+            width: 90px;
+            height: 135px;
             border-radius: 6px;
             border: 2px solid #fff;
             object-fit: cover;
@@ -209,7 +224,6 @@
             .lb-poster-thumb { display: block; }
         }
 
-        /* Letterboxd Action Bar (Watch, Like, Watchlist) */
         .lb-action-bar {
             display: flex;
             justify-content: space-around;
@@ -234,7 +248,6 @@
         .lb-action-btn svg { width: 22px; height: 22px; fill: currentColor; }
         .lb-action-btn:hover, .lb-action-btn.active { color: var(--accent); }
 
-        /* Rating Stars Section */
         .lb-rating-section {
             text-align: center;
             padding: 15px;
@@ -244,31 +257,50 @@
             display: inline-flex;
             gap: 5px;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 22px;
             color: #456;
         }
         .stars span.active { color: #00e054; }
 
-        .lb-body-section {
-            padding: 20px;
-        }
+        .lb-body-section { padding: 20px; }
         .cast-row {
             display: flex;
             gap: 12px;
             overflow-x: auto;
             padding-bottom: 10px;
         }
-        .cast-item {
-            min-width: 75px;
-            text-align: center;
-            font-size: 11px;
-        }
+        .cast-item { min-width: 70px; text-align: center; font-size: 11px; }
         .cast-item img {
-            width: 70px;
-            height: 70px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid var(--border-color);
+        }
+
+        /* Modern Date Picker Modal Style */
+        .date-modal-box {
+            background: var(--card-bg);
+            margin: 20% auto;
+            padding: 25px;
+            width: 90%;
+            max-width: 380px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        input[type="date"] {
+            width: 100%;
+            background: #14181c;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-top: 15px;
+            box-sizing: border-box;
+            color-scheme: dark;
+            outline: none;
         }
     </style>
 </head>
@@ -277,10 +309,21 @@
     <div class="wrapper">
         <header>
             <h1>Cine<span>Vault</span></h1>
-            <div id="syncStatus" style="font-size: 13px; color: var(--accent);">🟢 Synced</div>
+            <div id="syncStatus" style="font-size: 13px; color: var(--accent);">🟢 Active</div>
         </header>
 
-        <div class="search-container">
+        <!-- Main Screen Sections -->
+        <div class="content-section">
+            <h2 class="section-title" style="margin-top:0;">📖 Watched Diary</h2>
+            <div id="diaryContainer"><p style="font-size: 13px;">No movies watched yet.</p></div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title" style="margin-top:0;">🗓️ Watchlist / Schedule</h2>
+            <div id="watchlistContainer"><p style="font-size: 13px;">No movies in watchlist.</p></div>
+        </div>
+
+        <div class="search-container" style="margin-top: 40px;">
             <input type="text" id="searchInput" placeholder="Search movies, tv series..." oninput="searchMovies()">
         </div>
         <div id="searchResults" class="grid"></div>
@@ -294,8 +337,19 @@
     <!-- Letterboxd Style Modal -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <span class="close-btn" onclick="closeModal()">&#10005;</span>
             <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Date Picker Modal -->
+    <div id="dateModal" class="modal">
+        <div class="date-modal-box">
+            <h3 id="dateModalTitle" style="color:#fff; margin-top:0; font-size:16px;">Select Date</h3>
+            <p id="dateModalMovieName" style="color:var(--accent); font-size:14px; font-weight:bold;"></p>
+            <input type="date" id="selectedDateInput">
+            <button onclick="confirmDateSelection()" style="margin-top:20px; width:100%; background:var(--accent); border:none; padding:12px; border-radius:8px; font-weight:bold; color:#14181c; cursor:pointer;">Confirm & Save</button>
+            <button onclick="closeDateModal()" style="margin-top:8px; width:100%; background:transparent; border:1px solid var(--border-color); padding:10px; border-radius:8px; color:var(--text-main); cursor:pointer;">Cancel</button>
         </div>
     </div>
 
@@ -304,16 +358,18 @@
         const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
         const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/original';
 
+        let activeMovieObj = null;
+        let activeTargetType = ''; // 'watched' or 'watchlist'
+
         loadTrending();
+        renderLists();
 
         async function loadTrending() {
             try {
                 const res = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}`);
                 const data = await res.json();
                 displayMovies(data.results, 'trendingGrid');
-            } catch (err) {
-                console.error(err);
-            }
+            } catch (err) { console.error(err); }
         }
 
         async function searchMovies() {
@@ -363,33 +419,41 @@
                 const details = await detailRes.json();
                 const credits = await creditRes.json();
 
+                details.media_type = type; // ensure media type is stored
+                activeMovieObj = details;
+
                 const title = details.title || details.name;
                 const year = (details.release_date || details.first_air_date || '').split('-')[0];
                 const backdrop = details.backdrop_path ? BACKDROP_BASE_URL + details.backdrop_path : '';
                 const poster = details.poster_path ? IMAGE_BASE_URL + details.poster_path : '';
-                const director = credits.crew ? (credits.crew.find(c => c.job === 'Director') || {}).name : 'N/A';
+                const director = credits.crew ? (credits.crew.find(c => c.job === 'Director') || {}).name : '';
                 const cast = credits.cast ? credits.cast.slice(0, 10) : [];
+
+                let watchedList = JSON.parse(localStorage.getItem('cineVaultWatched')) || [];
+                let watchlist = JSON.parse(localStorage.getItem('cineVaultWatchlist')) || [];
+                let isWatched = watchedList.some(m => m.id === id);
+                let isInWatchlist = watchlist.some(m => m.id === id);
 
                 modalBody.innerHTML = `
                     <div class="lb-banner" style="background-image: url('${backdrop}')"></div>
                     <div class="lb-header-details">
                         <div class="lb-title-group">
                             <h2>${title}</h2>
-                            <p>${year} ${director !== 'nic' && director ? '· Directed by ' + director : ''}</p>
+                            <p>${year} ${director ? '· Directed by ' + director : ''}</p>
                         </div>
                         <img src="${poster}" class="lb-poster-thumb" alt="${title}">
                     </div>
 
                     <div class="lb-action-bar">
-                        <button class="lb-action-btn" onclick="toggleAction(this)">
+                        <button class="lb-action-btn ${isWatched ? 'active' : ''}" onclick="triggerDateModal('watched')">
                             <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                            Watch
+                            Watched
                         </button>
-                        <button class="lb-action-btn" onclick="toggleAction(this)">
+                        <button class="lb-action-btn" onclick="toggleLike(this)">
                             <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                             Like
                         </button>
-                        <button class="lb-action-btn" onclick="toggleAction(this)">
+                        <button class="lb-action-btn ${isInWatchlist ? 'active' : ''}" onclick="triggerDateModal('watchlist')">
                             <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/></svg>
                             Watchlist
                         </button>
@@ -410,23 +474,50 @@
                         <div class="cast-row">
                             ${cast.map(actor => `
                                 <div class="cast-item">
-                                    <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/70'}" alt="${actor.name}">
+                                    <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/65'}" alt="${actor.name}">
                                     <div style="margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${actor.name}">${actor.name}</div>
                                 </div>
                             `).join('')}
                         </div>
                     </div>
                 `;
-
                 setupStarRating();
             } catch (err) {
                 modalBody.innerHTML = '<p style="text-align:center; color:orange; padding:30px;">Failed to load details.</p>';
             }
         }
 
-        function toggleAction(btn) {
-            btn.classList.toggle('active');
+        function triggerDateModal(type) {
+            activeTargetType = type;
+            const title = activeMovieObj.title || activeMovieObj.name;
+            document.getElementById('dateModalTitle').innerText = type === 'watched' ? 'Mark as Watched' : 'Add to Watchlist';
+            document.getElementById('dateModalMovieName').innerText = title;
+            document.getElementById('selectedDateInput').value = new Date().toISOString().split('T')[0];
+            document.getElementById('dateModal').style.display = 'block';
         }
+
+        function closeDateModal() {
+            document.getElementById('dateModal').style.display = 'none';
+        }
+
+        function confirmDateSelection() {
+            const dateVal = document.getElementById('selectedDateInput').value;
+            const storageKey = activeTargetType === 'watched' ? 'cineVaultWatched' : 'cineVaultWatchlist';
+            
+            let list = JSON.parse(localStorage.getItem(storageKey)) || [];
+            list = list.filter(m => m.id !== activeMovieObj.id); // remove if already exists
+            
+            activeMovieObj.targetDate = dateVal;
+            list.push(activeMovieObj);
+            localStorage.setItem(storageKey, JSON.stringify(list));
+
+            closeDateModal();
+            renderLists();
+            // refresh modal button active state
+            openDetails(activeMovieObj.id, activeMovieObj.media_type);
+        }
+
+        function toggleLike(btn) { btn.classList.toggle('active'); }
 
         function setupStarRating() {
             const stars = document.querySelectorAll('#starContainer span');
@@ -442,6 +533,34 @@
 
         function closeModal() {
             document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        function renderLists() {
+            const watchedContainer = document.getElementById('diaryContainer');
+            const watchlistContainer = document.getElementById('watchlistContainer');
+
+            let watched = JSON.parse(localStorage.getItem('cineVaultWatched')) || [];
+            let watchlist = JSON.parse(localStorage.getItem('cineVaultWatchlist')) || [];
+
+            watchedContainer.innerHTML = watched.length === 0 ? '<p style="font-size: 13px; color:var(--text-main);">No movies watched yet.</p>' : watched.map(m => `
+                <div class="row-item" onclick="openDetails(${m.id}, '${m.media_type || 'movie'}')">
+                    <img src="${m.poster_path ? IMAGE_BASE_URL + m.poster_path : ''}" alt="">
+                    <div style="flex:1;">
+                        <div style="color:#fff; font-weight:bold; font-size:14px;">${m.title || m.name}</div>
+                        <div style="font-size:12px; color:var(--accent);">Watched on: ${m.targetDate || 'N/A'}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            watchlistContainer.innerHTML = watchlist.length === 0 ? '<p style="font-size: 13px; color:var(--text-main);">No movies in watchlist.</p>' : watchlist.map(m => `
+                <div class="row-item" onclick="openDetails(${m.id}, '${m.media_type || 'movie'}')">
+                    <img src="${m.poster_path ? IMAGE_BASE_URL + m.poster_path : ''}" alt="">
+                    <div style="flex:1;">
+                        <div style="color:#fff; font-weight:bold; font-size:14px;">${m.title || m.name}</div>
+                        <div style="font-size:12px; color:var(--accent);">Scheduled for: ${m.targetDate || 'N/A'}</div>
+                    </div>
+                </div>
+            `).join('');
         }
     </script>
 </body>
