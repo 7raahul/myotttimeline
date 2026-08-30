@@ -421,7 +421,6 @@
             <div id="syncStatus" style="font-size: 13px; color: var(--accent);">🟢 Active</div>
         </header>
 
-        <!-- Clean Menu Bar -->
         <div class="menu-bar">
             <button class="menu-btn active" onclick="switchTab('movies', this)">🎬 Movies</button>
             <button class="menu-btn" onclick="switchTab('tv', this)">📺 TV Shows</button>
@@ -429,7 +428,6 @@
             <button class="menu-btn" onclick="switchTab('watchlist', this)">🗓️ Watchlist</button>
         </div>
 
-        <!-- Action Toolbar (Random Picker & Search) -->
         <div class="action-toolbar">
             <button class="toolbar-btn" onclick="openPickerChoiceModal()">
                 🎲 Random Picker
@@ -441,7 +439,6 @@
         </div>
         <div id="searchResults" class="grid"></div>
 
-        <!-- Tab Content Sections -->
         <div id="tab-movies" class="content-section active-tab" style="background:transparent; border:none; padding:0;">
             <h2 class="section-title" style="margin-top:0;">Top Movies</h2>
             <div id="moviesGrid" class="grid"></div>
@@ -465,7 +462,6 @@
         </div>
     </div>
 
-    <!-- Letterboxd Style Details Modal -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&#10005;</span>
@@ -473,7 +469,6 @@
         </div>
     </div>
 
-    <!-- Picker Choice Modal (Movie or TV Show) -->
     <div id="pickerChoiceModal" class="modal">
         <div class="picker-modal-box">
             <h3 style="color:#fff; margin-top:0; font-size:16px;">Random Picker</h3>
@@ -484,7 +479,6 @@
         </div>
     </div>
 
-    <!-- Date Picker Modal -->
     <div id="dateModal" class="modal">
         <div class="date-modal-box">
             <h3 id="dateModalTitle" style="color:#fff; margin-top:0; font-size:16px;">Select Date</h3>
@@ -522,12 +516,7 @@
             
             btn.classList.add('active');
             currentTab = tabName;
-
-            if(tabName === 'movies' || tabName === 'tv') {
-                document.getElementById('tab-' + tabName).classList.add('active-tab');
-            } else {
-                document.getElementById('tab-' + tabName).classList.add('active-tab');
-            }
+            document.getElementById('tab-' + tabName).classList.add('active-tab');
         }
 
         async function loadMediaData(type) {
@@ -536,8 +525,10 @@
                 const res = await fetch(`https://api.themoviedb.org/3/${type}/top_rated?api_key=${TMDB_API_KEY}&page=${page}`);
                 const data = await res.json();
                 
-                appendMediaCards(data.results, type === 'movie' ? 'moviesGrid' : 'tvGrid', type);
-            } catch (err) { console.error(err); }
+                if(data.results) {
+                    appendMediaCards(data.results, type === 'movie' ? 'moviesGrid' : 'tvGrid', type);
+                }
+            } catch (err) { console.error("Error loading media list:", err); }
         }
 
         function appendMediaCards(items, elementId, mediaType) {
@@ -596,12 +587,17 @@
             try {
                 const res = await fetch(`https://api.themoviedb.org/3/${type}/top_rated?api_key=${TMDB_API_KEY}&page=${randomPage}`);
                 const data = await res.json();
-                const items = data.results.filter(m => m.poster_path);
+                const items = data.results ? data.results.filter(m => m.poster_path) : [];
                 if (items.length > 0) {
                     const chosen = items[Math.floor(Math.random() * items.length)];
                     openDetails(chosen.id, type);
+                } else {
+                    alert("Could not pick a random item. Try again.");
                 }
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error("Error picking random item:", err); 
+                alert("Network error while picking random item.");
+            }
         }
 
         async function searchMedia() {
@@ -614,41 +610,51 @@
                 const data = await res.json();
                 
                 resultsDiv.innerHTML = '';
-                data.results.forEach(item => {
-                    if (!item.poster_path || item.media_type === 'person') return;
-                    const title = item.title || item.name;
-                    const date = item.release_date || item.first_air_date || '';
-                    const year = date ? date.split('-')[0] : '';
-                    const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
+                if(data.results) {
+                    data.results.forEach(item => {
+                        if (!item.poster_path || item.media_type === 'person') return;
+                        const title = item.title || item.name;
+                        const date = item.release_date || item.first_air_date || '';
+                        const year = date ? date.split('-')[0] : '';
+                        const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
 
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.onclick = () => openDetails(item.id, item.media_type);
-                    card.innerHTML = `
-                        <div class="card-img-wrapper">
-                            <img src="${IMAGE_BASE_URL + item.poster_path}" alt="${title}">
-                            <div class="card-rating">★ ${rating}</div>
-                        </div>
-                        <h4>${title} ${year ? '('+year+')' : ''}</h4>
-                    `;
-                    resultsDiv.appendChild(card);
-                });
-            } catch (err) { console.error(err); }
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.onclick = () => openDetails(item.id, item.media_type);
+                        card.innerHTML = `
+                            <div class="card-img-wrapper">
+                                <img src="${IMAGE_BASE_URL + item.poster_path}" alt="${title}">
+                                <div class="card-rating">★ ${rating}</div>
+                            </div>
+                            <h4>${title} ${year ? '('+year+')' : ''}</h4>
+                        `;
+                        resultsDiv.appendChild(card);
+                    });
+                }
+            } catch (err) { console.error("Error searching media:", err); }
         }
 
         async function openDetails(id, type) {
             const modal = document.getElementById('detailsModal');
             const modalBody = document.getElementById('modalBody');
             modal.style.display = 'block';
-            modalBody.innerHTML = '<p style="text-align:center; padding:40px; color:var(--accent);">Loading...</p>';
+            modalBody.innerHTML = '<p style="text-align:center; padding:40px; color:var(--accent);">Loading details...</p>';
 
             try {
+                // Ensure type is valid (fallback to movie if undefined/person)
+                if (type !== 'movie' && type !== 'tv') {
+                    type = 'movie';
+                }
+
                 const [detailRes, creditRes] = await Promise.all([
                     fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_API_KEY}`),
                     fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=${TMDB_API_KEY}`)
                 ]);
+                
+                if (!detailRes.ok) throw new Error(`HTTP error! status: ${detailRes.status}`);
+
                 const details = await detailRes.json();
-                const credits = await creditRes.json();
+                const credits = await creditRes.ok ? await creditRes.json() : { crew: [], cast: [] };
 
                 details.media_type = type;
                 activeMovieObj = details;
@@ -714,7 +720,8 @@
                 `;
                 setupStarRating();
             } catch (err) {
-                modalBody.innerHTML = '<p style="text-align:center; color:orange; padding:30px;">Failed to load details.</p>';
+                console.error("Failed to load details error details:", err);
+                modalBody.innerHTML = `<p style="text-align:center; color:orange; padding:30px;">Failed to load details. (${err.message})</p>`;
             }
         }
 
