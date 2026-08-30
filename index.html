@@ -123,6 +123,21 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
 }
 @media(max-width:450px){.hero{min-height:300px}.hero-content{width:100%;padding:24px 18px;background:linear-gradient(90deg,rgba(7,16,25,.98),rgba(7,16,25,.72));}.hero-poster-wrap{opacity:.42;right:8px;width:44%;top:22px;bottom:auto;transform:none;aspect-ratio:16/9}.hero-item-title{font-size:1.8rem;max-width:65%}.hero-item-meta{max-width:62%}.hero-nav-buttons{bottom:10px}.grid{grid-template-columns:repeat(2,1fr)}.cast-grid{grid-template-columns:repeat(3,1fr)}.hero{margin-top:15px}.type-cards{grid-template-columns:1fr}.detail-wrap{display:block}.detail-poster{margin-bottom:15px}.detail-main{padding-bottom:0}.close{right:14px}.back{left:14px}}
 @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+/* Compact Browse By filter bar */
+.browse-compact-section{padding-top:18px;padding-bottom:18px}
+.browse-compact{display:flex;align-items:center;flex-wrap:wrap;min-height:48px;border:1px solid var(--line);border-radius:10px;background:rgba(10,21,32,.72);overflow:visible}
+.browse-label{padding:0 14px;color:#9eb1c3;font-size:.82rem;letter-spacing:1.6px;white-space:nowrap}
+.compact-filter{border-left:1px solid var(--line)}
+.compact-filter select{appearance:none;-webkit-appearance:none;height:46px;min-width:116px;border:0;background:transparent;color:#b8c7d5;padding:0 32px 0 14px;font-size:.78rem;letter-spacing:1.3px;cursor:pointer;outline:0;background-image:linear-gradient(45deg,transparent 50%,#8094a7 50%),linear-gradient(135deg,#8094a7 50%,transparent 50%);background-position:calc(100% - 15px) 20px,calc(100% - 11px) 20px;background-size:4px 4px,4px 4px;background-repeat:no-repeat}
+.compact-filter select:hover,.compact-filter select:focus{color:#fff;background-color:rgba(255,255,255,.035)}
+.compact-apply{height:34px;margin:7px 8px 7px 10px;padding:0 13px;border:1px solid var(--line);border-radius:18px;background:var(--green);color:#071019;font-weight:900;font-size:.72rem;cursor:pointer}
+@media(max-width:900px){
+  .browse-compact{border-radius:10px}
+  .browse-label{width:100%;padding:10px 12px 4px}
+  .compact-filter{flex:1;border-top:1px solid var(--line);border-left:0}
+  .compact-filter select{width:100%;min-width:0}
+  .compact-apply{margin:8px}
+}
 </style>
 </head>
 <body>
@@ -163,23 +178,33 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
   </section>
 
   <section class="section" id="browse">
-    <div class="section-head">
-      <div><h2>Browse by Type</h2><p>Choose movie/series, year, rating and discovery mode.</p></div>
-    </div>
-    <div class="browse-box">
-      <div class="filter-grid">
-        <div class="field"><label>Type</label><select id="browseType"><option value="movie">Movies</option><option value="tv">TV Shows</option></select></div>
-        <div class="field"><label>Year</label><select id="browseYear"></select></div>
-        <div class="field"><label>Minimum Rating</label><select id="browseRating"></select></div>
-        <div class="field"><label>Popular Mode</label><select id="browseMode"><option value="popular">Popular</option><option value="top_rated">High Rated</option><option value="today">Today Popular</option><option value="month">This Month Popular</option></select></div>
+    <section class="section browse-compact-section">
+    <div class="browse-compact" aria-label="Browse filters">
+      <span class="browse-label">BROWSE BY</span>
+      <div class="compact-filter">
+        <select id="browseType" aria-label="Type">
+          <option value="movie">MOVIES</option>
+          <option value="tv">TV SHOWS</option>
+        </select>
       </div>
-      <div class="filter-grid" style="margin-top:12px">
-        <div class="field"><label>Genre</label><select id="browseGenre"></select></div>
-        <div class="field"><label>Sort</label><select id="browseSort"><option value="popularity.desc">Popularity ↓</option><option value="vote_average.desc">Rating ↓</option><option value="primary_release_date.desc">Newest</option><option value="primary_release_date.asc">Oldest</option></select></div>
-        <div class="field"><label>Language</label><select id="browseLanguage"><option value="en-US">English</option><option value="hi-IN">Hindi</option><option value="ja-JP">Japanese</option><option value="ko-KR">Korean</option><option value="fr-FR">French</option><option value="es-ES">Spanish</option></select></div>
-        <div class="field"><label>Quick</label><div class="tabs"><button class="pill active" onclick="quickBrowse('popular',this)">Popular</button><button class="pill" onclick="quickBrowse('top_rated',this)">10/10+</button></div></div>
+      <div class="compact-filter">
+        <select id="browseYear" aria-label="Year"></select>
       </div>
-      <div class="filter-actions"><button class="btn secondary" onclick="resetBrowse()">Reset</button><button class="btn primary" onclick="applyBrowse()">Apply Filters</button></div>
+      <div class="compact-filter">
+        <select id="browseRating" aria-label="Rating"></select>
+      </div>
+      <div class="compact-filter">
+        <select id="browseMode" aria-label="Popular">
+          <option value="popular">POPULAR</option>
+          <option value="top_rated">HIGH RATED</option>
+          <option value="today">TODAY POPULAR</option>
+          <option value="month">THIS MONTH POPULAR</option>
+        </select>
+      </div>
+      <div class="compact-filter">
+        <select id="browseGenre" aria-label="Genre"></select>
+      </div>
+      <button class="compact-apply" onclick="applyBrowse()">APPLY</button>
     </div>
   </section>
 
@@ -466,7 +491,8 @@ $("search").addEventListener("input",e=>{clearTimeout(searchTimer);const q=e.tar
 $("search").addEventListener("keydown",e=>{if(e.key==="Escape"){e.target.value="";loadTrending()}if(e.key==="Enter"){clearTimeout(searchTimer);const q=e.target.value.trim();if(q)search(q)}});
 
 async function discover(page=1){
-  const type=$("browseType").value,mode=$("browseMode").value,year=$("browseYear").value,rating=$("browseRating").value,genre=$("browseGenre").value,sort=$("browseSort").value,language=$("browseLanguage").value;
+  const type=$("browseType").value,mode=$("browseMode").value,year=$("browseYear").value,rating=$("browseRating").value,genre=$("browseGenre").value,language="en-US";
+  const sort=mode==="top_rated"?"vote_average.desc":"popularity.desc";
   const params={language,page,sort_by:sort,include_adult:false,include_video:false,"vote_count.gte":rating?100:0,"vote_average.gte":rating||0,with_genres:genre};
   if(year){if(type==="movie")params.primary_release_year=year;else params.first_air_date_year=year}
   if(mode==="today"||mode==="month"){params.sort_by="popularity.desc";params["air_date.gte"]=mode==="today"?new Date().toISOString().slice(0,10):""}
@@ -479,7 +505,7 @@ async function applyBrowse(){
 }
 function presetBrowse(type,mode){$("browseType").value=type;$("browseMode").value=mode;fillGenres("browseGenre",type);applyBrowse();scrollToId("browse")}
 function quickBrowse(mode,btn){$("browseMode").value=mode;document.querySelectorAll(".quick").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");applyBrowse()}
-function resetBrowse(){ $("browseYear").value="";$("browseRating").value="";$("browseGenre").value="";$("browseMode").value="popular";$("browseSort").value="popularity.desc";$("browseLanguage").value="en-US";applyBrowse() }
+function resetBrowse(){ $("browseYear").value="";$("browseRating").value="";$("browseGenre").value="";$("browseMode").value="popular";applyBrowse() }
 
 async function openDetails(id,type){
   if($("pickerOverlay").classList.contains("show")) closePicker();
