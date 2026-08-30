@@ -3,56 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Movie & TV Diary</title>
+    <title>My OTT Movie & Series Diary</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #121212;
+            background-color: #0f1014;
             color: #ffffff;
             margin: 0;
             padding: 20px;
         }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
         h1, h2 {
             color: #e50914;
+            margin: 0;
+        }
+        .visitor-badge {
+            background: #1f2128;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid #333;
         }
         .search-container {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         input[type="text"] {
             width: 100%;
-            max-width: 400px;
-            padding: 10px;
+            max-width: 450px;
+            padding: 12px;
             font-size: 16px;
-            background: #222;
-            border: 1px solid #444;
+            background: #1a1c23;
+            border: 1px solid #333;
             color: #fff;
-            border-radius: 4px;
+            border-radius: 6px;
+        }
+        /* OTT Tabs Styling */
+        .ott-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .ott-tab {
+            background: #1f2128;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .ott-tab.active, .ott-tab:hover {
+            background: #e50914;
+            border-color: #e50914;
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 15px;
             margin-bottom: 30px;
         }
         .card {
-            background: #1e1e1e;
-            border-radius: 6px;
+            background: #1a1c23;
+            border-radius: 8px;
             overflow: hidden;
             text-align: center;
             padding-bottom: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid #262935;
+        }
+        .card:hover {
+            transform: scale(1.03);
         }
         .card img {
             width: 100%;
-            height: 220px;
+            height: 230px;
             object-fit: cover;
         }
         .card h4 {
             font-size: 14px;
-            margin: 10px 5px;
-            height: 40px;
+            margin: 10px 8px;
+            height: 38px;
             overflow: hidden;
         }
-        button {
+        .card button {
             background: #e50914;
             color: white;
             border: none;
@@ -61,52 +106,151 @@
             border-radius: 4px;
             font-size: 12px;
         }
-        button:hover {
+        .card button:hover {
             background: #b20710;
         }
-        .timeline-section {
-            margin-top: 40px;
+        .section-title {
+            margin: 30px 0 15px 0;
+            font-size: 20px;
+            border-left: 4px solid #e50914;
+            padding-left: 10px;
+        }
+        /* Modal Popup Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            overflow-y: auto;
+        }
+        .modal-content {
+            background-color: #1a1c23;
+            margin: 5% auto;
+            padding: 25px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            position: relative;
+        }
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-btn:hover { color: #fff; }
+        .modal-details img {
+            width: 140px;
+            border-radius: 6px;
+            float: left;
+            margin-right: 20px;
+        }
+        .feedback-box {
+            margin-top: 20px;
             border-top: 1px solid #333;
-            padding-top: 20px;
+            padding-top: 15px;
+        }
+        .feedback-box textarea {
+            width: 100%;
+            height: 60px;
+            background: #111;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 8px;
+            border-radius: 4px;
+            resize: none;
+        }
+        .feedback-list {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #ccc;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        .feedback-item {
+            background: #111;
+            padding: 5px 8px;
+            border-radius: 3px;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
 
-    <h1>My Movie & Series Diary</h1>
+    <header>
+        <h1>OTT Diary & Hub</h1>
+        <div class="visitor-badge">👥 Live Visitors: <span id="visitorCount">1</span></div>
+    </header>
 
     <!-- Search Section -->
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search movie or TV show..." oninput="searchMovies()">
+        <input type="text" id="searchInput" placeholder="Search across all movies & TV shows..." oninput="searchMovies()">
     </div>
     <div id="searchResults" class="grid"></div>
 
-    <!-- Trending Section -->
-    <h2>Trending Today</h2>
-    <div id="trendingGrid" class="grid"></div>
+    <!-- OTT Network Tabs -->
+    <div class="ott-tabs">
+        <div class="ott-tab active" onclick="filterByOTT(8, 'Netflix')">Netflix</div>
+        <div class="ott-tab" onclick="filterByOTT(9, 'Prime Video')">Prime Video</div>
+        <div class="ott-tab" onclick="filterByOTT(337, 'Disney+')">Disney+ Hotstar</div>
+        <div class="ott-tab" onclick="filterByOTT(350, 'Apple TV+')">Apple TV+</div>
+        <div class="ott-tab" onclick="filterByOTT(232, 'Zee5')">Zee5</div>
+        <div class="ott-tab" onclick="filterByOTT(213, 'SonyLIV')">SonyLIV</div>
+    </div>
+
+    <h2 id="currentOttTitle" class="section-title">Netflix Trending & Popular</h2>
+    <div id="ottGrid" class="grid"></div>
 
     <!-- Timeline / Watched Diary -->
-    <div class="timeline-section">
+    <div style="margin-top: 40px; border-top: 1px solid #222; padding-top: 20px;">
         <h2>My Watched Diary (Timeline)</h2>
         <div id="diaryGrid" class="grid"></div>
+    </div>
+
+    <!-- Details & Feedback Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
     </div>
 
     <script>
         const API_KEY = '9c95420163879f1c4726c540b305cbc6';
         const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
-        // Load Trending Movies on Startup
-        async function loadTrending() {
+        // Simulated Real-Time Visitor Count (Random realistic increment)
+        let visitors = Math.floor(Math.random() * 5) + 1;
+        document.getElementById('visitorCount').innerText = visitors;
+
+        // Default Load Netflix on Startup
+        filterByOTT(8, 'Netflix');
+        loadDiary();
+
+        // Fetch Content by OTT Provider ID
+        async function filterByOTT(providerId, providerName) {
+            document.querySelectorAll('.ott-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('currentOttTitleinnerText', `${providerName} Trending & Popular`);
+
             try {
-                const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`);
+                const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_watch_providers=${providerId}&watch_region=IN&sort_by=popularity.desc`);
                 const data = await response.json();
-                displayMovies(data.results, 'trendingGrid', true);
+                displayMovies(data.results, 'ottGrid', true);
             } catch (error) {
-                console.error('Error fetching trending:', error);
+                console.error('Error fetching OTT content:', error);
             }
         }
 
-        // Search Movies & Shows
+        // Global Search
         async function searchMovies() {
             const query = document.getElementById('searchInput').value;
             const resultsDiv = document.getElementById('searchResults');
@@ -125,34 +269,101 @@
             }
         }
 
-        // Display Movies in Grid
+        // Display Grid Cards
         function displayMovies(movies, elementId, showAddButton = false) {
             const container = document.getElementById(elementId);
             container.innerHTML = '';
 
             movies.forEach(movie => {
-                if (!movie.poster_path) return; // Skip if no poster
+                if (!movie.poster_path) return;
 
                 const title = movie.title || movie.name;
                 const date = movie.release_date || movie.first_air_date || 'N/A';
                 const year = date.split('-')[0];
+                const mediaType = movie.media_type || (movie.title ? 'movie' : 'tv');
 
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                    <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${title}">
-                    <h4>${title} (${year})</h4>
-                    ${showAddButton ? `<button onclick='addToDiary(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>Add to Diary</button>` : ''}
+                    <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${title}" onclick="openDetails(${movie.id}, '${mediaType}')">
+                    <h4 onclick="openDetails(${movie.id}, '${mediaType}')">${title} (${year})</h4>
+                    ${showAddButton ? `<button onclick='event.stopPropagation(); addToDiary(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>Add to Diary</button>` : ''}
                 `;
                 container.appendChild(card);
             });
         }
 
-        // Add to Watched Diary (Saved in LocalStorage)
+        // Open Detailed Popup (Cast, Rating, Feedback)
+        async function openDetails(id, type) {
+            const modal = document.getElementById('detailsModal');
+            const modalBody = document.getElementById('modalBody');
+            modal.style.display = 'block';
+            modalBody.innerHTML = '<p>Loading details...</p>';
+
+            try {
+                // Fetch details and credits together
+                const [detailRes, creditRes] = await Promise.all([
+                    fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${API_KEY}`),
+                    fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=${API_KEY}`)
+                ]);
+
+                const details = await detailRes.json();
+                const credits = await creditRes.json();
+
+                const title = details.title || details.name;
+                const poster = details.poster_path ? IMAGE_BASE_URL + details.poster_path : '';
+                const rating = details.vote_average ? details.vote_average.toFixed(1) : 'N/A';
+                const overview = details.overview || 'No description available.';
+                const cast = credits.cast ? credits.cast.slice(0, 5).map(c => c.name).join(', ') : 'N/A';
+
+                // Fetch saved feedbacks for this item from localStorage
+                let feedbacks = JSON.parse(localStorage.getItem(`feedback_${id}`)) || [];
+
+                modalBody.innerHTML = `
+                    <div style="overflow:hidden;">
+                        ${poster ? `<img src="${poster}" alt="${title}">` : ''}
+                        <h2>${title}</h2>
+                        <p><strong>⭐ Rating:</strong> ${rating} / 10</p>
+                        <p><strong>🎭 Cast:</strong> ${cast}</p>
+                        <p><strong>📖 Overview:</strong> ${overview}</p>
+                    </div>
+                    <div class="feedback-box">
+                        <h4>My Personal Feedback / Notes</h4>
+                        <textarea id="feedbackInput" placeholder="Write your thoughts about this..."></textarea>
+                        <button onclick="saveFeedback(${id})" style="margin-top: 8px; background:#e50914; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Save Note</button>
+                        <div class="feedback-list" id="feedbackList">
+                            ${feedbacks.map(f => `<div class="feedback-item">${f}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                modalBody.innerHTML = '<p>Failed to load details.</p>';
+            }
+        }
+
+        // Save Feedback in LocalStorage
+        function saveFeedback(id) {
+            const input = document.getElementById('feedbackInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            let feedbacks = JSON.parse(localStorage.getItem(`feedback_${id}`)) || [];
+            feedbacks.push(text);
+            localStorage.setItem(`feedback_${id}`, JSON.stringify(feedbacks));
+
+            // Refresh feedback list inside modal
+            const listDiv = document.getElementById('feedbackList');
+            listDiv.innerHTML = feedbacks.map(f => `<div class="feedback-item">${f}</div>`).join('');
+            input.value = '';
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        // Add to Diary
         function addToDiary(movie) {
             let diary = JSON.parse(localStorage.getItem('myMovieDiary')) || [];
-            
-            // Check if already added
             if (!diary.some(item => item.id === movie.id)) {
                 diary.push(movie);
                 localStorage.setItem('myMovieDiary', JSON.stringify(diary));
@@ -163,15 +374,11 @@
             }
         }
 
-        // Load Watched Diary
+        // Load Diary
         function loadDiary() {
             let diary = JSON.parse(localStorage.getItem('myMovieDiary')) || [];
             displayMovies(diary, 'diaryGrid', false);
         }
-
-        // Run on page load
-        loadTrending();
-        loadDiary();
     </script>
 </body>
 </html>
