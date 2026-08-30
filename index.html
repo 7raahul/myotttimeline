@@ -62,7 +62,7 @@
         input[type="text"]:focus {
             box-shadow: 0 0 15px rgba(102, 252, 241, 0.4);
         }
-        /* OTT Logos Navbar */
+        /* OTT Logos Navbar - Maintained Original Logo Shape/Ratio */
         .ott-tabs {
             display: flex;
             gap: 15px;
@@ -70,33 +70,34 @@
             padding-bottom: 15px;
             margin-bottom: 20px;
             scrollbar-width: thin;
+            align-items: center;
         }
         .ott-tab {
             background: #1f2833;
             border: 2px solid transparent;
             color: #fff;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-weight: bold;
             white-space: nowrap;
-            transition: 0.3s;
+            transition: all 0.3s ease;
         }
         .ott-tab img {
-            width: 24px;
-            height: 24px;
+            height: 22px;
+            width: auto;
             object-fit: contain;
-            border-radius: 4px;
+            display: block;
         }
         .ott-tab.active, .ott-tab:hover {
             border-color: var(--accent);
             background: #2c3541;
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
-        /* Sub-filters (Trending / This Week / Popular) */
         .sub-filters {
             display: flex;
             gap: 10px;
@@ -110,6 +111,7 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 13px;
+            transition: 0.2s;
         }
         .sub-btn.active-sub {
             background: var(--accent);
@@ -135,13 +137,13 @@
             overflow: hidden;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #2c3541;
             position: relative;
         }
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
         }
         .card img {
             width: 100%;
@@ -170,11 +172,67 @@
             border-radius: 5px;
             font-size: 11px;
             font-weight: bold;
+            transition: 0.2s;
         }
+        .action-btn:hover { opacity: 0.85; }
         .schedule-btn {
             background: #45a29e;
             color: #000;
         }
+
+        /* Timeline Diary Section Styles */
+        .timeline-container {
+            margin-top: 50px;
+            border-top: 2px solid #1f2833;
+            padding-top: 30px;
+        }
+        .timeline-year-group {
+            margin-bottom: 30px;
+        }
+        .timeline-year-title {
+            color: var(--accent);
+            font-size: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #30363d;
+            padding-bottom: 5px;
+        }
+        .diary-card-row {
+            display: flex;
+            align-items: center;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 12px;
+            gap: 15px;
+            transition: 0.2s;
+        }
+        .diary-card-row:hover {
+            border-color: var(--accent);
+        }
+        .diary-card-row img {
+            width: 50px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .diary-info {
+            flex: 1;
+        }
+        .diary-info h4 {
+            margin: 0 0 5px 0;
+            color: #fff;
+            font-size: 16px;
+        }
+        .diary-date-badge {
+            background: #21262d;
+            color: var(--accent);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
         /* Modal Popup Styling */
         .modal {
             display: none;
@@ -184,7 +242,8 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.9);
+            background-color: rgba(0,0,0,0.88);
+            backdrop-filter: blur(5px);
             overflow-y: auto;
         }
         .modal-content {
@@ -196,7 +255,12 @@
             border-radius: 12px;
             border: 1px solid #30363d;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+            animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
         .close-btn {
             color: #8b949e;
@@ -206,6 +270,7 @@
             font-size: 30px;
             font-weight: bold;
             cursor: pointer;
+            transition: 0.2s;
         }
         .close-btn:hover { color: #fff; }
         .modal-header-flex {
@@ -221,30 +286,37 @@
         .modal-info {
             flex: 1;
         }
-        /* Cast Horizontal Scroll */
+        
+        /* Larger Cast Photos Layout */
         .cast-container {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             overflow-x: auto;
             padding: 10px 0;
             scrollbar-width: thin;
         }
         .cast-card {
-            min-width: 70px;
+            min-width: 90px;
             text-align: center;
         }
         .cast-card img {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--accent);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
         .cast-card p {
-            font-size: 11px;
-            margin: 5px 0 0 0;
+            font-size: 12px;
+            margin: 6px 0 0 0;
             color: #c5c6c7;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 90px;
         }
+
         .feedback-box {
             margin-top: 25px;
             border-top: 1px solid #30363d;
@@ -280,7 +352,7 @@
 
     <header>
         <h1>🎬 CineVault OTT Hub</h1>
-        <div class="visitor-badge">🟢 Live Active Visitors: <span id="visitorCount">42</span></div>
+        <div class="visitor-badge">🟢 Live Active Visitors: <span id="visitorCount">1</span></div>
     </header>
 
     <!-- Search Section -->
@@ -289,7 +361,7 @@
     </div>
     <div id="searchResults" class="grid"></div>
 
-    <!-- OTT Network Tabs with Original Logos -->
+    <!-- OTT Network Tabs with Original Logos (Disney+ Hotstar replaced with JioHotstar) -->
     <div class="ott-tabs">
         <div class="ott-tab active" onclick="switchOTT(8, 'Netflix', this)">
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix"> Netflix
@@ -297,8 +369,9 @@
         <div class="ott-tab" onclick="switchOTT(119, 'Prime Video', this)">
             <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg" alt="Prime"> Prime Video
         </div>
-        <div class="ott-tab" onclick="switchOTT(337, 'Disney+', this)">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="Disney+"> Disney+ Hotstar
+        <!-- JioHotstar Logo Representation -->
+        <div class="ott-tab" onclick="switchOTT(122, 'JioHotstar', this)">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="JioHotstar"> JioHotstar
         </div>
         <div class="ott-tab" onclick="switchOTT(350, 'Apple TV+', this)">
             <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Logo.svg" alt="Apple TV"> Apple TV+
@@ -321,16 +394,15 @@
     <h2 id="currentOttTitle" class="section-title">Netflix - Trending Content</h2>
     <div id="ottGrid" class="grid"></div>
 
-    <!-- Watched Diary & Schedule Section -->
-    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 50px;">
-        <div style="flex: 1; min-width: 300px; border-top: 2px solid #1f2833; padding-top: 20px;">
-            <h2>📖 My Watched Diary</h2>
-            <div id="diaryGrid" class="grid"></div>
-        </div>
-        <div style="flex: 1; min-width: 300px; border-top: 2px solid #1f2833; padding-top: 20px;">
-            <h2>🗓️ Planned Schedule (Kal / Parsu Kya Dekhu)</h2>
-            <div id="scheduleGrid" class="grid"></div>
-        </div>
+    <!-- Dedicated Watched Timeline & Schedule Section -->
+    <div class="timeline-container">
+        <h2>📖 My Watched History & Timeline</h2>
+        <div id="diaryTimelineContainer"></div>
+    </div>
+
+    <div style="margin-top: 40px; border-top: 2px solid #1f2833; padding-top: 20px;">
+        <h2>🗓️ Planned Schedule (Kal / Parsu Kya Dekhu)</h2>
+        <div id="scheduleGrid" class="grid"></div>
     </div>
 
     <!-- Detailed Rich Modal Popup -->
@@ -341,6 +413,18 @@
         </div>
     </div>
 
+    <!-- Date Picker Modal for Custom Watch Date Selection -->
+    <div id="dateModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <span class="close-btn" onclick="closeDateModal()">&times;</span>
+            <h3 style="color: var(--accent);">Select Watch Date</h3>
+            <p id="dateModalMovieTitle" style="color: #fff; font-weight: bold; margin-bottom: 15px;"></p>
+            <input type="date" id="customWatchDate" style="padding: 10px; border-radius: 6px; background: #0d1117; color: #fff; border: 1px solid #30363d; width: 80%; margin-bottom: 20px;">
+            <br>
+            <button onclick="confirmAddToDiary()" style="background: var(--accent); color: #000; font-weight: bold; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">Add to Timeline</button>
+        </div>
+    </div>
+
     <script>
         const API_KEY = '9c95420163879f1c4726c540b305cbc6';
         const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -348,19 +432,14 @@
         let currentProviderId = 8;
         let currentProviderName = 'Netflix';
         let currentSubMode = 'trending';
+        let pendingMovieObj = null;
 
-        // Real-time Visitor Live Simulation (Varying dynamically)
-        let baseVisitors = Math.floor(Math.random() * 30) + 35;
-        document.getElementById('visitorCount').innerText = baseVisitors;
-        setInterval(() => {
-            let change = Math.floor(Math.random() * 5) - 2;
-            baseVisitors = Math.max(15, baseVisitors + change);
-            document.getElementById('visitorCount').innerText = baseVisitors;
-        }, 5000);
+        // Fixed Realistic Visitor Counter (No random fake spikes)
+        document.getElementById('visitorCount').innerText = "1 (You)";
 
         // Initial Load
         switchOTT(8, 'Netflix', document.querySelector('.ott-tab'));
-        loadDiary();
+        loadDiaryTimeline();
         loadSchedule();
 
         function switchOTT(providerId, providerName, element) {
@@ -392,7 +471,6 @@
                 } else if(currentSubMode === 'popular') {
                     url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_watch_providers=${currentProviderId}&watch_region=IN&vote_count.gte=100&sort_by=vote_average.desc`;
                 } else if(currentSubMode === 'week') {
-                    // Recent releases filter
                     let d = new Date();
                     let pastDate = new Date(d.setDate(d.getDate() - 7)).toISOString().split('T')[0];
                     let today = new Date().toISOString().split('T')[0];
@@ -445,7 +523,7 @@
                     <h4 onclick="openDetails(${movie.id}, '${mediaType}')">${title} (${year})</h4>
                     ${showActions ? `
                         <div class="card-actions">
-                            <button class="action-btn" onclick='addToDiary(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>Watched</button>
+                            <button class="action-btn" onclick='openDateSelector(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>+ Watched</button>
                             <button class="action-btn schedule-btn" onclick='addToSchedule(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>Schedule</button>
                         </div>` : ''}
                 `;
@@ -453,7 +531,97 @@
             });
         }
 
-        // Detailed Modal Popup with Cast Photos & Feedback
+        // Open Date Selector Modal before saving to diary
+        function openDateSelector(movie) {
+            pendingMovieObj = movie;
+            const title = movie.title || movie.name;
+            document.getElementById('dateModalMovieTitle').innerText = title;
+            document.getElementById('customWatchDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('dateModal').style.display = 'block';
+        }
+
+        function closeDateModal() {
+            document.getElementById('dateModal').style.display = 'none';
+        }
+
+        function confirmAddToDiary() {
+            const watchDate = document.getElementById('customWatchDate').value;
+            if(!watchDate) {
+                alert('Please select a valid date!');
+                return;
+            }
+
+            let diary = JSON.parse(localStorage.getItem('myMovieDiaryTimeline')) || [];
+            
+            // Avoid duplicate additions of same entry ID
+            diary = diary.filter(item => item.id !== pendingMovieObj.id);
+            
+            pendingMovieObj.watchedDate = watchDate;
+            diary.push(pendingMovieObj);
+            
+            // Sort timeline by watch date descending (newest first)
+            diary.sort((a, b) => new Date(b.watchedDate) - new Date(a.watchedDate));
+
+            localStorage.setItem('myMovieDiaryTimeline', JSON.stringify(diary));
+            closeDateModal();
+            loadDiaryTimeline();
+            alert(`Added to your watched timeline on ${watchDate}!`);
+        }
+
+        // Render Timeline sorted year-wise / date-wise
+        function loadDiaryTimeline() {
+            const container = document.getElementById('diaryTimelineContainer');
+            let diary = JSON.parse(localStorage.getItem('myMovieDiaryTimeline')) || [];
+
+            if(diary.length === 0) {
+                container.innerHTML = '<p style="color: #8b949e;">Your watched timeline is empty. Click "+ Watched" on any movie to add it here!</p>';
+                return;
+            }
+
+            // Group by Year extracted from watchDate
+            let grouped = {};
+            diary.forEach(item => {
+                let year = item.watchedDate ? item.watchedDate.split('-')[0] : 'Unknown Year';
+                if(!grouped[year]) grouped[year] = [];
+                grouped[year].push(item);
+            });
+
+            let html = '';
+            Object.keys(grouped).sort((a,b) => b - a).forEach(year => {
+                html += `
+                    <div class="timeline-year-group">
+                        <div class="timeline-year-title">📅 Watched in ${year}</div>
+                `;
+                grouped[year].forEach(movie => {
+                    const title = movie.title || movie.name;
+                    const poster = movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : '';
+                    const mediaType = movie.media_type || (movie.title ? 'movie' : 'tv');
+
+                    html += `
+                        <div class="diary-card-row">
+                            <img src="${poster}" alt="${title}">
+                            <div class="diary-info">
+                                <h4 style="cursor:pointer;" onclick="openDetails(${movie.id}, '${mediaType}')">${title}</h4>
+                                <span class="diary-date-badge">Watched on: ${movie.watchedDate}</span>
+                            </div>
+                            <button onclick="removeFromDiary(${movie.id})" style="background:transparent; border:1px solid #e50914; color:#e50914; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:12px;">Remove</button>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function removeFromDiary(id) {
+            let diary = JSON.parse(localStorage.getItem('myMovieDiaryTimeline')) || [];
+            diary = diary.filter(item => item.id !== id);
+            localStorage.setItem('myMovieDiaryTimeline', JSON.stringify(diary));
+            loadDiaryTimeline();
+        }
+
+        // Detailed Modal Popup with Larger Cast Photos & Feedback
         async function openDetails(id, type) {
             const modal = document.getElementById('detailsModal');
             const modalBody = document.getElementById('modalBody');
@@ -491,8 +659,8 @@
                     <div class="cast-container">
                         ${castList.map(actor => `
                             <div class="cast-card">
-                                <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/60'}" alt="${actor.name}">
-                                <p>${actor.name}</p>
+                                <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/80'}" alt="${actor.name}">
+                                <p title="${actor.name}">${actor.name}</p>
                             </div>
                         `).join('')}
                     </div>
@@ -527,24 +695,6 @@
 
         function closeModal() {
             document.getElementById('detailsModal').style.display = 'none';
-        }
-
-        // Watched Diary Management
-        function addToDiary(movie) {
-            let diary = JSON.parse(localStorage.getItem('myMovieDiary')) || [];
-            if (!diary.some(item => item.id === movie.id)) {
-                diary.push(movie);
-                localStorage.setItem('myMovieDiary', JSON.stringify(diary));
-                loadDiary();
-                alert(`${movie.title || movie.name} added to Watched Diary!`);
-            } else {
-                alert('Already in your watched diary.');
-            }
-        }
-
-        function loadDiary() {
-            let diary = JSON.parse(localStorage.getItem('myMovieDiary')) || [];
-            displayMovies(diary, 'diaryGrid', false);
         }
 
         // Schedule / Plan Management (Kal kya dekhu)
