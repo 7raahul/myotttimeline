@@ -188,17 +188,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
       <div><h2 id="resultTitle">Trending Now</h2><p id="resultSub">What's popular this week.</p></div>
     </div>
     <div class="grid" id="results"></div>
-    <div id="loadMoreSentinel" style="height:2px;margin-top:28px"></div>
-  </section>
-
-  <section class="section">
-    <div class="section-head"><div><h2>Browse Collections</h2><p>Fast shortcuts for discovery.</p></div></div>
-    <div class="type-cards">
-      <div class="type-card" onclick="presetBrowse('movie','popular')"><b>🎬 Popular Movies</b><span>Currently popular movie picks</span></div>
-      <div class="type-card" onclick="presetBrowse('tv','popular')"><b>📺 Popular Series</b><span>Popular TV shows and series</span></div>
-      <div class="type-card" onclick="presetBrowse('movie','top_rated')"><b>⭐ High Rated</b><span>Highest rated movies</span></div>
-      <div class="type-card" onclick="presetBrowse('tv','top_rated')"><b>🏆 High Rated Series</b><span>Highest rated TV shows</span></div>
-    </div>
+    <div id="loadMoreSentinel" aria-hidden="true" style="height:1px;margin-top:1px"></div>
   </section>
 
   <section class="section">
@@ -343,6 +333,7 @@ function updateWatchNextHero(items){
   if(!heroCandidates.length)return;
   heroIndex=0;
   displayHeroItem();
+  startHeroAutoRotate();
 }
 
 function displayHeroItem(){
@@ -370,16 +361,28 @@ function openHeroDetails(){
   openDetails(x.id,typeOf(x));
 }
 
+function startHeroAutoRotate(){
+  clearInterval(window.__heroAutoTimer);
+  if(heroCandidates.length>1){
+    window.__heroAutoTimer=setInterval(()=>{
+      if(document.hidden)return;
+      nextHeroItem();
+    },4000);
+  }
+}
+
 function nextHeroItem(){
   if(!heroCandidates.length)return;
   heroIndex=(heroIndex+1)%heroCandidates.length;
   displayHeroItem();
+  startHeroAutoRotate();
 }
 
 function prevHeroItem(){
   if(!heroCandidates.length)return;
   heroIndex=(heroIndex-1+heroCandidates.length)%heroCandidates.length;
   displayHeroItem();
+  startHeroAutoRotate();
 }
 
 async function loadTrending(type="all",btn=null){
@@ -422,21 +425,36 @@ function updateLoadSentinel(){
   const sentinel=$("loadMoreSentinel");
   if(!sentinel)return;
   if(state.page<state.total){
-    sentinel.innerHTML='<div style="text-align:center;color:var(--muted);font-size:.8rem;padding:10px">Scroll for more</div>';
+    sentinel.innerHTML="";
   }else{
     sentinel.innerHTML="";
   }
 }
 
+let loadScrollBound=false;
 function setupInfiniteScroll(){
   const sentinel=$("loadMoreSentinel");
   if(!sentinel)return;
-  const observer=new IntersectionObserver(entries=>{
-    if(entries[0].isIntersecting && !state.loadingMore && state.page<state.total){
-      loadMore();
-    }
-  },{root:null,rootMargin:"700px 0px",threshold:0});
-  observer.observe(sentinel);
+
+  if(window.__cineInfiniteObserver) window.__cineInfiniteObserver.disconnect();
+  window.__cineInfiniteObserver=new IntersectionObserver(entries=>{
+    if(entries.some(e=>e.isIntersecting) && !state.loadingMore && state.page<state.total) loadMore();
+  },{root:null,rootMargin:"1400px 0px",threshold:0});
+  window.__cineInfiniteObserver.observe(sentinel);
+
+  if(!loadScrollBound){
+    loadScrollBound=true;
+    let ticking=false;
+    window.addEventListener("scroll",()=>{
+      if(ticking)return;
+      ticking=true;
+      requestAnimationFrame(()=>{
+        ticking=false;
+        const nearBottom=window.innerHeight+window.scrollY >= document.documentElement.scrollHeight-1200;
+        if(nearBottom && !state.loadingMore && state.page<state.total) loadMore();
+      });
+    },{passive:true});
+  }
 }
 
 async function search(q){
