@@ -173,6 +173,18 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
  .custom-filter-btn{width:100%;min-width:0}
  .custom-filter-menu{left:0;right:0;min-width:0;width:max-content;max-width:calc(100vw - 24px)}
 }
+/* Results pagination + back to top */
+.pagination{display:flex;justify-content:center;align-items:center;gap:7px;flex-wrap:wrap;padding:28px 0 8px}
+.page-btn{min-width:40px;height:38px;padding:0 11px;border:1px solid var(--line);border-radius:9px;background:#0b1722;color:#b9c8d5;font-weight:800;font-size:.78rem;cursor:pointer}
+.page-btn:hover:not(:disabled){background:#14283a;color:#fff;border-color:#365169}
+.page-btn.active{background:var(--green);border-color:var(--green);color:#071019}
+.page-btn:disabled{opacity:.4;cursor:not-allowed}
+.page-gap{color:#617487;padding:0 2px}
+.back-to-top{position:fixed;right:24px;bottom:24px;z-index:1800;width:46px;height:46px;border:1px solid #294052;border-radius:50%;background:rgba(10,21,32,.94);backdrop-filter:blur(12px);color:#d9e4ee;font-size:22px;font-weight:900;cursor:pointer;display:none;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.back-to-top.show{display:grid;place-items:center}
+.back-to-top:hover{background:var(--green);color:#071019;border-color:var(--green)}
+.compact-apply{background:var(--green)!important;color:#071019!important;border-color:var(--green)!important}
+.compact-apply:hover{filter:brightness(1.08);transform:translateY(-1px)}
 </style>
 </head>
 <body>
@@ -263,7 +275,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
       <div><h2 id="resultTitle">Trending Now</h2><p id="resultSub">What's popular this week.</p></div>
     </div>
     <div class="grid" id="results"></div>
-    <div id="loadMoreSentinel" aria-hidden="true" style="height:1px;margin-top:1px"></div>
+    <div id="pagination" class="pagination" aria-label="Results pagination"></div>
   </section>
 
   <section class="section">
@@ -271,6 +283,8 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
     <div id="timelineSection"></div>
   </section>
 </main>
+
+<button id="backToTop" class="back-to-top" onclick="goTop()" aria-label="Back to top" title="Back to top">↑</button>
 
 <footer class="container">
   <strong style="color:#fff">CineVerse</strong> uses the TMDB API but is not endorsed or certified by TMDB.
@@ -379,6 +393,20 @@ function fillGenres(id,type="movie",all=true){
   const s=$(id);s.innerHTML=all?'<option value="">All Genres</option>':'';
   (GENRES[type]||GENRES.movie).forEach(g=>s.insertAdjacentHTML("beforeend",`<option value="${g.id}">${g.n}</option>`));
 }
+function rebuildCustomFilter(id){
+  const w=document.querySelector(`.custom-filter[data-select="${id}"]`), sel=$(id);
+  if(!w||!sel)return;
+  const menu=w.querySelector(".custom-filter-menu"), btn=w.querySelector(".custom-filter-btn");
+  menu.innerHTML="";
+  [...sel.options].forEach((opt,idx)=>{
+    const b=document.createElement("button");
+    b.type="button";b.className="custom-filter-option"+(opt.selected?" selected":"");
+    b.textContent=opt.textContent;b.setAttribute("role","option");
+    b.onclick=()=>{sel.value=opt.value;sel.dispatchEvent(new Event("change",{bubbles:true}));closeCustomFilters();};
+    menu.appendChild(b);
+  });
+  const opt=sel.options[sel.selectedIndex];if(opt)btn.textContent=opt.textContent;
+}
 function initCustomFilters(){
   const filters=document.querySelectorAll(".custom-filter");
   filters.forEach(w=>{
@@ -427,7 +455,7 @@ function closeCustomFilters(){
 function initControls(){
   fillYears("browseYear");fillYears("pickerYear",true);fillRatings("browseRating");fillRatings("pickerRating");
   fillGenres("browseGenre","movie");fillGenres("pickerGenre","movie");
-  $("browseType").addEventListener("change",()=>{fillGenres("browseGenre",$("browseType").value);});
+  $("browseType").addEventListener("change",()=>{fillGenres("browseGenre",$("browseType").value);rebuildCustomFilter("browseGenre");});
   $("pickerType").addEventListener("change",()=>{fillGenres("pickerGenre",$("pickerType").value==="tv"?"tv":"movie");});
 }
 function showSkeleton(){
@@ -510,76 +538,107 @@ async function loadTrending(type="all",btn=null){
   document.querySelectorAll("header .nav-actions .pill").forEach(b=>b.classList.remove("active"));if(btn)btn.classList.add("active");
   $("resultTitle").textContent="Trending Now";$("resultSub").textContent="What's popular this week.";showSkeleton();
   try{
-    const d=await api(`/trending/${type}/week`,{language:"en-US",page:1});
-    state.total=Math.min(d.total_pages||1,20);state.items=(d.results||[]).filter(x=>x.media_type!=="person");updateWatchNextHero(state.items);renderItems();
+    const d=await fetchAppPage(1);
+    state.total=Math.max(1,Math.ceil((d.tmdbTotalPages||1)/TMDB_PAGES_PER_APP));state.items=d.items;updateWatchNextHero(state.items);renderItems();renderPagination();
   }catch(e){$("results").innerHTML=`<div class="message"><strong>Could not load TMDB</strong>Check your internet connection or API key.</div>`}
 }
-async function loadMore(){
-  if(state.loadingMore || state.page>=state.total) return;
-  state.loadingMore=true;
-  const sentinel=$("loadMoreSentinel");
-  if(sentinel) sentinel.innerHTML='<div style="text-align:center;color:var(--muted);font-size:.8rem;padding:10px">Loading more…</div>';
-  try{
-    state.page++;
+const APP_PAGE_SIZE=50;
+const TMDB_PAGES_PER_APP=3;
+
+async function fetchAppPage(appPage){
+  const first=(appPage-1)*TMDB_PAGES_PER_APP+1;
+  const pages=[];
+  let tmdbTotalPages=1;
+
+  for(let p=first;p<first+TMDB_PAGES_PER_APP;p++){
+    if(p>1 && p>tmdbTotalPages) break;
     let d;
     if(state.mode==="trending"){
-      d=await api(`/trending/${state.type}/week`,{language:"en-US",page:state.page});
+      d=await api(`/trending/${state.type}/week`,{language:"en-US",page:p});
     }else if(state.mode==="search"){
-      d=await api("/search/multi",{query:state.query,language:"en-US",include_adult:false,page:state.page});
+      d=await api("/search/multi",{query:state.query,language:"en-US",include_adult:false,page:p});
     }else{
-      d=await discover(state.page);
+      d=await discover(p);
     }
-    const more=(d.results||[]).filter(x=>x.media_type!=="person"&&(!state.type||state.type==="all"||typeOf(x)===state.type));
-    state.items.push(...more);
+    tmdbTotalPages=d.total_pages||1;
+    const valid=(d.results||[]).filter(x=>{
+      if(x.media_type==="person")return false;
+      if(state.mode==="trending" || state.mode==="search") {
+        return !state.type || state.type==="all" || typeOf(x)===state.type;
+      }
+      return true;
+    });
+    pages.push(...valid);
+    if(pages.length>=APP_PAGE_SIZE)break;
+  }
+
+  // Search/multi can lose people results; keep fetching until we have 50 or TMDB ends.
+  let p=first+pages.length>0?Math.floor((first-1)/1)+TMDB_PAGES_PER_APP: first;
+  let nextPage=first+TMDB_PAGES_PER_APP;
+  while(pages.length<APP_PAGE_SIZE && nextPage<=tmdbTotalPages){
+    let d;
+    if(state.mode==="trending"){
+      d=await api(`/trending/${state.type}/week`,{language:"en-US",page:nextPage});
+    }else if(state.mode==="search"){
+      d=await api("/search/multi",{query:state.query,language:"en-US",include_adult:false,page:nextPage});
+    }else{
+      d=await discover(nextPage);
+    }
+    tmdbTotalPages=d.total_pages||tmdbTotalPages;
+    pages.push(...(d.results||[]).filter(x=>x.media_type!=="person"&&(!state.type||state.type==="all"||typeOf(x)===state.type)));
+    nextPage++;
+  }
+
+  return {items:pages.slice(0,APP_PAGE_SIZE),tmdbTotalPages};
+}
+
+function renderPagination(){
+  const root=$("pagination");
+  if(!root)return;
+  const total=Math.max(1,state.total||1), current=state.page||1;
+  if(total<=1){root.innerHTML="";return;}
+
+  const nums=[];
+  const add=n=>{if(n>=1&&n<=total&&!nums.includes(n))nums.push(n)};
+  add(1);
+  for(let n=current-2;n<=current+2;n++)add(n);
+  add(total);
+
+  let last=0, out=`<button class="page-btn" ${current===1?"disabled":""} onclick="goPage(${current-1})">‹ Prev</button>`;
+  nums.forEach(n=>{
+    if(last && n-last>1)out+=`<span class="page-gap">…</span>`;
+    out+=`<button class="page-btn ${n===current?"active":""}" ${n===current?"aria-current=\"page\"":""} onclick="goPage(${n})">${n}</button>`;
+    last=n;
+  });
+  out+=`<button class="page-btn" ${current===total?"disabled":""} onclick="goPage(${current+1})">Next ›</button>`;
+  root.innerHTML=out;
+}
+
+async function goPage(page){
+  if(state.loadingMore || page<1 || page>state.total || page===state.page)return;
+  state.loadingMore=true;
+  state.page=page;
+  showSkeleton();
+  renderPagination();
+  try{
+    const d=await fetchAppPage(page);
+    state.items=d.items;
     renderItems();
+    window.scrollTo({top:Math.max(0,$("resultTitle").getBoundingClientRect().top+window.scrollY-90),behavior:"smooth"});
   }catch(e){
-    state.page=Math.max(1,state.page-1);
-    toast("Unable to load more");
+    toast("Unable to load this page");
   }finally{
     state.loadingMore=false;
-    updateLoadSentinel();
+    renderPagination();
   }
 }
 
-function updateLoadSentinel(){
-  const sentinel=$("loadMoreSentinel");
-  if(!sentinel)return;
-  if(state.page<state.total){
-    sentinel.innerHTML="";
-  }else{
-    sentinel.innerHTML="";
-  }
-}
-
-let loadScrollBound=false;
-function setupInfiniteScroll(){
-  const sentinel=$("loadMoreSentinel");
-  if(!sentinel)return;
-
-  if(window.__cineInfiniteObserver) window.__cineInfiniteObserver.disconnect();
-  window.__cineInfiniteObserver=new IntersectionObserver(entries=>{
-    if(entries.some(e=>e.isIntersecting) && !state.loadingMore && state.page<state.total) loadMore();
-  },{root:null,rootMargin:"1400px 0px",threshold:0});
-  window.__cineInfiniteObserver.observe(sentinel);
-
-  if(!loadScrollBound){
-    loadScrollBound=true;
-    let ticking=false;
-    window.addEventListener("scroll",()=>{
-      if(ticking)return;
-      ticking=true;
-      requestAnimationFrame(()=>{
-        ticking=false;
-        const nearBottom=window.innerHeight+window.scrollY >= document.documentElement.scrollHeight-1200;
-        if(nearBottom && !state.loadingMore && state.page<state.total) loadMore();
-      });
-    },{passive:true});
-  }
-}
+function updateLoadSentinel(){ renderPagination(); }
+function setupInfiniteScroll(){ renderPagination(); }
 
 async function search(q){
   state={...state,page:1,total:1,mode:"search",type:"all",query:q,items:[]};$("resultTitle").textContent=`Search: "${q}"`;$("resultSub").textContent="Movies and TV shows matching your search.";showSkeleton();
-  try{const d=await api("/search/multi",{query:q,language:"en-US",include_adult:false,page:1});state.total=Math.min(d.total_pages||1,20);state.items=(d.results||[]).filter(x=>x.media_type==="movie"||x.media_type==="tv");renderItems()}catch(e){toast("Search failed")}
+  try{const d=await api("/search/multi",{query:q,language:"en-US",include_adult:false,page:1});state.total=Math.max(1,Math.ceil((d.total_pages||1)/TMDB_PAGES_PER_APP));state.items=(d.results||[]).filter(x=>x.media_type==="movie"||x.media_type==="tv").slice(0,APP_PAGE_SIZE);renderItems();renderPagination()}catch(e){toast("Search failed")}
 }
 let searchTimer;
 $("search").addEventListener("input",e=>{clearTimeout(searchTimer);const q=e.target.value.trim();searchTimer=setTimeout(()=>q.length>=2?search(q):loadTrending("all",document.querySelector("header .nav-actions .pill")),400)});
@@ -596,7 +655,7 @@ async function discover(page=1){
 async function applyBrowse(){
   state={...state,page:1,total:1,mode:"discover",type:$("browseType").value,query:"",items:[]};
   $("resultTitle").textContent=`Browse ${state.type==="movie"?"Movies":"TV Shows"}`;$("resultSub").textContent=`${$("browseMode").selectedOptions[0].text} · filtered by your choices`;showSkeleton();
-  try{const d=await discover(1);state.total=Math.min(d.total_pages||1,20);state.items=d.results||[];renderItems();scrollToId("resultTitle")}catch(e){toast("Browse failed")}
+  try{const d=await fetchAppPage(1);state.total=Math.max(1,Math.ceil((d.tmdbTotalPages||1)/TMDB_PAGES_PER_APP));state.items=d.items;renderItems();renderPagination();scrollToId("resultTitle")}catch(e){toast("Browse failed")}
 }
 function presetBrowse(type,mode){$("browseType").value=type;$("browseMode").value=mode;fillGenres("browseGenre",type);applyBrowse();scrollToId("browse")}
 function quickBrowse(mode,btn){$("browseMode").value=mode;document.querySelectorAll(".quick").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");applyBrowse()}
@@ -863,11 +922,17 @@ async function pickRandom(){
 }
 $("pickerOverlay").addEventListener("click",e=>{if(e.target.id==="pickerOverlay")closePicker()});
 
+function goTop(){window.scrollTo({top:0,behavior:"smooth"});}
+window.addEventListener("scroll",()=>{
+  const b=$("backToTop");
+  if(b)b.classList.toggle("show",window.scrollY>500);
+},{passive:true});
+
 function scrollToId(id){const el=$(id);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})}
 function home(){window.scrollTo({top:0,behavior:"smooth"});$("search").value="";loadTrending()}
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),2400)}
 
-initControls();initCustomFilters();initCustomFilters();setupInfiniteScroll();loadTrending();renderTimeline();
+initControls();initCustomFilters();rebuildCustomFilter('browseGenre');setupInfiniteScroll();loadTrending();renderTimeline();
 </script>
 </body>
 </html>
