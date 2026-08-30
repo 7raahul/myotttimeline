@@ -35,14 +35,14 @@ header{position:sticky;top:0;z-index:1000;background:rgba(7,16,25,.84);backdrop-
 /* Compact Hero Banner */
 .hero{min-height:390px;margin:20px 0 30px;border:1px solid var(--line);border-radius:24px;overflow:hidden;position:relative;background:#0a151f;display:flex;align-items:stretch;box-shadow:var(--shadow)}
 .hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 50%,rgba(44,211,125,.08),transparent 34%),linear-gradient(90deg,#071019 0%,#071019 46%,rgba(7,16,25,.72) 72%,rgba(7,16,25,.38) 100%);pointer-events:none}
-.hero-content{padding:42px 44px;max-width:760px;position:relative;width:58%;z-index:2;display:flex;flex-direction:column;justify-content:center}
+.hero-content{padding:42px 44px;max-width:760px;position:relative;width:62%;z-index:2;display:flex;flex-direction:column;justify-content:center}
 .hero-recommendation-label{color:var(--accent);font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:1.8px;margin-bottom:10px}
 .hero-item-title{font-size:clamp(2rem,4vw,3.65rem);line-height:.98;letter-spacing:-2px;margin:0 0 14px;max-width:650px}
 .hero-item-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
 .hero-item-meta span{background:rgba(17,31,45,.92);border:1px solid var(--line);padding:7px 10px;border-radius:9px;font-size:.76rem;color:#d4dde5}
-.hero-item-meta .hero-rating{color:var(--gold);font-weight:900}
-.hero-poster-wrap{position:absolute;right:38px;top:26px;bottom:26px;width:min(250px,27%);z-index:2;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.hero-poster{height:100%;max-width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:15px;border:1px solid rgba(255,255,255,.13);box-shadow:0 22px 55px rgba(0,0,0,.48);transition:.25s}
+.hero-item-meta .hero-rating{color:var(--gold);font-weight:900}.hero-content .btn{align-self:flex-start;width:auto;display:inline-flex}
+.hero-poster-wrap{position:absolute;right:34px;top:50%;bottom:auto;transform:translateY(-50%);width:min(400px,34%);height:auto;aspect-ratio:16/9;z-index:2;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.hero-poster{width:100%;height:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:15px;border:1px solid rgba(255,255,255,.13);box-shadow:0 22px 55px rgba(0,0,0,.48);transition:.25s}
 .hero-poster-wrap:hover .hero-poster{transform:translateY(-4px) scale(1.015)}
 .hero-nav-buttons{position:absolute;right:30px;bottom:24px;z-index:4}
 
@@ -115,7 +115,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);f
 @media(max-width:950px){.grid{grid-template-columns:repeat(4,1fr)}.filter-grid{grid-template-columns:repeat(2,1fr)}.type-cards{grid-template-columns:repeat(2,1fr)}.detail-body{grid-template-columns:1fr}.detail-side{display:none}}
 @media(max-width:700px){
   .nav{flex-wrap:wrap;padding:10px 0}.search{order:3;flex-basis:100%;max-width:none;margin:10px 0 0}.nav-actions{margin-left:auto}.nav-btn{font-size:.75rem;padding:8px 10px}
-  .hero{min-height:330px}.hero-content{padding:28px 22px;width:68%;justify-content:flex-end}.hero-item-title{font-size:2rem;letter-spacing:-1px}.hero-poster-wrap{right:16px;top:22px;bottom:22px;width:30%}.hero-nav-buttons{right:16px;bottom:14px}
+  .hero{min-height:360px}.hero-content{padding:28px 22px;width:58%;justify-content:flex-end}.hero-item-title{font-size:2rem;letter-spacing:-1px}.hero-poster-wrap{right:16px;top:24px;bottom:auto;transform:none;width:38%;height:auto;aspect-ratio:16/9}.hero-nav-buttons{right:16px;bottom:14px}
   .grid{grid-template-columns:repeat(3,1fr);gap:11px}.section-head{align-items:flex-start;flex-direction:column}
   .filter-grid,.picker-grid{grid-template-columns:1fr}.type-cards{grid-template-columns:1fr 1fr}
   .detail-hero{height:470px}.detail-wrap{grid-template-columns:120px 1fr;gap:15px;margin-top:-110px;padding:0 20px}.detail-poster{width:120px}.detail-main h1{font-size:1.8rem;letter-spacing:-1px}.detail-body{padding:25px 20px}.cast-grid{grid-template-columns:repeat(4,1fr)}.episode-grid{grid-template-columns:1fr}
@@ -353,7 +353,7 @@ function displayHeroItem(){
   $("heroItemTitle").textContent=name;
   $("heroItemRating").textContent=`⭐ ${x.vote_average?Number(x.vote_average).toFixed(1):"N/A"}/10`;
   $("heroItemType").textContent=type==="movie"?"🎬 Movie":"📺 TV Series";
-  $("heroItemDate").textContent=date?`📅 ${prettyDate(date)}`:"📅 Release date unavailable";
+  $("heroItemDate").textContent=date?`📅 Release date: ${prettyDate(date)}`:"📅 Release date: Not available";
   const img=$("heroPoster");
   img.src=posterUrl||"";
   img.alt=name;
