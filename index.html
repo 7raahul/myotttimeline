@@ -32,7 +32,7 @@
             align-items: center;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         h1 {
             color: var(--text-white);
@@ -41,9 +41,58 @@
             font-weight: 800;
         }
         h1 span { color: var(--accent); }
-        
+
+        /* Modern Menu / Tab Toggle Bar */
+        .menu-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            overflow-x: auto;
+        }
+        .menu-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .menu-btn.active, .menu-btn:hover {
+            background: var(--accent);
+            color: #14181c;
+            border-color: var(--accent);
+        }
+
+        .action-toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .toolbar-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-white);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: border-color 0.2s;
+        }
+        .toolbar-btn:hover { border-color: var(--accent); }
+
         .search-container {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             text-align: center;
         }
         input[type="text"] {
@@ -61,7 +110,7 @@
         input[type="text"]:focus { border-color: var(--accent); }
 
         .section-title {
-            margin: 35px 0 15px 0;
+            margin: 25px 0 15px 0;
             font-size: 18px;
             color: var(--text-white);
             font-weight: 700;
@@ -109,7 +158,11 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 20px;
-            margin-top: 30px;
+            margin-top: 20px;
+            display: none;
+        }
+        .content-section.active-tab {
+            display: block;
         }
 
         .row-item {
@@ -121,6 +174,7 @@
             padding: 10px 15px;
             margin-bottom: 10px;
             gap: 15px;
+            cursor: pointer;
         }
         .row-item img {
             width: 45px;
@@ -278,7 +332,7 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Modern Date Picker Modal Style */
+        /* Date Picker Modal Style */
         .date-modal-box {
             background: var(--card-bg);
             margin: 20% auto;
@@ -302,6 +356,22 @@
             color-scheme: dark;
             outline: none;
         }
+        .load-more-container {
+            text-align: center;
+            margin: 20px 0 40px 0;
+        }
+        .load-more-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-white);
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .load-more-btn:hover { background: var(--border-color); }
     </style>
 </head>
 <body>
@@ -312,25 +382,42 @@
             <div id="syncStatus" style="font-size: 13px; color: var(--accent);">🟢 Active</div>
         </header>
 
-        <!-- Main Screen Sections -->
-        <div class="content-section">
-            <h2 class="section-title" style="margin-top:0;">📖 Watched Diary</h2>
-            <div id="diaryContainer"><p style="font-size: 13px;">No movies watched yet.</p></div>
+        <!-- Clean Menu Bar -->
+        <div class="menu-bar">
+            <button class="menu-btn active" onclick="switchTab('trending', this)">🔥 Explore Movies</button>
+            <button class="menu-btn" onclick="switchTab('diary', this)">📖 Watched Diary</button>
+            <button class="menu-btn" onclick="switchTab('watchlist', this)">🗓️ Watchlist</button>
         </div>
 
-        <div class="content-section">
-            <h2 class="section-title" style="margin-top:0;">🗓️ Watchlist / Schedule</h2>
-            <div id="watchlistContainer"><p style="font-size: 13px;">No movies in watchlist.</p></div>
+        <!-- Action Toolbar (Random Picker & Search) -->
+        <div class="action-toolbar">
+            <button class="toolbar-btn" onclick="pickRandomMovie()">
+                🎲 Random Picker
+            </button>
         </div>
 
-        <div class="search-container" style="margin-top: 40px;">
+        <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search movies, tv series..." oninput="searchMovies()">
         </div>
         <div id="searchResults" class="grid"></div>
 
-        <div class="content-section">
-            <h2 class="section-title" style="margin-top:0;">🔥 Trending Masterpieces</h2>
+        <!-- Tab Content Sections -->
+        <div id="tab-trending" class="content-section active-tab" style="background:transparent; border:none; padding:0;">
+            <h2 class="section-title" style="margin-top:0;">Trending Masterpieces</h2>
             <div id="trendingGrid" class="grid"></div>
+            <div class="load-more-container">
+                <button class="load-more-btn" onclick="loadMoreMovies()">Load More Movies...</button>
+            </div>
+        </div>
+
+        <div id="tab-diary" class="content-section">
+            <h2 class="section-title" style="margin-top:0;">📖 Watched Diary</h2>
+            <div id="diaryContainer"><p style="font-size: 13px;">No movies watched yet.</p></div>
+        </div>
+
+        <div id="tab-watchlist" class="content-section">
+            <h2 class="section-title" style="margin-top:0;">🗓️ Watchlist / Schedule</h2>
+            <div id="watchlistContainer"><p style="font-size: 13px;">No movies in watchlist.</p></div>
         </div>
     </div>
 
@@ -359,16 +446,47 @@
         const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/original';
 
         let activeMovieObj = null;
-        let activeTargetType = ''; // 'watched' or 'watchlist'
+        let activeTargetType = '';
+        let currentPage = 1;
+        let allTrendingMovies = [];
 
         loadTrending();
         renderLists();
 
+        function switchTab(tabName, btn) {
+            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-tab'));
+            
+            btn.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active-tab');
+        }
+
         async function loadTrending() {
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}`);
+                const res = await fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${TMDB_API_KEY}&page=${currentPage}`);
                 const data = await res.json();
-                displayMovies(data.results, 'trendingGrid');
+                allTrendingMovies = [...allTrendingMovies, ...data.results];
+                displayMovies(allTrendingMovies, 'trendingGrid');
+            } catch (err) { console.error(err); }
+        }
+
+        function loadMoreMovies() {
+            currentPage++;
+            loadTrending();
+        }
+
+        async function pickRandomMovie() {
+            // Pick a random page between 1 and 10 for high-rated movies
+            const randomPage = Math.floor(Math.random() * 10) + 1;
+            try {
+                const res = await fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${TMDB_API_KEY}&page=${randomPage}`);
+                const data = await res.json();
+                const movies = data.results.filter(m => m.poster_path);
+                if (movies.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * movies.length);
+                    const chosen = movies[randomIndex];
+                    openDetails(chosen.id, 'movie');
+                }
             } catch (err) { console.error(err); }
         }
 
@@ -419,7 +537,7 @@
                 const details = await detailRes.json();
                 const credits = await creditRes.json();
 
-                details.media_type = type; // ensure media type is stored
+                details.media_type = type;
                 activeMovieObj = details;
 
                 const title = details.title || details.name;
@@ -505,7 +623,7 @@
             const storageKey = activeTargetType === 'watched' ? 'cineVaultWatched' : 'cineVaultWatchlist';
             
             let list = JSON.parse(localStorage.getItem(storageKey)) || [];
-            list = list.filter(m => m.id !== activeMovieObj.id); // remove if already exists
+            list = list.filter(m => m.id !== activeMovieObj.id);
             
             activeMovieObj.targetDate = dateVal;
             list.push(activeMovieObj);
@@ -513,7 +631,6 @@
 
             closeDateModal();
             renderLists();
-            // refresh modal button active state
             openDetails(activeMovieObj.id, activeMovieObj.media_type);
         }
 
