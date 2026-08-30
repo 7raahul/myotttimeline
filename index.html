@@ -213,6 +213,12 @@ async function api(path,params={}){
   for(const [k,v] of Object.entries(params)) if(v!==undefined&&v!==null&&v!=="")u.searchParams.set(k,v);
   const r=await fetch(u);if(!r.ok)throw Error("TMDB "+r.status);return r.json();
 }
+function prettyDate(value){
+  if(!value)return "—";
+  const d=new Date(value+"T12:00:00");
+  if(Number.isNaN(d.getTime()))return value;
+  return d.toLocaleDateString("en-US",{day:"2-digit",month:"long",year:"numeric"});
+}
 function titleOf(x){return x.media_type==="movie"||x.title?x.title:x.name}
 function yearOf(x){const d=x.release_date||x.first_air_date;return d?d.slice(0,4):"—"}
 function typeOf(x){return x.media_type||(x.title?"movie":"tv")}
@@ -372,7 +378,10 @@ async function openDetails(id,type){
   try{
     const d=await api(`/${type}/${id}`,{language:"en-US",append_to_response:"credits"});
     renderDetails(d,type);
-  }catch(e){$("details").innerHTML=`<div class="message" style="min-height:100vh"><strong>Unable to load details</strong><button class="btn secondary" onclick="closeDetails()">Close</button></div>`}
+  }catch(e){
+    console.error("CineVerse details error:",e);
+    $("details").innerHTML=`<div class="message" style="min-height:100vh"><strong>Unable to load details</strong><p style="color:var(--muted);font-size:.8rem;margin:10px 0">Please check the TMDB connection and try again.</p><button class="btn secondary" onclick="closeDetails()">Close</button></div>`;
+  }
 }
 function renderDetails(d,type){
   const t=type==="movie"?d.title:d.name, date=d.release_date||d.first_air_date, genres=d.genres||[];
@@ -386,7 +395,7 @@ function renderDetails(d,type){
       <div class="detail-main">
         <h1>${esc(t)}</h1><div class="detail-tagline">${esc(d.tagline||"")}</div>
         <div class="detail-info-box">
-          <span class="info-chip rating-chip">⭐ ${r}/10</span><span class="info-chip">📅 Released: ${date?prettyDate(date):"—"}</span><span class="info-chip">${type==="movie"?"🎬 Movie":"📺 Series"}</span><span class="info-chip">⏱ ${runtime}</span>
+          <span class="info-chip rating-chip">⭐ ${r}/10</span><span class="info-chip">📅 Released: ${date?prettyDate(date):"Not available"}</span><span class="info-chip">${type==="movie"?"🎬 Movie":"📺 Series"}</span><span class="info-chip">⏱ ${runtime}</span>
         </div>
         <div class="genres">${genres.map(g=>`<span class="genre">${esc(g.name)}</span>`).join("")}</div>
         <div class="detail-actions">
