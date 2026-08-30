@@ -145,7 +145,6 @@
             color: #fff;
         }
 
-        /* Separate Sections Styling */
         .content-section {
             background: rgba(19, 27, 46, 0.5);
             border: 1px solid var(--border-color);
@@ -154,7 +153,6 @@
             margin-top: 40px;
         }
 
-        /* Timeline Diary & Schedule Rows */
         .diary-card-row {
             display: flex;
             align-items: center;
@@ -250,49 +248,54 @@
         }
         .close-btn:hover { color: #fff; background: var(--danger); border-color: var(--danger); }
         
+        /* Fixed Banner Layout */
         .modal-banner {
             position: relative;
             width: 100%;
-            height: 280px;
+            height: 320px;
             border-radius: 14px;
             overflow: hidden;
             margin-bottom: 25px;
             border: 1px solid var(--border-color);
+            background: #000;
         }
-        .modal-banner img {
+        .modal-banner img.backdrop-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.55);
+            filter: brightness(0.5);
         }
         .modal-banner-overlay {
             position: absolute;
             bottom: 20px;
-            left: 20px;
-            right: 20px;
+            left: 25px;
+            right: 25px;
             display: flex;
             align-items: flex-end;
             gap: 20px;
+            z-index: 2;
         }
         .modal-poster {
-            width: 115px;
-            height: 170px;
+            width: 120px;
+            height: 180px;
             border-radius: 10px;
             object-fit: cover;
             border: 2px solid var(--accent);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
             flex-shrink: 0;
+            background: #1e293b;
         }
         .modal-title-box h2 {
             margin: 0 0 8px 0;
             color: #fff;
-            font-size: 26px;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+            font-size: 28px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+            font-weight: 800;
         }
         .rating-badge {
-            background: rgba(19, 27, 46, 0.8);
+            background: rgba(19, 27, 46, 0.85);
             border: 1px solid var(--border-color);
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 8px;
             font-size: 13px;
             color: #fbbf24;
@@ -307,13 +310,21 @@
             font-weight: 700;
         }
 
-        /* Large Smooth Cast Grid */
+        /* Clean Cast Container without ugly scrollbars */
         .cast-container {
             display: flex;
             gap: 15px;
             overflow-x: auto;
-            padding-bottom: 10px;
+            padding: 5px 2px 15px 2px;
             scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--border-color);
+        }
+        .cast-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .cast-container::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
         }
         .cast-card {
             min-width: 95px;
@@ -327,6 +338,7 @@
             object-fit: cover;
             border: 2px solid var(--border-color);
             transition: 0.3s;
+            background: #1e293b;
         }
         .cast-card:hover img {
             border-color: var(--accent);
@@ -342,7 +354,6 @@
             max-width: 95px;
         }
 
-        /* Feedback Box */
         .feedback-box {
             margin-top: 30px;
             background: #0b0f19;
@@ -380,7 +391,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Modern Calendar Date Picker Modal */
         .date-picker-box {
             background: #0b0f19;
             border: 1px solid var(--border-color);
@@ -416,30 +426,26 @@
             <div class="visitor-badge">🟢 Active Visitors: 54</div>
         </header>
 
-        <!-- Search Section -->
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search across thousands of movies & TV series..." oninput="searchMovies()">
         </div>
         <div id="searchResults" class="grid"></div>
 
-        <!-- Comprehensive Trending / Masterpiece List -->
         <h2 class="section-title">🔥 Trending & Released Masterpieces</h2>
         <div id="trendingGrid" class="grid"></div>
 
-        <!-- Separate Section: Watched Diary Timeline -->
         <div class="content-section">
             <h2 class="section-title" style="margin-top: 0;">📖 My Watched Diary Timeline</h2>
             <div id="diaryTimelineContainer"></div>
         </div>
 
-        <!-- Separate Section: Planned Schedule -->
         <div class="content-section">
             <h2 class="section-title" style="margin-top: 0;">🗓️ Planned Watch Schedule (Kal / Parsu Kya Dekhu)</h2>
             <div id="scheduleGrid" class="grid"></div>
         </div>
     </div>
 
-    <!-- Modern Smooth Animated Modal for Details -->
+    <!-- Details Modal -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -447,7 +453,7 @@
         </div>
     </div>
 
-    <!-- Modern Calendar Date Picker Modal for Watched / Schedule -->
+    <!-- Date Picker Modal -->
     <div id="dateModal" class="modal">
         <div class="modal-content" style="max-width: 420px; text-align: center; margin: 15% auto;">
             <span class="close-btn" onclick="closeDateModal()">&times;</span>
@@ -467,7 +473,6 @@
 
         let pendingMovieObj = null;
 
-        // Initial Load of Large Catalog
         loadMassiveCatalog();
         loadDiaryTimeline();
         loadSchedule();
@@ -476,7 +481,6 @@
             const container = document.getElementById('trendingGrid');
             container.innerHTML = '<p style="color:var(--accent);">Loading massive collection...</p>';
             try {
-                // Fetching multiple pages/categories to make the list large and rich
                 const [trendRes, popMovieRes, popTvRes] = await Promise.all([
                     fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY}`),
                     fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=1`),
@@ -487,7 +491,6 @@
                 const movieData = await popMovieRes.json();
                 const tvData = await popTvRes.json();
 
-                // Combine and remove duplicates based on ID
                 let combined = [...trendData.results, ...movieData.results, ...tvData.results];
                 let uniqueMovies = Array.from(new Set(combined.map(a => a.id)))
                     .map(id => combined.find(a => a.id === id));
@@ -548,7 +551,6 @@
             });
         }
 
-        // Date Selector Modal Functions
         function openDateSelector(movie) {
             pendingMovieObj = movie;
             const title = movie.title || movie.name;
@@ -585,7 +587,6 @@
             loadDiaryTimeline();
         }
 
-        // Timeline Renderer
         function loadDiaryTimeline() {
             const container = document.getElementById('diaryTimelineContainer');
             let diary = JSON.parse(localStorage.getItem('myMovieDiaryTimeline')) || [];
@@ -634,7 +635,6 @@
             loadDiaryTimeline();
         }
 
-        // Modernized Modal with Smooth Animations & Large Cast Grid
         async function openDetails(id, type) {
             const modal = document.getElementById('detailsModal');
             const modalBody = document.getElementById('modalBody');
@@ -663,9 +663,9 @@
 
                 modalBody.innerHTML = `
                     <div class="modal-banner">
-                        ${backdrop ? `<img src="${backdrop}" alt="Banner">` : ''}
+                        ${backdrop ? `<img src="${backdrop}" class="backdrop-img" alt="Banner">` : ''}
                         <div class="modal-banner-overlay">
-                            ${poster ? `<img src="${poster}" class="modal-poster" alt="${title}">` : ''}
+                            ${poster ? `<img src="${poster}" class="modal-poster" alt="${title}">` : '<div class="modal-poster"></div>'}
                             <div class="modal-title-box">
                                 <h2>${title}</h2>
                                 <div class="rating-badge">⭐ ${rating} / 10</div>
@@ -722,7 +722,6 @@
             setTimeout(() => modal.style.display = 'none', 300);
         }
 
-        // Schedule / Planner Management
         function addToSchedule(movie) {
             let schedule = JSON.parse(localStorage.getItem('myMovieSchedule')) || [];
             if (!schedule.some(item => item.id === movie.id)) {
