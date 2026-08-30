@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineVault - Letterboxd Style</title>
+    <title>CineVault - Modern Letterboxd Style</title>
     <style>
         :root {
             --bg-color: #14181c;
@@ -73,7 +73,6 @@
             display: flex;
             gap: 12px;
             margin-bottom: 25px;
-            flex-wrap: wrap;
         }
         .toolbar-btn {
             background: var(--card-bg);
@@ -356,22 +355,13 @@
             color-scheme: dark;
             outline: none;
         }
-        .load-more-container {
+        .loader-trigger {
+            height: 30px;
             text-align: center;
-            margin: 20px 0 40px 0;
+            color: var(--text-main);
+            font-size: 13px;
+            margin: 20px 0;
         }
-        .load-more-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-white);
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .load-more-btn:hover { background: var(--border-color); }
     </style>
 </head>
 <body>
@@ -382,14 +372,13 @@
             <div id="syncStatus" style="font-size: 13px; color: var(--accent);">🟢 Active</div>
         </header>
 
-        <!-- Clean Menu Bar -->
         <div class="menu-bar">
-            <button class="menu-btn active" onclick="switchTab('trending', this)">🔥 Explore Movies</button>
+            <button class="menu-btn active" onclick="switchTab('movies', this)">🎬 Movies</button>
+            <button class="menu-btn" onclick="switchTab('tv', this)">📺 TV Shows</button>
             <button class="menu-btn" onclick="switchTab('diary', this)">📖 Watched Diary</button>
             <button class="menu-btn" onclick="switchTab('watchlist', this)">🗓️ Watchlist</button>
         </div>
 
-        <!-- Action Toolbar (Random Picker & Search) -->
         <div class="action-toolbar">
             <button class="toolbar-btn" onclick="pickRandomMovie()">
                 🎲 Random Picker
@@ -397,17 +386,20 @@
         </div>
 
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search movies, tv series..." oninput="searchMovies()">
+            <input type="text" id="searchInput" placeholder="Search movies, tv series..." oninput="searchMedia()">
         </div>
         <div id="searchResults" class="grid"></div>
 
-        <!-- Tab Content Sections -->
-        <div id="tab-trending" class="content-section active-tab" style="background:transparent; border:none; padding:0;">
-            <h2 class="section-title" style="margin-top:0;">Trending Masterpieces</h2>
-            <div id="trendingGrid" class="grid"></div>
-            <div class="load-more-container">
-                <button class="load-more-btn" onclick="loadMoreMovies()">Load More Movies...</button>
-            </div>
+        <div id="tab-movies" class="content-section active-tab" style="background:transparent; border:none; padding:0;">
+            <h2 class="section-title" style="margin-top:0;">Top Movies</h2>
+            <div id="moviesGrid" class="grid"></div>
+            <div id="moviesLoader" class="loader-trigger">Loading more movies...</div>
+        </div>
+
+        <div id="tab-tv" class="content-section" style="background:transparent; border:none; padding:0;">
+            <h2 class="section-title" style="margin-top:0;">Top TV Shows</h2>
+            <div id="tvGrid" class="grid"></div>
+            <div id="tvLoader" class="loader-trigger">Loading more TV shows...</div>
         </div>
 
         <div id="tab-diary" class="content-section">
@@ -421,7 +413,6 @@
         </div>
     </div>
 
-    <!-- Letterboxd Style Modal -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&#10005;</span>
@@ -429,7 +420,6 @@
         </div>
     </div>
 
-    <!-- Date Picker Modal -->
     <div id="dateModal" class="modal">
         <div class="date-modal-box">
             <h3 id="dateModalTitle" style="color:#fff; margin-top:0; font-size:16px;">Select Date</h3>
@@ -447,50 +437,97 @@
 
         let activeMovieObj = null;
         let activeTargetType = '';
-        let currentPage = 1;
-        let allTrendingMovies = [];
+        
+        let moviePage = 1;
+        let tvPage = 1;
+        let currentTab = 'movies';
 
-        loadTrending();
-        renderLists();
+        initApp();
+
+        function initApp() {
+            loadMediaData('movie');
+            loadMediaData('tv');
+            renderLists();
+            setupInfiniteScroll();
+        }
 
         function switchTab(tabName, btn) {
             document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-tab'));
             
             btn.classList.add('active');
-            document.getElementById('tab-' + tabName).classList.add('active-tab');
+            currentTab = tabName;
+
+            if(tabName === 'movies' || tabName === 'tv') {
+                document.getElementById('tab-' + tabName).classList.add('active-tab');
+            } else {
+                document.getElementById('tab-' + tabName).classList.add('active-tab');
+            }
         }
 
-        async function loadTrending() {
+        async function loadMediaData(type) {
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${TMDB_API_KEY}&page=${currentPage}`);
+                let page = type === 'movie' ? moviePage : tvPage;
+                const res = await fetch(`https://api.themoviedb.org/3/${type}/top_rated?api_key=${TMDB_API_KEY}&page=${page}`);
                 const data = await res.json();
-                allTrendingMovies = [...allTrendingMovies, ...data.results];
-                displayMovies(allTrendingMovies, 'trendingGrid');
+                
+                appendMediaCards(data.results, type === 'movie' ? 'moviesGrid' : 'tvGrid', type);
             } catch (err) { console.error(err); }
         }
 
-        function loadMoreMovies() {
-            currentPage++;
-            loadTrending();
+        function appendMediaCards(items, elementId, mediaType) {
+            const container = document.getElementById(elementId);
+            items.forEach(item => {
+                if (!item.poster_path) return;
+                const title = item.title || item.name;
+                const date = item.release_date || item.first_air_date || '';
+                const year = date ? date.split('-')[0] : '';
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => openDetails(item.id, mediaType);
+                card.innerHTML = `
+                    <img src="${IMAGE_BASE_URL + item.poster_path}" alt="${title}">
+                    <h4>${title} ${year ? '('+year+')' : ''}</h4>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function setupInfiniteScroll() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (currentTab === 'movies') {
+                            moviePage++;
+                            loadMediaData('movie');
+                        } else if (currentTab === 'tv') {
+                            tvPage++;
+                            loadMediaData('tv');
+                        }
+                    }
+                });
+            }, { threshold: 1.0 });
+
+            observer.observe(document.getElementById('moviesLoader'));
+            observer.observe(document.getElementById('tvLoader'));
         }
 
         async function pickRandomMovie() {
-            // Pick a random page between 1 and 10 for high-rated movies
             const randomPage = Math.floor(Math.random() * 10) + 1;
+            const type = currentTab === 'tv' ? 'tv' : 'movie';
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${TMDB_API_KEY}&page=${randomPage}`);
+                const res = await fetch(`https://api.themoviedb.org/3/${type}/top_rated?api_key=${TMDB_API_KEY}&page=${randomPage}`);
                 const data = await res.json();
-                const movies = data.results.filter(m => m.poster_path);
-                if (movies.length > 0) {
-                    const randomIndex = Math.floor(Math.random() * movies.length);
-                    const chosen = movies[randomIndex];
-                    openDetails(chosen.id, 'movie');
+                const items = data.results.filter(m => m.poster_path);
+                if (items.length > 0) {
+                    const chosen = items[Math.floor(Math.random() * items.length)];
+                    openDetails(chosen.id, type);
                 }
             } catch (err) { console.error(err); }
         }
 
-        async function searchMovies() {
+        async function searchMedia() {
             const query = document.getElementById('searchInput').value;
             const resultsDiv = document.getElementById('searchResults');
             if (!query.trim()) { resultsDiv.innerHTML = ''; return; }
@@ -498,29 +535,24 @@
             try {
                 const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`);
                 const data = await res.json();
-                displayMovies(data.results, 'searchResults');
+                
+                resultsDiv.innerHTML = '';
+                data.results.forEach(item => {
+                    if (!item.poster_path || item.media_type === 'person') return;
+                    const title = item.title || item.name;
+                    const date = item.release_date || item.first_air_date || '';
+                    const year = date ? date.split('-')[0] : '';
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.onclick = () => openDetails(item.id, item.media_type);
+                    card.innerHTML = `
+                        <img src="${IMAGE_BASE_URL + item.poster_path}" alt="${title}">
+                        <h4>${title} ${year ? '('+year+')' : ''}</h4>
+                    `;
+                    resultsDiv.appendChild(card);
+                });
             } catch (err) { console.error(err); }
-        }
-
-        function displayMovies(movies, elementId) {
-            const container = document.getElementById(elementId);
-            container.innerHTML = '';
-            movies.forEach(movie => {
-                if (!movie.poster_path) return;
-                const title = movie.title || movie.name;
-                const date = movie.release_date || movie.first_air_date || '';
-                const year = date ? date.split('-')[0] : '';
-                const mediaType = movie.media_type || (movie.title ? 'movie' : 'tv');
-
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => openDetails(movie.id, mediaType);
-                card.innerHTML = `
-                    <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${title}">
-                    <h4>${title} ${year ? '('+year+')' : ''}</h4>
-                `;
-                container.appendChild(card);
-            });
         }
 
         async function openDetails(id, type) {
