@@ -547,6 +547,7 @@
         let currentTab = 'movies';
         let movieTrendingWindow = 'day';
         let tvTrendingWindow = 'day';
+        let isLoading = false;
 
         initApp();
 
@@ -567,6 +568,7 @@
         }
 
         function switchTrending(type, windowType, pillBtnElement) {
+            if (isLoading) return;
             if (type === 'movie') {
                 movieTrendingWindow = windowType;
                 moviePage = 1;
@@ -583,14 +585,21 @@
         }
 
         async function loadTrendingData(type, windowType, pageNum, reset = false) {
+            if (isLoading) return;
+            isLoading = true;
             try {
                 const res = await fetch(`https://api.themoviedb.org/3/trending/${type}/${windowType}?api_key=${TMDB_API_KEY}&page=${pageNum}`);
+                if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
                 
                 if(data.results) {
                     appendMediaCards(data.results, type === 'movie' ? 'moviesGrid' : 'tvGrid', type, reset);
                 }
-            } catch (err) { console.error("Error loading trending media:", err); }
+            } catch (err) { 
+                console.error("Error loading trending media:", err); 
+            } finally {
+                isLoading = false;
+            }
         }
 
         function appendMediaCards(items, elementId, mediaType, reset = false) {
@@ -602,7 +611,6 @@
                 const title = item.title || item.name;
                 const date = item.release_date || item.first_air_date || '';
                 const ratingNum = item.vote_average ? Math.round(item.vote_average * 10) : 0;
-                
                 item.vote_average = item.vote_average || 0;
 
                 const card = document.createElement('div');
@@ -610,7 +618,7 @@
                 card.onclick = () => openDetails(item.id, mediaType);
                 card.innerHTML = `
                     <div class="card-img-wrapper">
-                        <img src="${IMAGE_BASE_URL + item.poster_path}" alt="${title}">
+                        <img src="${IMAGE_BASE_URL + item.poster_path}" alt="${title}" loading="lazy">
                         <div class="card-rating">${ratingNum ? ratingNum + '%' : 'NR'}</div>
                     </div>
                     <h4>${title}</h4>
@@ -623,7 +631,7 @@
         function setupInfiniteScroll() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
+                    if (entry.isIntersecting && !isLoading) {
                         if (currentTab === 'movies') {
                             moviePage++;
                             loadTrendingData('movie', movieTrendingWindow, moviePage, false);
@@ -633,10 +641,12 @@
                         }
                     }
                 });
-            }, { threshold: 1.0 });
+            }, { threshold: 0.1 });
 
-            observer.observe(document.getElementById('moviesLoader'));
-            observer.observe(document.getElementById('tvLoader'));
+            const mLoader = document.getElementById('moviesLoader');
+            const tLoader = document.getElementById('tvLoader');
+            if (mLoader) observer.observe(mLoader);
+            if (tLoader) observer.observe(tLoader);
         }
 
         function openPickerChoiceModal() {
@@ -690,7 +700,7 @@
                         card.onclick = () => openDetails(item.id, item.media_type);
                         card.innerHTML = `
                             <div class="card-img-wrapper">
-                                <img src="${IMAGE_BASE_URL + item.poster_path}" alt="${title}">
+                                <img src="${IMAGE_BASE_URL + item.poster_path}" alt="${title}" loading="lazy">
                                 <div class="card-rating">${ratingNum ? ratingNum + '%' : 'NR'}</div>
                             </div>
                             <h4>${title}</h4>
@@ -740,4 +750,111 @@
 
                 modalBody.innerHTML = `
                     <div class="tmdb-hero" style="background-image: url('${backdrop}')">
-                        <div class="tmdb
+                        <div class="tmdb-hero-content">
+                            <img src="${poster}" class="tmdb-poster" alt="${title}">
+                            <div class="tmdb-details">
+                                <h2>${title} (${year})</h2>
+                                <div class="tmdb-meta">
+                                    <div class="user-score-box">
+                                        <div class="score-circle">${ratingPercent}%</div>
+                                        User Score
+                                    </div>
+                                </div>
+                                
+                                <div class="tmdb-actions">
+                                    <button class="circle-action-btn ${isWatched ? 'active' : ''}" onclick="triggerDateModal('watched')" title="Mark as Watched">
+                                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                                    </button>
+                                    <button class="circle-action-btn ${isInWatchlist ? 'active' : ''}" onclick="triggerDateModal('watchlist')" title="Add to Watchlist">
+                                        <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/></svg>
+                                    </button>
+                                </div>
+
+                                <h3 style="font-size:16px; margin:15px 0 5px 0;">Overview</h3>
+                                <p style="font-size:13px; line-height:1.5; color: #dbdbdb; margin:0;">${details.overview || 'No description available.'}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body-section">
+                        <h3 style="font-size:18px; margin-top:0; color:#fff;">Top Billed Cast</h3>
+                        <div class="cast-row">
+                            ${cast.map(actor => `
+                                <div class="cast-card">
+                                    <img src="${actor.profile_path ? IMAGE_BASE_URL + actor.profile_path : 'https://via.placeholder.com/130x150?text=No+Image'}" alt="${actor.name}">
+                                    <h5>${actor.name}</h5>
+                                    <p>${actor.character || ''}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                console.error("Failed to load details:", err);
+                modalBody.innerHTML = `<p style="text-align:center; color:orange; padding:30px;">Failed to load details. (${err.message})</p>`;
+            }
+        }
+
+        function triggerDateModal(type) {
+            activeTargetType = type;
+            const title = activeMovieObj.title || activeMovieObj.name;
+            document.getElementById('dateModalTitle').innerText = type === 'watched' ? 'Mark as Watched' : 'Add to Watchlist';
+            document.getElementById('dateModalMovieName').innerText = title;
+            document.getElementById('selectedDateInput').value = new Date().toISOString().split('T')[0];
+            document.getElementById('dateModal').style.display = 'block';
+        }
+
+        function closeDateModal() {
+            document.getElementById('dateModal').style.display = 'none';
+        }
+
+        function confirmDateSelection() {
+            const dateVal = document.getElementById('selectedDateInput').value;
+            const storageKey = activeTargetType === 'watched' ? 'cineVaultWatched' : 'cineVaultWatchlist';
+            
+            let list = JSON.parse(localStorage.getItem(storageKey)) || [];
+            list = list.filter(m => m.id !== activeMovieObj.id);
+            
+            activeMovieObj.targetDate = dateVal;
+            list.push(activeMovieObj);
+            localStorage.setItem(storageKey, JSON.stringify(list));
+
+            closeDateModal();
+            renderLists();
+            openDetails(activeMovieObj.id, activeMovieObj.media_type);
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        function renderLists() {
+            const watchedContainer = document.getElementById('diaryContainer');
+            const watchlistContainer = document.getElementById('watchlistContainer');
+
+            let watched = JSON.parse(localStorage.getItem('cineVaultWatched')) || [];
+            let watchlist = JSON.parse(localStorage.getItem('cineVaultWatchlist')) || [];
+
+            watchedContainer.innerHTML = watched.length === 0 ? '<p style="font-size: 13px; color:var(--text-main);">No media watched yet.</p>' : watched.map(m => `
+                <div class="row-item" onclick="openDetails(${m.id}, '${m.media_type || 'movie'}')">
+                    <img src="${m.poster_path ? IMAGE_BASE_URL + m.poster_path : ''}" alt="">
+                    <div style="flex:1;">
+                        <div style="color:#fff; font-weight:bold; font-size:14px;">${m.title || m.name}</div>
+                        <div style="font-size:12px; color:var(--accent);">Watched on: ${m.targetDate || 'N/A'}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            watchlistContainer.innerHTML = watchlist.length === 0 ? '<p style="font-size: 13px; color:var(--text-main);">No media in watchlist.</p>' : watchlist.map(m => `
+                <div class="row-item" onclick="openDetails(${m.id}, '${m.media_type || 'movie'}')">
+                    <img src="${m.poster_path ? IMAGE_BASE_URL + m.poster_path : ''}" alt="">
+                    <div style="flex:1;">
+                        <div style="color:#fff; font-weight:bold; font-size:14px;">${m.title || m.name}</div>
+                        <div style="font-size:12px; color:var(--accent);">Scheduled for: ${m.targetDate || 'N/A'}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
