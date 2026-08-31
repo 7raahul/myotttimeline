@@ -942,484 +942,596 @@
         display: none;
       }
     }
-  
-    /* =========================================================
-       MOBILE-ONLY UI POLISH
-       Desktop/web UI is intentionally untouched.
-       ========================================================= */
-    @media (max-width: 600px) {
-      html, body {
-        width: 100%;
-        max-width: 100%;
-        overflow: hidden;
-        -webkit-text-size-adjust: 100%;
-      }
-
-      body {
-        overscroll-behavior: none;
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      /* Compact mobile header — same features, cleaner spacing */
-      nav {
-        width: 100%;
-        min-width: 0;
-        height: 68px;
-        padding: 8px 12px;
-        gap: 10px;
-        justify-content: flex-start;
-        overflow: hidden;
-        position: relative;
-      }
-
-      .logo {
-        flex: 0 0 auto;
-        font-size: 21px;
-        letter-spacing: -0.4px;
-        padding: 0 2px;
-      }
-
-      .nav-links {
-        flex: 1 1 auto;
-        min-width: 0;
-        width: 0;
-        display: flex;
-        gap: 7px;
-        justify-content: flex-start;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scroll-behavior: smooth;
-        scrollbar-width: none;
-        padding: 2px 2px 4px;
-      }
-
-      .nav-links::-webkit-scrollbar {
-        display: none;
-      }
-
-      .nav-link {
-        flex: 0 0 auto;
-        min-height: 40px;
-        padding: 7px 10px;
-        font-size: 13px;
-        white-space: nowrap;
-        border-radius: 10px;
-      }
-
-      .nav-link.active {
-        background: rgba(255,255,255,.06);
-        color: #fff;
-      }
-
-      .btn-pick-top {
-        flex: 0 0 auto;
-        min-height: 42px;
-        padding: 7px 11px;
-        border-radius: 13px;
-        font-size: 12px;
-        white-space: nowrap;
-      }
-
-      /* Mobile page scrolling */
-      main {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        padding: 16px 14px calc(28px + env(safe-area-inset-bottom));
-        overflow-x: hidden;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-
-      main::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-      }
-
-      /* Search */
-      .discover-panel {
-        margin-bottom: 22px;
-      }
-
-      .search-box-wrapper {
-        width: 100%;
-        max-width: none;
-        margin: 2px 0 14px;
-      }
-
-      .search-input {
-        width: 100%;
-        height: 50px;
-        box-sizing: border-box;
-        padding: 0 14px 0 43px;
-        border-radius: 15px;
-        font-size: 15px;
-        border-color: rgba(255,255,255,.07);
-        box-shadow: 0 6px 22px rgba(0,0,0,.16);
-      }
-
-      .search-icon {
-        left: 15px;
-        font-size: 17px;
-      }
-
-      .search-suggestions {
-        max-height: 56vh;
-        border-radius: 14px;
-        margin-top: 7px;
-        box-shadow: 0 18px 40px rgba(0,0,0,.55);
-      }
-
-      .suggestion-item {
-        min-height: 62px;
-        padding: 9px 11px;
-        gap: 10px;
-      }
-
-      .suggestion-item img {
-        width: 40px;
-        height: 54px;
-        border-radius: 6px;
-      }
-
-      /* Four filters remain exactly the same features, but become compact 2x2 */
-      .filter-row {
-        width: 100%;
-        max-width: none;
-        margin: 0 0 18px;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .filter-control {
-        gap: 5px;
-        min-width: 0;
-      }
-
-      .filter-control span {
-        padding-left: 2px;
-        font-size: 9px;
-        letter-spacing: .65px;
-      }
-
-      .filter-control select {
-        height: 46px;
-        min-width: 0;
-        padding: 0 10px;
-        border-radius: 12px;
-        font-size: 13px;
-        box-sizing: border-box;
-        appearance: auto;
-      }
-
-      /* Results */
-      .filter-results-section {
-        margin-top: 4px;
-        margin-bottom: 22px;
-      }
-
-      .media-grid-5 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        margin-bottom: 22px;
-      }
-
-      .media-card {
-        min-width: 0;
-        border-radius: 12px;
-        border-color: rgba(255,255,255,.065);
-        box-shadow: 0 7px 20px rgba(0,0,0,.13);
-        transform: none !important;
-      }
-
-      .poster-wrap {
-        aspect-ratio: 2 / 3;
-      }
-
-      .card-badge {
-        top: 7px;
-        right: 7px;
-        padding: 4px 6px;
-        border-radius: 7px;
-        font-size: 10px;
-      }
-
-      .card-content {
-        padding: 8px 9px 10px;
-        gap: 3px;
-      }
-
-      .card-title {
-        font-size: 12px;
-        line-height: 1.3;
-      }
-
-      .card-meta {
-        font-size: 10px;
-      }
-
-      /* Home carousels */
-      .section-title {
-        margin-bottom: 10px;
-        gap: 10px;
-        align-items: flex-start;
-        font-size: 16px;
-        line-height: 1.25;
-      }
-
-      .section-title .nav-link {
-        font-size: 11px !important;
-        min-height: 32px;
-        padding: 4px 6px;
-      }
-
-      .carousel-container {
-        margin-bottom: 24px;
-      }
-
-      .carousel {
-        gap: 10px;
-        padding-bottom: 5px;
-        margin-right: -14px;
-        padding-right: 14px;
-        scroll-snap-type: x proximity;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-
-      .carousel::-webkit-scrollbar {
-        display: none;
-      }
-
-      .carousel .media-card {
-        flex: 0 0 145px !important;
-        scroll-snap-align: start;
-      }
-
-      /* Loading/empty states */
-      .filter-loading,
-      .filter-empty {
-        padding: 22px 8px;
-      }
-
-      /* Watch Journey stays the same concept, just tighter on phones */
-      .timeline-container {
-        gap: 12px;
-        padding-left: 17px;
-      }
-
-      .timeline-heading {
-        font-size: 14px;
-        padding-bottom: 9px;
-      }
-
-      .timeline-column {
-        gap: 12px;
-      }
-
-      .timeline-item {
-        min-height: 96px;
-        padding: 9px;
-        gap: 9px;
-        border-radius: 11px;
-      }
-
-      .timeline-item img {
-        width: 52px;
-        height: 74px;
-        border-radius: 6px;
-      }
-
-      .timeline-title {
-        font-size: 13px;
-      }
-
-      .timeline-type {
-        margin-bottom: 5px;
-        font-size: 9px;
-      }
-
-      .timeline-status {
-        font-size: 13px;
-      }
-
-      .timeline-date {
-        font-size: 10px;
-      }
-
-      /* Detail view — mobile-first without changing its features */
-      .page-view {
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .back-btn {
-        top: calc(10px + env(safe-area-inset-top));
-        left: 12px;
-        padding: 8px 12px;
-        border-radius: 12px;
-        font-size: 12px;
-      }
-
-      .hero-backdrop-container {
-        min-height: 430px;
-        padding: 72px 16px 24px;
-        background-position: center top;
-      }
-
-      .hero-content {
-        gap: 15px;
-        align-items: flex-start;
-      }
-
-      .hero-poster {
-        width: 125px;
-        border-radius: 11px;
-      }
-
-      .hero-info {
-        width: 100%;
-        gap: 8px;
-      }
-
-      .details-body {
-        padding: 24px 16px calc(34px + env(safe-area-inset-bottom));
-        gap: 22px;
-      }
-
-      .action-row {
-        width: 100%;
-        gap: 8px;
-      }
-
-      .btn-watched,
-      .btn-secondary {
-        min-height: 44px;
-        padding: 9px 13px;
-        border-radius: 11px;
-        font-size: 12px;
-      }
-
-      /* Schedule date picker */
-      .modal-overlay {
-        align-items: flex-end;
-        padding: 0;
-      }
-
-      .modal-box {
-        width: 100%;
-        max-width: none;
-        box-sizing: border-box;
-        padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
-        border-radius: 18px 18px 0 0;
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 0;
-        gap: 13px;
-        box-shadow: 0 -16px 40px rgba(0,0,0,.45);
-      }
-
-      .minimal-date-picker {
-        gap: 7px;
-      }
-
-      .minimal-select {
-        min-width: 0;
-        height: 46px;
-        padding: 0 9px;
-        border-radius: 10px;
-      }
-
-      /* OTT/cast/season horizontal areas */
-      .horizontal-scroll,
-      .seasons-tabs {
-        gap: 9px;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .horizontal-scroll::-webkit-scrollbar,
-      .seasons-tabs::-webkit-scrollbar {
-        display: none;
-      }
-
-      .cast-card {
-        flex: 0 0 86px;
-      }
-
-      .cast-card img {
-        width: 86px;
-        height: 86px;
-      }
-
-      /* Toast respects phone safe area */
-      .cinevo-toast {
-        top: calc(12px + env(safe-area-inset-top));
-        min-width: 0;
-        width: max-content;
-        max-width: calc(100vw - 28px);
-        padding: 11px 14px;
-        border-radius: 12px;
-      }
-
-      /* Hide desktop-style scroll-to-top control on touch screens.
-         Scrolling itself remains unchanged. */
-      .scroll-top-btn {
-        right: 12px;
-        bottom: calc(14px + env(safe-area-inset-bottom));
-        width: 38px;
-        height: 38px;
-      }
-    }
-
-    /* Very small phones */
-    @media (max-width: 380px) {
-      nav {
-        height: 64px;
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-
-      .logo {
-        font-size: 19px;
-      }
-
-      .nav-links {
-        gap: 5px;
-      }
-
-      .nav-link {
-        padding-left: 8px;
-        padding-right: 8px;
-        font-size: 12px;
-      }
-
-      .btn-pick-top {
-        padding-left: 9px;
-        padding-right: 9px;
-        font-size: 11px;
-      }
-
-      main {
-        padding-left: 12px;
-        padding-right: 12px;
-      }
-
-      .filter-row {
-        gap: 8px;
-      }
-
-      .carousel {
-        margin-right: -12px;
-        padding-right: 12px;
-      }
-
-      .carousel .media-card {
-        flex-basis: 137px !important;
-      }
-    }
-
   </style>
+
+/* =========================================================
+   CINEVO MOBILE UI — MOBILE ONLY
+   Desktop/Web UI is intentionally left untouched.
+   ========================================================= */
+@media (max-width: 600px) {
+  :root{
+    --m-bg:#08090d;
+    --m-card:#11141b;
+    --m-card2:#171b24;
+    --m-text:#f7f8fb;
+    --m-muted:#9298a7;
+    --m-line:rgba(255,255,255,.075);
+    --m-red:#ff453a;
+    --m-green:#31d56b;
+    --m-gold:#ffd43b;
+    --m-nav:74px;
+  }
+
+  html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden !important;
+    background:var(--m-bg) !important;
+  }
+
+  body{
+    display:block !important;
+  }
+
+  /* Desktop navigation is not redesigned or reused on mobile. */
+  body > nav{
+    display:none !important;
+  }
+
+  #appMain{
+    display:block !important;
+    width:100% !important;
+    height:100dvh !important;
+    max-width:none !important;
+    margin:0 !important;
+    padding:0 14px calc(var(--m-nav) + 24px + env(safe-area-inset-bottom)) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    scrollbar-width:none !important;
+    scrollbar-gutter:auto !important;
+    background:var(--m-bg);
+    -webkit-overflow-scrolling:touch;
+  }
+
+  #appMain::-webkit-scrollbar{display:none !important}
+
+  #homeView{
+    display:block;
+    padding-top:calc(8px + env(safe-area-inset-top));
+  }
+
+  /* Mobile top bar */
+  .mobile-topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    min-height:43px;
+    margin:0 1px 12px;
+  }
+
+  .mobile-logo{
+    font-size:25px;
+    line-height:1;
+    font-weight:950;
+    letter-spacing:-1.2px;
+    color:#fff;
+  }
+  .mobile-logo span{color:var(--m-red)}
+
+  .mobile-pick-btn{
+    border:1px solid var(--m-line);
+    background:rgba(24,27,35,.92);
+    color:var(--m-gold);
+    border-radius:13px;
+    min-height:39px;
+    padding:0 12px;
+    font-size:11px;
+    font-weight:850;
+    box-shadow:0 7px 20px rgba(0,0,0,.2);
+  }
+
+  /* Hero */
+  .mobile-hero{
+    position:relative;
+    margin:0 0 23px;
+    height:min(72vh,610px);
+    min-height:455px;
+    border-radius:27px;
+    overflow:hidden;
+    background:#11141b center/cover no-repeat;
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 20px 45px rgba(0,0,0,.4);
+    isolation:isolate;
+  }
+
+  .mobile-hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-2;
+    background:linear-gradient(180deg,rgba(0,0,0,.02) 15%,rgba(0,0,0,.12) 38%,rgba(0,0,0,.94) 100%);
+  }
+  .mobile-hero::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    background:linear-gradient(90deg,rgba(0,0,0,.12),transparent 55%,rgba(0,0,0,.25));
+  }
+
+  .mobile-hero-poster{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:-3;
+  }
+
+  .mobile-hero-badge{
+    position:absolute;
+    left:14px;
+    top:14px;
+    padding:9px 13px;
+    border:1px solid rgba(255,255,255,.25);
+    background:rgba(10,11,15,.72);
+    backdrop-filter:blur(13px);
+    -webkit-backdrop-filter:blur(13px);
+    border-radius:13px;
+    font-size:13px;
+    font-weight:850;
+    color:#fff;
+  }
+
+  .mobile-hero-actions{
+    position:absolute;
+    right:12px;
+    bottom:75px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    z-index:3;
+  }
+
+  .mobile-hero-action{
+    width:57px;
+    height:57px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.22);
+    background:rgba(12,14,18,.78);
+    color:#fff;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    box-shadow:0 9px 22px rgba(0,0,0,.32);
+  }
+
+  .mobile-hero-action.schedule{
+    width:62px;
+    height:62px;
+    background:rgba(235,238,245,.94);
+    color:#0c0e12;
+    font-size:23px;
+  }
+
+  .mobile-hero-copy{
+    position:absolute;
+    left:17px;
+    right:82px;
+    bottom:17px;
+  }
+
+  .mobile-hero-title{
+    font-size:27px;
+    line-height:1.05;
+    font-weight:950;
+    letter-spacing:-.7px;
+    margin-bottom:7px;
+    text-shadow:0 3px 18px #000;
+  }
+
+  .mobile-hero-meta{
+    color:#e4e6eb;
+    font-size:11px;
+    font-weight:650;
+    line-height:1.4;
+    text-shadow:0 2px 10px #000;
+  }
+
+  .mobile-hero-loading{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--m-muted);
+    font-size:12px;
+    background:#10131a;
+  }
+
+  /* Search */
+  .discover-panel{
+    margin-bottom:22px !important;
+  }
+
+  .search-box-wrapper{
+    max-width:none !important;
+    margin:0 0 10px !important;
+  }
+
+  .search-input{
+    height:51px !important;
+    padding:0 43px !important;
+    border-radius:15px !important;
+    background:var(--m-card) !important;
+    border:1px solid var(--m-line) !important;
+    font-size:14px !important;
+  }
+
+  .search-icon{
+    left:14px !important;
+    font-size:18px !important;
+  }
+
+  /* Compact filter chips */
+  .filter-row{
+    max-width:none !important;
+    margin:0 !important;
+    display:grid !important;
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:7px !important;
+  }
+
+  .filter-control{
+    display:block !important;
+  }
+
+  .filter-control span{
+    display:none !important;
+  }
+
+  .filter-control select{
+    width:100% !important;
+    height:40px !important;
+    min-width:0 !important;
+    padding:0 6px !important;
+    border-radius:11px !important;
+    background:var(--m-card) !important;
+    border:1px solid var(--m-line) !important;
+    font-size:10px !important;
+    font-weight:800 !important;
+    text-overflow:ellipsis;
+  }
+
+  /* Search/filter results */
+  .filter-results-section{
+    margin-bottom:22px !important;
+  }
+
+  .section-title{
+    font-size:17px !important;
+    margin:0 0 10px !important;
+    line-height:1.2 !important;
+  }
+
+  .section-title .nav-link{
+    font-size:10px !important;
+  }
+
+  .media-grid-5{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+
+  /* Home carousels */
+  .carousel-container{
+    margin:0 -14px 24px !important;
+    padding-left:14px !important;
+    padding-right:0 !important;
+  }
+
+  .carousel{
+    gap:10px !important;
+    padding-right:14px !important;
+    scrollbar-width:none !important;
+  }
+
+  .carousel::-webkit-scrollbar{display:none !important}
+
+  .media-card{
+    flex:0 0 143px !important;
+    width:143px !important;
+    border-radius:13px !important;
+    overflow:hidden !important;
+    background:var(--m-card) !important;
+    border:1px solid var(--m-line) !important;
+  }
+
+  .poster-wrap{
+    height:auto !important;
+    aspect-ratio:2/3 !important;
+  }
+
+  .poster-wrap img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+  }
+
+  .card-content{
+    padding:8px !important;
+  }
+
+  .card-title{
+    font-size:11px !important;
+    line-height:1.25 !important;
+  }
+
+  .card-meta{
+    font-size:9px !important;
+    margin-top:5px !important;
+  }
+
+  .card-badge{
+    font-size:9px !important;
+    padding:4px 6px !important;
+    border-radius:7px !important;
+  }
+
+  /* Full list / Pick / Journey mobile presentation */
+  #fullListView,#pickView,#journeyView{
+    padding-top:calc(8px + env(safe-area-inset-top));
+  }
+
+  #fullListView .media-grid-5{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+
+  #infiniteGridContainer .media-card{
+    width:100% !important;
+    flex:none !important;
+  }
+
+  #pickView > div{
+    max-width:none !important;
+    margin:10px auto !important;
+  }
+
+  #journeyView h2{
+    font-size:20px !important;
+    margin-bottom:17px !important;
+  }
+
+  .timeline-container{
+    display:block !important;
+  }
+
+  .timeline-column{
+    width:100% !important;
+    margin-bottom:24px !important;
+  }
+
+  .timeline-heading{
+    font-size:14px !important;
+    margin-bottom:9px !important;
+  }
+
+  .timeline-item{
+    min-height:92px !important;
+    padding:8px !important;
+    margin-bottom:8px !important;
+    border-radius:13px !important;
+  }
+
+  .timeline-item img{
+    width:54px !important;
+    height:78px !important;
+  }
+
+  .timeline-title{
+    font-size:12px !important;
+  }
+
+  .timeline-date,.timeline-status,.timeline-type{
+    font-size:9px !important;
+  }
+
+  /* Existing detail page becomes a full-screen mobile detail page.
+     No desktop layout changes outside this media query. */
+  #detailView{
+    position:fixed !important;
+    inset:0 !important;
+    z-index:6000 !important;
+    width:100% !important;
+    height:100dvh !important;
+    overflow-y:auto !important;
+    background:var(--m-bg) !important;
+    padding:0 0 calc(22px + env(safe-area-inset-bottom)) !important;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  #detailView .back-btn{
+    position:sticky !important;
+    top:calc(8px + env(safe-area-inset-top)) !important;
+    z-index:20 !important;
+    margin:calc(8px + env(safe-area-inset-top)) 12px -42px !important;
+    background:rgba(10,11,15,.76) !important;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-radius:12px !important;
+    padding:9px 12px !important;
+  }
+
+  .hero-backdrop-container{
+    min-height:520px !important;
+    background-position:center !important;
+  }
+
+  .hero-content{
+    min-height:520px !important;
+    padding:78px 15px 20px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:flex-end !important;
+    align-items:flex-start !important;
+    gap:10px !important;
+  }
+
+  .hero-poster{
+    display:none !important;
+  }
+
+  .hero-info{
+    width:100% !important;
+  }
+
+  .hero-info h1{
+    font-size:28px !important;
+    margin-bottom:8px !important;
+  }
+
+  .hero-info > div{
+    flex-wrap:wrap !important;
+    gap:7px !important;
+    font-size:11px !important;
+  }
+
+  .hero-info > p{
+    font-size:12px !important;
+    line-height:1.5 !important;
+    max-width:none !important;
+    display:-webkit-box;
+    -webkit-line-clamp:5;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+
+  .action-row{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+  }
+
+  .action-row button{
+    min-height:45px !important;
+    border-radius:12px !important;
+    font-size:11px !important;
+  }
+
+  .details-body{
+    padding:18px 14px !important;
+  }
+
+  .horizontal-scroll{
+    overflow-x:auto !important;
+    scrollbar-width:none !important;
+  }
+  .horizontal-scroll::-webkit-scrollbar{display:none}
+
+  /* Date/schedule dialogs: clean mobile bottom sheet */
+  .modal-overlay{
+    align-items:flex-end !important;
+    padding:0 !important;
+  }
+
+  .modal-box{
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+    border-radius:22px 22px 0 0 !important;
+    padding:18px 15px calc(18px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .minimal-date-picker{
+    display:grid !important;
+    grid-template-columns:repeat(3,1fr) !important;
+    gap:7px !important;
+  }
+
+  .minimal-select{
+    min-width:0 !important;
+    height:44px !important;
+    border-radius:11px !important;
+  }
+
+  /* Floating toast */
+  .cinevo-toast{
+    top:calc(12px + env(safe-area-inset-top)) !important;
+    bottom:auto !important;
+    left:12px !important;
+    right:12px !important;
+    width:auto !important;
+    max-width:none !important;
+    transform:translateY(-150%) !important;
+  }
+
+  .cinevo-toast.show{
+    transform:translateY(0) !important;
+  }
+
+  /* Mobile bottom navigation */
+  .mobile-bottom-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:5000;
+    height:calc(var(--m-nav) + env(safe-area-inset-bottom));
+    padding:5px 9px env(safe-area-inset-bottom);
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:3px;
+    background:rgba(10,11,15,.94);
+    border-top:1px solid var(--m-line);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+  }
+
+  .mobile-bottom-nav button{
+    border:0;
+    background:transparent;
+    color:#7f8594;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:3px;
+    font-size:9px;
+    font-weight:800;
+  }
+
+  .mobile-bottom-nav .mobile-icon{
+    font-size:20px;
+    line-height:1;
+  }
+
+  .mobile-bottom-nav button.active{
+    color:#fff;
+    background:rgba(255,255,255,.055);
+  }
+
+  .mobile-bottom-nav button.active .mobile-icon{
+    color:var(--m-red);
+  }
+
+  #scrollTopBtn{
+    display:none !important;
+  }
+}
+
+@media (min-width:601px){
+  .mobile-topbar,
+  .mobile-hero,
+  .mobile-bottom-nav{
+    display:none !important;
+  }
+}
+
 </head>
 <body>
 
@@ -1436,6 +1548,34 @@
 
   <main id="appMain" onscroll="handleScrollEvents()">
     <div id="homeView">
+      
+<!-- =========================================================
+     MOBILE UI ONLY
+     ========================================================= -->
+<div class="mobile-topbar">
+  <div class="mobile-logo"><span>CineVo</span></div>
+  <button class="mobile-pick-btn" onclick="switchTab('pick')">🎲 Pick For Me</button>
+</div>
+
+<section id="mobileHero" class="mobile-hero" aria-label="Featured title">
+  <div class="mobile-hero-loading" id="mobileHeroLoading">Loading featured title...</div>
+  <img id="mobileHeroPoster" class="mobile-hero-poster hidden" alt="">
+  <div class="mobile-hero-badge">🆕 Newly Added</div>
+
+  <div class="mobile-hero-actions">
+    <button id="mobileHeroWatched" class="mobile-hero-action" title="Mark as Watched"
+            onclick="mobileHeroWatched()">✓</button>
+    <button class="mobile-hero-action schedule" title="Add to Schedule"
+            onclick="mobileHeroSchedule()">＋</button>
+  </div>
+
+  <div class="mobile-hero-copy">
+    <div id="mobileHeroTitle" class="mobile-hero-title">Featured</div>
+    <div id="mobileHeroMeta" class="mobile-hero-meta">Loading...</div>
+  </div>
+</section>
+
+
       <div class="discover-panel">
         <div class="search-box-wrapper">
           <span class="search-icon">🔍</span>
@@ -2494,5 +2634,224 @@
 
     window.onload = initApp;
   </script>
+<nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+  <button data-mobile-tab="home" class="active" onclick="mobileNavigate('home')">
+    <span class="mobile-icon">⌂</span><span>Home</span>
+  </button>
+  <button data-mobile-tab="movies" onclick="mobileNavigate('movies')">
+    <span class="mobile-icon">🎬</span><span>Movies</span>
+  </button>
+  <button data-mobile-tab="search" onclick="mobileNavigate('search')">
+    <span class="mobile-icon">⌕</span><span>Search</span>
+  </button>
+  <button data-mobile-tab="schedule" onclick="mobileNavigate('schedule')">
+    <span class="mobile-icon">＋</span><span>Schedule</span>
+  </button>
+  <button data-mobile-tab="journey" onclick="mobileNavigate('journey')">
+    <span class="mobile-icon">◷</span><span>Journey</span>
+  </button>
+</nav>
+
+<script>
+/* =========================================================
+   CINEVO MOBILE CONTROLLER
+   Uses the existing working CineVo functions/data.
+   It does NOT modify the desktop UI.
+   ========================================================= */
+
+let mobileFeaturedItem = null;
+let mobileFeaturedType = 'movie';
+
+function mobileSetNav(tab){
+  document.querySelectorAll('.mobile-bottom-nav button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mobileTab === tab);
+  });
+}
+
+function mobileNavigate(tab){
+  if(tab === 'home'){
+    mobileSetNav('home');
+    switchTab('home');
+    return;
+  }
+
+  if(tab === 'movies'){
+    mobileSetNav('movies');
+    switchTab('fullList','movie');
+    return;
+  }
+
+  if(tab === 'search'){
+    mobileSetNav('search');
+    switchTab('home');
+    const input = document.getElementById('mainSearchInput');
+    if(input){
+      setTimeout(() => {
+        input.focus();
+        document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
+      },50);
+    }
+    return;
+  }
+
+  if(tab === 'schedule'){
+    mobileSetNav('journey');
+    switchTab('journey');
+    setTimeout(() => {
+      const target = document.querySelector('.scheduled-heading');
+      if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+    },100);
+    return;
+  }
+
+  if(tab === 'journey'){
+    mobileSetNav('journey');
+    switchTab('journey');
+  }
+}
+
+function mobilePrepareFeatured(item,type){
+  if(!item) return;
+
+  mobileFeaturedItem = {
+    id:item.id,
+    title:item.title || item.name || 'Untitled',
+    poster:item.poster_path || null,
+    type:type
+  };
+  mobileFeaturedType = type;
+
+  const poster = document.getElementById('mobileHeroPoster');
+  const title = document.getElementById('mobileHeroTitle');
+  const meta = document.getElementById('mobileHeroMeta');
+  const loading = document.getElementById('mobileHeroLoading');
+  const watchedBtn = document.getElementById('mobileHeroWatched');
+
+  if(!poster || !title || !meta) return;
+
+  const image = item.poster_path
+    ? IMG_BASE + item.poster_path
+    : (item.backdrop_path ? BACKDROP_BASE + item.backdrop_path : '');
+
+  if(image){
+    poster.src = image;
+    poster.classList.remove('hidden');
+  }
+
+  title.textContent = item.title || item.name || 'Untitled';
+
+  const year = (item.release_date || item.first_air_date || '').split('-')[0] || 'N/A';
+  const rating = Number(item.vote_average || 0).toFixed(1);
+  const typeLabel = type === 'tv' ? 'TV Show' : 'Movie';
+
+  meta.textContent = `${year} • ${typeLabel} • ★ ${rating}`;
+
+  if(loading) loading.classList.add('hidden');
+
+  if(watchedBtn){
+    const watched = checkIfWatched(item.id);
+    watchedBtn.textContent = watched ? '✓' : '✓';
+    watchedBtn.style.background = watched ? 'rgba(49,213,107,.20)' : 'rgba(12,14,18,.78)';
+    watchedBtn.style.color = watched ? '#31d56b' : '#fff';
+  }
+}
+
+async function mobileLoadFeatured(){
+  try{
+    const res = await fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=en-US`);
+    const data = await res.json();
+    let item = (data.results || []).find(x => x && x.poster_path) || data.results?.[0];
+
+    if(!item){
+      const tvRes = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=en-US`);
+      const tvData = await tvRes.json();
+      item = (tvData.results || []).find(x => x && x.poster_path);
+      if(item) mobileFeaturedType = 'tv';
+    }
+
+    if(!item) return;
+
+    let type = mobileFeaturedType || 'movie';
+    mobilePrepareFeatured(item,type);
+
+    /* Get richer metadata for the hero without changing any existing app logic. */
+    try{
+      const detailRes = await fetch(`${BASE_URL}/${type}/${item.id}?api_key=${API_KEY}&language=en-US`);
+      const detail = await detailRes.json();
+
+      mobileFeaturedItem = {
+        id:item.id,
+        title:detail.title || detail.name || item.title || item.name,
+        poster:detail.poster_path || item.poster_path || null,
+        type:type
+      };
+
+      const poster = document.getElementById('mobileHeroPoster');
+      const title = document.getElementById('mobileHeroTitle');
+      const meta = document.getElementById('mobileHeroMeta');
+
+      if(poster && detail.poster_path) poster.src = IMG_BASE + detail.poster_path;
+      if(title) title.textContent = detail.title || detail.name || item.title || item.name;
+
+      const year = (detail.release_date || detail.first_air_date || '').split('-')[0] || 'N/A';
+      const langs = (detail.spoken_languages || []).map(x => x.name || x.english_name).filter(Boolean);
+      const genre = (detail.genres || []).slice(0,1).map(x => x.name).join('');
+      const langText = langs.length ? `${langs.length} Language${langs.length > 1 ? 's':''}` : 'Language N/A';
+      const typeText = type === 'tv' ? 'TV Show' : 'Movie';
+
+      if(meta){
+        meta.textContent = `${year} • ${langText} • ${genre || typeText}`;
+      }
+    }catch(e){
+      console.warn('Mobile hero detail metadata failed:',e);
+    }
+  }catch(e){
+    console.warn('Mobile featured load failed:',e);
+    const loading = document.getElementById('mobileHeroLoading');
+    if(loading) loading.textContent = 'Featured title unavailable';
+  }
+}
+
+function mobileHeroWatched(){
+  if(!mobileFeaturedItem) return;
+  currentOpenItem = {...mobileFeaturedItem};
+  handleWatchedClick();
+}
+
+function mobileHeroSchedule(){
+  if(!mobileFeaturedItem) return;
+  currentOpenItem = {...mobileFeaturedItem};
+  handleScheduleClick();
+}
+
+function mobileRefreshWatchedButton(){
+  if(!mobileFeaturedItem) return;
+  const btn = document.getElementById('mobileHeroWatched');
+  if(!btn) return;
+  const watched = checkIfWatched(mobileFeaturedItem.id);
+  btn.style.background = watched ? 'rgba(49,213,107,.20)' : 'rgba(12,14,18,.78)';
+  btn.style.color = watched ? '#31d56b' : '#fff';
+}
+
+/* Keep mobile hero in sync after the existing watched workflow saves data. */
+const mobileOriginalConfirmMarkWatched = window.confirmMarkWatched;
+if(typeof mobileOriginalConfirmMarkWatched === 'function'){
+  window.confirmMarkWatched = function(){
+    const result = mobileOriginalConfirmMarkWatched.apply(this, arguments);
+    mobileRefreshWatchedButton();
+    return result;
+  };
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  /* Existing app still initializes exactly as before. */
+  setTimeout(mobileLoadFeatured,350);
+});
+
+window.addEventListener('load',()=>{
+  setTimeout(mobileLoadFeatured,100);
+});
+</script>
+
 </body>
 </html>
