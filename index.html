@@ -102,26 +102,37 @@
       padding: 24px;
     }
 
-    /* Search Section */
+    /* Compact Search Section with 40% Transparent Icon */
     .search-box-wrapper {
       position: relative;
-      margin-bottom: 24px;
+      max-width: 400px;
+      margin: 0 auto 24px auto;
     }
 
     .search-input {
       width: 100%;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      padding: 12px 18px;
+      padding: 10px 16px 10px 38px;
       border-radius: var(--radius);
       color: var(--text-main);
-      font-size: 15px;
+      font-size: 14px;
       outline: none;
       transition: border-color 0.2s;
     }
 
     .search-input:focus {
       border-color: var(--accent);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      opacity: 0.4;
+      pointer-events: none;
     }
 
     .search-suggestions {
@@ -160,29 +171,6 @@
       border-radius: 4px;
     }
 
-    /* Filters Bar */
-    .filters-bar {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 24px;
-      scrollbar-width: none;
-    }
-    .filters-bar::-webkit-scrollbar { display: none; }
-
-    .filter-select {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      outline: none;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
     /* Carousels & Sections */
     .section-title {
       font-size: 18px;
@@ -208,12 +196,18 @@
     }
     .carousel::-webkit-scrollbar { display: none; }
 
-    /* Media Cards */
+    /* Media Cards - Exactly 5 items per row configuration on desktop */
+    .media-grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
     .media-card {
       background: var(--bg-card);
       border-radius: var(--radius);
       overflow: hidden;
-      flex: 0 0 180px;
       display: flex;
       flex-direction: column;
       cursor: pointer;
@@ -276,15 +270,7 @@
       color: var(--text-muted);
     }
 
-    /* Grid Layout */
-    .media-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-
-    /* Details View Redesigned (Netflix Style Hero Header) */
+    /* Details View Redesigned */
     .page-view {
       position: fixed;
       inset: 0;
@@ -401,7 +387,6 @@
       cursor: pointer;
     }
 
-    /* Modal Popups for Date selection */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -433,7 +418,6 @@
       outline: none;
     }
 
-    /* Horizontal scroll lists */
     .horizontal-scroll {
       display: flex;
       gap: 12px;
@@ -480,7 +464,6 @@
       border-radius: 4px;
     }
 
-    /* Seasons Horizontal Tabs */
     .seasons-tabs {
       display: flex;
       gap: 8px;
@@ -510,7 +493,6 @@
       border-color: var(--text-main);
     }
 
-    /* Episodes Grid Section (Image 2 style) */
     .episodes-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
@@ -580,7 +562,41 @@
       cursor: pointer;
     }
 
-    @media (max-width: 900px) {
+    /* Scroll To Top Button */
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.2s;
+    }
+    .scroll-top-btn.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .scroll-top-btn:hover {
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 1024px) {
+      .media-grid-5 { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .media-grid-5 { grid-template-columns: repeat(2, 1fr); }
       .hero-content { flex-direction: column; align-items: flex-start; }
       .hero-poster { width: 140px; }
       .episodes-grid { grid-template-columns: 1fr; }
@@ -593,60 +609,48 @@
   <nav>
     <div class="logo" onclick="switchTab('home')">CineVo</div>
     <div class="nav-links">
-      <button class="nav-link active" onclick="switchTab('home')">Home</button>
+      <button class="nav-link active" id="navHome" onclick="switchTab('home')">Home</button>
+      <button class="nav-link" id="navMovies" onclick="switchTab('fullList', 'movie')">Movies</button>
+      <button class="nav-link" id="navTv" onclick="switchTab('fullList', 'tv')">TV Shows</button>
       <button class="btn-pick-top" onclick="switchTab('pick')">🎲 Pick For Me</button>
-      <button class="nav-link" onclick="switchTab('journey')">Watch Journey</button>
+      <button class="nav-link" id="navJourney" onclick="switchTab('journey')">Watch Journey</button>
     </div>
   </nav>
 
   <!-- Main Dynamic View Container -->
   <main id="appMain">
-    <!-- Home Content -->
+    <!-- Home View -->
     <div id="homeView">
       <div class="search-box-wrapper">
+        <span class="search-icon">🔍</span>
         <input type="text" class="search-input" id="mainSearchInput" placeholder="Search movies, TV shows..." oninput="handleSearchInput(this.value)">
         <div id="searchDropdown" class="search-suggestions hidden"></div>
       </div>
 
-      <!-- Filters -->
-      <div class="filters-bar">
-        <select class="filter-select" id="filterType" onchange="applyFilters()">
-          <option value="all">All (Movies + TV)</option>
-          <option value="movie">Movies Only</option>
-          <option value="tv">TV Shows Only</option>
-        </select>
-        <select class="filter-select" id="filterGenre" onchange="applyFilters()">
-          <option value="">All Genres</option>
-        </select>
-        <select class="filter-select" id="filterCountry" onchange="applyFilters()">
-          <option value="">All Countries</option>
-          <option value="US">United States</option>
-          <option value="IN">India</option>
-          <option value="GB">United Kingdom</option>
-          <option value="KR">South Korea</option>
-        </select>
-        <select class="filter-select" id="filterYear" onchange="applyFilters()">
-          <option value="">All Years</option>
-        </select>
+      <!-- Movies Section -->
+      <div class="section-title">
+        <span>Movies</span>
+        <button class="nav-link" style="font-size:12px;" onclick="switchTab('fullList', 'movie')">See All →</button>
       </div>
-
-      <!-- Filtered Results Grid -->
-      <div id="filteredSection" class="hidden">
-        <div class="section-title">Results</div>
-        <div class="media-grid" id="filteredGrid"></div>
-      </div>
-
-      <!-- Trending Movies Carousel -->
-      <div class="section-title">Trending Movies</div>
       <div class="carousel-container">
-        <div class="carousel" id="trendingMoviesCarousel"></div>
+        <div class="carousel" id="homeMoviesCarousel"></div>
       </div>
 
-      <!-- Trending TV Shows Carousel -->
-      <div class="section-title">Trending TV Shows</div>
-      <div class="carousel-container">
-        <div class="carousel" id="trendingTvCarousel"></div>
+      <!-- TV Shows Section -->
+      <div class="section-title">
+        <span>TV Shows</span>
+        <button class="nav-link" style="font-size:12px;" onclick="switchTab('fullList', 'tv')">See All →</button>
       </div>
+      <div class="carousel-container">
+        <div class="carousel" id="homeTvCarousel"></div>
+      </div>
+    </div>
+
+    <!-- Infinite Scroll List View (Movies or TV Shows exclusively) -->
+    <div id="fullListView" class="hidden">
+      <div class="section-title" id="fullListTitle">Movies</div>
+      <div class="media-grid-5" id="infiniteGridContainer"></div>
+      <div id="loadingMoreIndicator" style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">Loading more...</div>
     </div>
 
     <!-- Pick For Me Tab -->
@@ -666,13 +670,16 @@
     <div id="journeyView" class="hidden">
       <h2 style="margin-bottom: 16px;">⏱️ Watch Journey</h2>
       <h3 style="font-size:15px; color:var(--text-muted); margin-bottom:10px;">Watched Items</h3>
-      <div class="media-grid" id="watchedGrid"></div>
+      <div class="media-grid-5" id="watchedGrid"></div>
       <h3 style="font-size:15px; color:var(--text-muted); margin: 20px 0 10px;">Scheduled Items</h3>
-      <div class="media-grid" id="scheduledGrid"></div>
+      <div class="media-grid-5" id="scheduledGrid"></div>
     </div>
   </main>
 
-  <!-- Detail Page View (Netflix / Image 1 & 2 Style) -->
+  <!-- Scroll To Top Button -->
+  <button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+
+  <!-- Detail Page View -->
   <div id="detailView" class="page-view">
     <button class="back-btn" onclick="closeDetails()">← Back</button>
     <div id="detailsContainerContent"></div>
@@ -685,63 +692,37 @@
     const IMG_BASE = "https://image.tmdb.org/t/p/w500";
     const BACKDROP_BASE = "https://image.tmdb.org/t/p/original";
 
-    let state = {
-      activeTab: 'home',
-      genres: { movie: [], tv: [] }
+    let currentOpenItem = null;
+    let infiniteState = {
+      mediaType: 'movie',
+      page: 1,
+      loading: false,
+      hasMore: true
     };
 
-    let currentOpenItem = null;
-
     async function initApp() {
-      loadYears();
-      fetchGenres();
-      loadCarousels();
+      loadHomeCarousels();
+      window.addEventListener('scroll', handleScrollEvents);
     }
 
-    function loadYears() {
-      const yearSelect = document.getElementById('filterYear');
-      const currentYear = new Date().getFullYear();
-      for(let y = currentYear; y >= 1970; y--) {
-        yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
-      }
-    }
-
-    async function fetchGenres() {
+    async function loadHomeCarousels() {
       try {
         const [mRes, tvRes] = await Promise.all([
-          fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`),
-          fetch(`${BASE_URL}/genre/tv/list?api_key=${API_KEY}`)
-        ]);
-        const mData = await mRes.json();
-        const tvData = await tvRes.json();
-        state.genres.movie = mData.genres || [];
-        state.genres.tv = tvData.genres || [];
-        
-        const genreSelect = document.getElementById('filterGenre');
-        state.genres.movie.forEach(g => {
-          genreSelect.innerHTML += `<option value="${g.id}">${g.name}</option>`;
-        });
-      } catch(e) { console.error(e); }
-    }
-
-    async function loadCarousels() {
-      try {
-        const [mRes, tvRes] = await Promise.all([
-          fetch(`${BASE_URL}/trending/movie/day?api_key=${API_KEY}`),
-          fetch(`${BASE_URL}/trending/tv/day?api_key=${API_KEY}`)
+          fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=1`),
+          fetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&page=1`)
         ]);
         const mData = await mRes.json();
         const tvData = await tvRes.json();
 
-        renderCarousel(mData.results, 'trendingMoviesCarousel', 'movie');
-        renderCarousel(tvData.results, 'trendingTvCarousel', 'tv');
+        renderCarousel(mData.results, 'homeMoviesCarousel', 'movie');
+        renderCarousel(tvData.results, 'homeTvCarousel', 'tv');
       } catch(e) { console.error(e); }
     }
 
     function renderCarousel(items, containerId, mediaType) {
       const container = document.getElementById(containerId);
       container.innerHTML = items.map(item => `
-        <div class="media-card" onclick="openDetails(${item.id}, '${item.media_type || mediaType}')">
+        <div class="media-card" style="flex: 0 0 180px;" onclick="openDetails(${item.id}, '${mediaType}')">
           <div class="poster-wrap">
             <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/180x270?text=No+Image'}" alt="poster">
             <span class="card-badge">★ ${(item.vote_average || 0).toFixed(1)}</span>
@@ -750,26 +731,109 @@
             <div class="card-title">${item.title || item.name}</div>
             <div class="card-meta">
               <span>${(item.release_date || item.first_air_date || '').split('-')[0]}</span>
-              <span>${(item.media_type || mediaType).toUpperCase()}</span>
+              <span>${mediaType.toUpperCase()}</span>
             </div>
           </div>
         </div>
       `).join('');
     }
 
-    function switchTab(tabId) {
-      state.activeTab = tabId;
+    function switchTab(tabId, mediaType = 'movie') {
       document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
       document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
 
       if(tabId === 'home') {
         document.getElementById('homeView').classList.remove('hidden');
+        document.getElementById('navHome').classList.add('active');
+      } else if(tabId === 'fullList') {
+        document.getElementById('fullListView').classList.remove('hidden');
+        if(mediaType === 'movie') {
+          document.getElementById('navMovies').classList.add('active');
+          document.getElementById('fullListTitle').textContent = 'Movies';
+        } else {
+          document.getElementById('navTv').classList.add('active');
+          document.getElementById('fullListTitle').textContent = 'TV Shows';
+        }
+        initInfiniteList(mediaType);
       } else if(tabId === 'pick') {
         document.getElementById('pickView').classList.remove('hidden');
       } else if(tabId === 'journey') {
         document.getElementById('journeyView').classList.remove('hidden');
+        document.getElementById('navJourney').classList.add('active');
         renderWatchJourney();
       }
+      window.scrollTo(0, 0);
+    }
+
+    async function initInfiniteList(mediaType) {
+      infiniteState.mediaType = mediaType;
+      infiniteState.page = 1;
+      infiniteState.hasMore = true;
+      document.getElementById('infiniteGridContainer').innerHTML = '';
+      await loadMoreItems();
+    }
+
+    async function loadMoreItems() {
+      if(infiniteState.loading || !infiniteState.hasMore) return;
+      infiniteState.loading = true;
+      document.getElementById('loadingMoreIndicator').style.display = 'block';
+
+      try {
+        const res = await fetch(`${BASE_URL}/${infiniteState.mediaType}/popular?api_key=${API_KEY}&page=${infiniteState.page}`);
+        const data = await res.json();
+        const results = data.results || [];
+
+        if(results.length === 0) {
+          infiniteState.hasMore = false;
+        } else {
+          const container = document.getElementById('infiniteGridContainer');
+          container.insertAdjacentHTML('beforeend', results.map(item => `
+            <div class="media-card" onclick="openDetails(${item.id}, '${infiniteState.mediaType}')">
+              <div class="poster-wrap">
+                <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/180x270'}">
+                <span class="card-badge">★ ${(item.vote_average || 0).toFixed(1)}</span>
+              </div>
+              <div class="card-content">
+                <div class="card-title">${item.title || item.name}</div>
+                <div class="card-meta">
+                  <span>${(item.release_date || item.first_air_date || '').split('-')[0]}</span>
+                </div>
+              </div>
+            </div>
+          `).join(''));
+          infiniteState.page++;
+        }
+      } catch(e) { console.error(e); }
+
+      infiniteState.loading = false;
+      if(!infiniteState.hasMore) {
+        document.getElementById('loadingMoreIndicator').style.display = 'none';
+      }
+    }
+
+    function handleScrollEvents() {
+      // Scroll to Top visibility
+      const scrollTopBtn = document.getElementById('scrollTopBtn');
+      if(window.scrollY > 300) {
+        scrollTopBtn.classList.add('visible');
+      } else {
+        scrollTopBtn.classList.remove('visible');
+      }
+
+      // Infinite scroll trigger
+      const fullListView = document.getElementById('fullListView');
+      if(fullListView.classList.contains('hidden')) return;
+
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const threshold = document.documentElement.offsetHeight - 400;
+
+      if(scrollPosition >= threshold) {
+        loadMoreItems();
+      }
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     async function handleSearchInput(query) {
@@ -781,15 +845,15 @@
       try {
         const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
         const data = await res.json();
-        const results = (data.results || []).slice(0, 5);
+        const results = (data.results || []).filter(item => item.media_type === 'movie' || item.media_type === 'tv').slice(0, 5);
 
         if(results.length > 0) {
           dropdown.innerHTML = results.map(item => `
-            <div class="suggestion-item" onclick="openDetails(${item.id}, '${item.media_type || 'movie'}')">
+            <div class="suggestion-item" onclick="openDetails(${item.id}, '${item.media_type}')">
               <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/36x50'}">
               <div>
                 <div style="font-size:13px; font-weight:600;">${item.title || item.name}</div>
-                <div style="font-size:11px; color:var(--text-muted);">${(item.release_date || item.first_air_date || '').split('-')[0]} • ${(item.media_type || 'movie').toUpperCase()}</div>
+                <div style="font-size:11px; color:var(--text-muted);">${(item.release_date || item.first_air_date || '').split('-')[0]} • ${item.media_type.toUpperCase()}</div>
               </div>
             </div>
           `).join('');
@@ -798,48 +862,6 @@
           dropdown.classList.add('hidden');
         }
       } catch(e) { dropdown.classList.add('hidden'); }
-    }
-
-    async function applyFilters() {
-      const type = document.getElementById('filterType').value;
-      const genre = document.getElementById('filterGenre').value;
-      const country = document.getElementById('filterCountry').value;
-      const year = document.getElementById('filterYear').value;
-
-      const filteredSection = document.getElementById('filteredSection');
-      const grid = document.getElementById('filteredGrid');
-
-      filteredSection.classList.remove('hidden');
-      grid.innerHTML = '<div style="color:var(--text-muted);">Filtering...</div>';
-
-      let endpoint = type === 'tv' ? `${BASE_URL}/discover/tv` : `${BASE_URL}/discover/movie`;
-      if(type === 'all') endpoint = `${BASE_URL}/discover/movie`;
-
-      let url = `${endpoint}?api_key=${API_KEY}`;
-      if(genre) url += `&with_genres=${genre}`;
-      if(country) url += `&with_origin_country=${country}`;
-      if(year) url += `&primary_release_year=${year}&first_air_date_year=${year}`;
-
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        const results = data.results || [];
-        
-        grid.innerHTML = results.length ? results.map(item => `
-          <div class="media-card" onclick="openDetails(${item.id}, '${type === 'tv' ? 'tv' : 'movie'}')">
-            <div class="poster-wrap">
-              <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/180x270'}">
-              <span class="card-badge">★ ${(item.vote_average || 0).toFixed(1)}</span>
-            </div>
-            <div class="card-content">
-              <div class="card-title">${item.title || item.name}</div>
-              <div class="card-meta">
-                <span>${(item.release_date || item.first_air_date || '').split('-')[0]}</span>
-              </div>
-            </div>
-          </div>
-        `).join('') : '<div style="color:var(--text-muted);">No results found.</div>';
-      } catch(e) { grid.innerHTML = 'Error loading filter results.'; }
     }
 
     async function triggerRandomPick(mediaType) {
@@ -898,8 +920,10 @@
         let isWatched = checkIfWatched(id);
         const backdropUrl = detail.backdrop_path ? BACKDROP_BASE + detail.backdrop_path : '';
 
+        // Filter out seasons named "Specials" or with season_number === 0
+        let validSeasons = (detail.seasons || []).filter(s => s.season_number > 0 && !s.name.toLowerCase().includes('special'));
+
         container.innerHTML = `
-          <!-- Hero Section with Backdrop Background -->
           <div class="hero-backdrop-container" style="background-image: url('${backdropUrl}');">
             <div class="hero-content">
               <img class="hero-poster" src="${detail.poster_path ? IMG_BASE + detail.poster_path : 'https://via.placeholder.com/220x330'}">
@@ -910,7 +934,7 @@
                   <span>📅 ${detail.release_date || detail.first_air_date || 'N/A'}</span>
                   <span>★ <strong style="color:var(--imdb-yellow);">${(detail.vote_average || 0).toFixed(1)}</strong></span>
                   <span>🎬 ${(detail.genres || []).map(g => g.name).slice(0, 2).join(', ')}</span>
-                  <span>${mediaType === 'tv' ? (detail.number_of_seasons + ' Seasons') : (detail.runtime + ' mins')}</span>
+                  <span>${mediaType === 'tv' ? (validSeasons.length + ' Seasons') : (detail.runtime + ' mins')}</span>
                 </div>
                 <p style="font-size: 13px; color: #d1d5db; line-height: 1.5; max-width: 800px; margin-top: 4px;">${detail.overview || 'No overview available.'}</p>
                 <div class="action-row" style="margin-top: 8px;">
@@ -921,7 +945,6 @@
             </div>
           </div>
 
-          <!-- Body Content Section -->
           <div class="details-body">
             ${ottProviders.length ? `
               <div>
@@ -944,11 +967,11 @@
               </div>
             </div>
 
-            ${mediaType === 'tv' && detail.seasons ? `
+            ${mediaType === 'tv' && validSeasons.length ? `
               <div>
                 <h3 style="font-size:18px; margin-bottom:14px;">Seasons & Episodes</h3>
                 <div class="seasons-tabs" id="seasonsTabsContainer">
-                  ${detail.seasons.map((s, idx) => `
+                  ${validSeasons.map((s, idx) => `
                     <button class="season-tab-btn ${idx === 0 ? 'active' : ''}" onclick="fetchSeasonEpisodes(${id}, ${s.season_number}, this)">${s.name}</button>
                   `).join('')}
                 </div>
@@ -975,8 +998,8 @@
           </div>
         `;
 
-        if(mediaType === 'tv' && detail.seasons && detail.seasons.length > 0) {
-          fetchSeasonEpisodes(id, detail.seasons[0].season_number);
+        if(mediaType === 'tv' && validSeasons.length > 0) {
+          fetchSeasonEpisodes(id, validSeasons[0].season_number);
         }
 
       } catch(e) { container.innerHTML = '<div style="padding:40px;">Error loading details.</div>'; }
@@ -1085,14 +1108,14 @@
           <div class="poster-wrap"><img src="${IMG_BASE + i.poster}"></div>
           <div class="card-content"><div class="card-title">${i.title}</div><div class="card-meta">Watched: ${i.date}</div></div>
         </div>
-      `).join('') : '<div style="color:var(--text-muted); font-size:12px;">No watched items yet.</div>';
+      `).join('') : '<div style="color:var(--text-muted); font-size:12px; grid-column: 1/-1;">No watched items yet.</div>';
 
       document.getElementById('scheduledGrid').innerHTML = scheduled.length ? scheduled.map(i => `
         <div class="media-card" onclick="openDetails(${i.id}, '${i.type}')">
           <div class="poster-wrap"><img src="${IMG_BASE + i.poster}"></div>
           <div class="card-content"><div class="card-title">${i.title}</div><div class="card-meta">Date: ${i.date}</div></div>
         </div>
-      `).join('') : '<div style="color:var(--text-muted); font-size:12px;">No scheduled items.</div>';
+      `).join('') : '<div style="color:var(--text-muted); font-size:12px; grid-column: 1/-1;">No scheduled items.</div>';
     }
 
     window.onload = initApp;
