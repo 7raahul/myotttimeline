@@ -116,10 +116,11 @@
     main {
       flex: 1;
       overflow-y: auto;
-      max-width: 1400px;
       width: 100%;
-      margin: 0 auto;
+      max-width: none;
+      margin: 0;
       padding: 24px;
+      scrollbar-gutter: stable;
     }
 
     /* Search Section */
@@ -587,33 +588,47 @@
     .timeline-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 30px;
+      gap: 56px;
       position: relative;
+      padding: 8px 0 20px;
     }
+
     .timeline-container::before {
       content: '';
       position: absolute;
       left: 50%;
       top: 0;
       bottom: 0;
-      width: 2px;
-      background: var(--border);
+      width: 3px;
+      background: var(--accent);
       transform: translateX(-50%);
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(229, 9, 20, 0.25);
     }
 
     .timeline-column {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
     }
 
     .timeline-heading {
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text-main);
-      padding-bottom: 8px;
+      padding: 0 0 12px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 8px;
+      margin-bottom: 4px;
+    }
+
+    .timeline-heading.watched-heading {
+      color: #35d46a;
+    }
+
+    .timeline-heading.scheduled-heading {
+      color: var(--accent);
     }
 
     .timeline-item {
@@ -621,20 +636,127 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 12px;
+      min-height: 112px;
       display: flex;
       gap: 12px;
+      align-items: center;
+      position: relative;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
+
     .timeline-item:hover {
       transform: translateY(-2px);
       border-color: rgba(255,255,255,0.2);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     }
+
+    .timeline-item.watched-item {
+      margin-right: 22px;
+    }
+
+    .timeline-item.scheduled-item {
+      margin-left: 22px;
+    }
+
+    .timeline-item.watched-item::after,
+    .timeline-item.scheduled-item::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 24px;
+      height: 2px;
+      background: var(--accent);
+      transform: translateY(-50%);
+    }
+
+    .timeline-item.watched-item::after {
+      right: -24px;
+    }
+
+    .timeline-item.scheduled-item::before {
+      left: -24px;
+    }
+
+    .timeline-item.watched-item::before,
+    .timeline-item.scheduled-item::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      box-shadow: 0 0 0 4px var(--bg-main);
+    }
+
+    .timeline-item.watched-item::before {
+      right: -30px;
+    }
+
+    .timeline-item.scheduled-item::after {
+      left: -30px;
+    }
+
     .timeline-item img {
-      width: 50px;
-      height: 75px;
+      width: 58px;
+      height: 82px;
       object-fit: cover;
       border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .timeline-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .timeline-title {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .timeline-type {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.4px;
+    }
+
+    .timeline-status {
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      line-height: 1.1;
+    }
+
+    .timeline-status.watched {
+      color: #35d46a;
+    }
+
+    .timeline-status.scheduled {
+      color: var(--accent);
+    }
+
+    .timeline-date {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .timeline-empty {
+      color: var(--text-muted);
+      font-size: 12px;
+      padding: 14px 0;
     }
 
     /* Scroll To Top Button */
@@ -677,6 +799,34 @@
       .hero-content { flex-direction: column; align-items: flex-start; }
       .hero-poster { width: 140px; }
       .episodes-grid { grid-template-columns: 1fr; }
+
+      .timeline-container {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding-left: 18px;
+      }
+
+      .timeline-container::before {
+        left: 6px;
+        transform: none;
+      }
+
+      .timeline-item.watched-item,
+      .timeline-item.scheduled-item {
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      .timeline-item.watched-item::before,
+      .timeline-item.scheduled-item::after {
+        left: -17px;
+        right: auto;
+      }
+
+      .timeline-item.watched-item::after,
+      .timeline-item.scheduled-item::before {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -1131,23 +1281,41 @@
     function generateMinimalDateOptions() {
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       const currentYear = new Date().getFullYear();
-      let monthOpts = months.map((m, idx) => `<option value="${idx+1}">${m}</option>`).join('');
+      const currentMonth = new Date().getMonth() + 1;
+      const currentDay = new Date().getDate();
+
+      let dayOpts = '';
+      for(let d = 1; d <= 31; d++) {
+        dayOpts += `<option value="${d}" ${d === currentDay ? 'selected' : ''}>${String(d).padStart(2, '0')}</option>`;
+      }
+
+      let monthOpts = months.map((m, idx) =>
+        `<option value="${idx + 1}" ${idx + 1 === currentMonth ? 'selected' : ''}>${m}</option>`
+      ).join('');
+
       let yearOpts = '';
       for(let y = currentYear + 1; y >= currentYear - 5; y--) {
         yearOpts += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`;
       }
-      return { monthOpts, yearOpts };
+
+      return { dayOpts, monthOpts, yearOpts };
+    }
+
+    function formatJourneyDate(day, month, year) {
+      const d = String(day).padStart(2, '0');
+      const m = String(month).padStart(2, '0');
+      return `${d}/${m}/${year}`;
     }
 
     function handleWatchedClick() {
-      const { monthOpts, yearOpts } = generateMinimalDateOptions();
-      const currentMonth = new Date().getMonth() + 1;
+      const { dayOpts, monthOpts, yearOpts } = generateMinimalDateOptions();
       const modalHtml = `
         <div class="modal-overlay" id="dateModal">
           <div class="modal-box">
             <h3>Mark as Watched</h3>
             <div class="minimal-date-picker">
-              <select id="selMonth" class="minimal-select">${monthOpts.replace(`value="${currentMonth}"`, `value="${currentMonth}" selected`)}</select>
+              <select id="selDay" class="minimal-select">${dayOpts}</select>
+              <select id="selMonth" class="minimal-select">${monthOpts}</select>
               <select id="selYear" class="minimal-select">${yearOpts}</select>
             </div>
             <div style="display:flex; gap:10px; justify-content:flex-end;">
@@ -1161,14 +1329,22 @@
     }
 
     function confirmMarkWatched() {
+      const d = document.getElementById('selDay').value;
       const m = document.getElementById('selMonth').value;
       const y = document.getElementById('selYear').value;
-      const dateVal = `${m}/${y}`;
+      const dateVal = formatJourneyDate(d, m, y);
+
       let watched = JSON.parse(localStorage.getItem('cinevo_watched') || '[]');
-      if(!watched.some(i => i.id === currentOpenItem.id)) {
+      const existingIndex = watched.findIndex(i => i.id === currentOpenItem.id);
+
+      if(existingIndex === -1) {
         watched.push({...currentOpenItem, date: dateVal});
-        localStorage.setItem('cinevo_watched', JSON.stringify(watched));
+      } else {
+        watched[existingIndex] = {...watched[existingIndex], ...currentOpenItem, date: dateVal};
       }
+
+      localStorage.setItem('cinevo_watched', JSON.stringify(watched));
+
       document.getElementById('dateModal').remove();
       const btn = document.getElementById('watchedBtnMain');
       if(btn) {
@@ -1178,14 +1354,14 @@
     }
 
     function handleScheduleClick() {
-      const { monthOpts, yearOpts } = generateMinimalDateOptions();
-      const currentMonth = new Date().getMonth() + 1;
+      const { dayOpts, monthOpts, yearOpts } = generateMinimalDateOptions();
       const modalHtml = `
         <div class="modal-overlay" id="scheduleModal">
           <div class="modal-box">
             <h3>Schedule Watch</h3>
             <div class="minimal-date-picker">
-              <select id="schedMonth" class="minimal-select">${monthOpts.replace(`value="${currentMonth}"`, `value="${currentMonth}" selected`)}</select>
+              <select id="schedDay" class="minimal-select">${dayOpts}</select>
+              <select id="schedMonth" class="minimal-select">${monthOpts}</select>
               <select id="schedYear" class="minimal-select">${yearOpts}</select>
             </div>
             <div style="display:flex; gap:10px; justify-content:flex-end;">
@@ -1199,14 +1375,21 @@
     }
 
     function confirmSchedule() {
+      const d = document.getElementById('schedDay').value;
       const m = document.getElementById('schedMonth').value;
       const y = document.getElementById('schedYear').value;
-      const dateVal = `${m}/${y}`;
+      const dateVal = formatJourneyDate(d, m, y);
+
       let scheduled = JSON.parse(localStorage.getItem('cinevo_scheduled') || '[]');
-      if(!scheduled.some(i => i.id === currentOpenItem.id)) {
+      const existingIndex = scheduled.findIndex(i => i.id === currentOpenItem.id);
+
+      if(existingIndex === -1) {
         scheduled.push({...currentOpenItem, date: dateVal});
-        localStorage.setItem('cinevo_scheduled', JSON.stringify(scheduled));
+      } else {
+        scheduled[existingIndex] = {...scheduled[existingIndex], ...currentOpenItem, date: dateVal};
       }
+
+      localStorage.setItem('cinevo_scheduled', JSON.stringify(scheduled));
       document.getElementById('scheduleModal').remove();
       alert('Successfully scheduled!');
     }
@@ -1215,25 +1398,32 @@
       const watched = JSON.parse(localStorage.getItem('cinevo_watched') || '[]');
       const scheduled = JSON.parse(localStorage.getItem('cinevo_scheduled') || '[]');
 
-      document.getElementById('watchedTimelineList').innerHTML = watched.length ? watched.map(i => `
-        <div class="timeline-item" onclick="openDetails(${i.id}, '${i.type}')">
-          <img src="${IMG_BASE + i.poster}">
-          <div style="display:flex; flex-direction:column; justify-content:center; gap:4px;">
-            <div style="font-size:14px; font-weight:700;">${i.title}</div>
-            <div style="font-size:12px; color:var(--text-muted);">Watched: ${i.date}</div>
-          </div>
-        </div>
-      `).join('') : '<div style="color:var(--text-muted); font-size:12px;">No watched items yet.</div>';
+      const watchedList = document.getElementById('watchedTimelineList');
+      const scheduledList = document.getElementById('scheduledTimelineList');
 
-      document.getElementById('scheduledTimelineList').innerHTML = scheduled.length ? scheduled.map(i => `
-        <div class="timeline-item" onclick="openDetails(${i.id}, '${i.type}')">
-          <img src="${IMG_BASE + i.poster}">
-          <div style="display:flex; flex-direction:column; justify-content:center; gap:4px;">
-            <div style="font-size:14px; font-weight:700;">${i.title}</div>
-            <div style="font-size:12px; color:var(--text-muted);">Scheduled: ${i.date}</div>
+      watchedList.innerHTML = watched.length ? watched.map(i => `
+        <div class="timeline-item watched-item" onclick="openDetails(${i.id}, '${i.type}')">
+          <img src="${i.poster ? IMG_BASE + i.poster : 'https://via.placeholder.com/58x82'}" alt="poster">
+          <div class="timeline-info">
+            <div class="timeline-title">${i.title}</div>
+            <div class="timeline-type">${i.type === 'tv' ? 'TV SHOW' : 'MOVIE'}</div>
+            <div class="timeline-status watched">WATCHED</div>
+            <div class="timeline-date">📅 ${i.date || 'N/A'}</div>
           </div>
         </div>
-      `).join('') : '<div style="color:var(--text-muted); font-size:12px;">No scheduled items.</div>';
+      `).join('') : '<div class="timeline-empty">No watched items yet.</div>';
+
+      scheduledList.innerHTML = scheduled.length ? scheduled.map(i => `
+        <div class="timeline-item scheduled-item" onclick="openDetails(${i.id}, '${i.type}')">
+          <img src="${i.poster ? IMG_BASE + i.poster : 'https://via.placeholder.com/58x82'}" alt="poster">
+          <div class="timeline-info">
+            <div class="timeline-title">${i.title}</div>
+            <div class="timeline-type">${i.type === 'tv' ? 'TV SHOW' : 'MOVIE'}</div>
+            <div class="timeline-status scheduled">SCHEDULED</div>
+            <div class="timeline-date">📅 ${i.date || 'N/A'}</div>
+          </div>
+        </div>
+      `).join('') : '<div class="timeline-empty">No scheduled items.</div>';
     }
 
     window.onload = initApp;
