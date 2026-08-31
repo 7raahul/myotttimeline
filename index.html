@@ -145,6 +145,73 @@
     .search-input:focus {
       border-color: var(--accent);
     }
+    .discover-panel {
+      margin-bottom: 30px;
+    }
+
+    .filter-row {
+      max-width: 900px;
+      margin: -10px auto 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .filter-control {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-control span {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .filter-control select {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px 12px;
+      border-radius: 9px;
+      outline: none;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .filter-control select:focus {
+      border-color: var(--accent);
+    }
+
+    .filter-results-section {
+      margin-top: 8px;
+      margin-bottom: 30px;
+    }
+
+    .filter-loading,
+    .filter-empty {
+      text-align: center;
+      padding: 25px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 700px) {
+      .filter-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 420px) {
+      .filter-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
 
     .search-icon {
       position: absolute;
@@ -845,10 +912,56 @@
 
   <main id="appMain" onscroll="handleScrollEvents()">
     <div id="homeView">
-      <div class="search-box-wrapper">
-        <span class="search-icon">🔍</span>
-        <input type="text" class="search-input" id="mainSearchInput" placeholder="Search movies, TV shows..." oninput="handleSearchInput(this.value)">
-        <div id="searchDropdown" class="search-suggestions hidden"></div>
+      <div class="discover-panel">
+        <div class="search-box-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="mainSearchInput"
+                 placeholder="Search movies, TV shows, actors..."
+                 oninput="handleSearchInput(this.value)">
+          <div id="searchDropdown" class="search-suggestions hidden"></div>
+        </div>
+
+        <div class="filter-row">
+          <label class="filter-control">
+            <span>Type</span>
+            <select id="filterType" onchange="handleFilterChange()">
+              <option value="all">All</option>
+              <option value="movie">Movies</option>
+              <option value="tv">TV Shows</option>
+            </select>
+          </label>
+
+          <label class="filter-control">
+            <span>Genre</span>
+            <select id="filterGenre" onchange="handleFilterChange()">
+              <option value="">All Genres</option>
+            </select>
+          </label>
+
+          <label class="filter-control">
+            <span>Year</span>
+            <select id="filterYear" onchange="handleFilterChange()">
+              <option value="">All Years</option>
+            </select>
+          </label>
+
+          <label class="filter-control">
+            <span>Country</span>
+            <select id="filterCountry" onchange="handleFilterChange()">
+              <option value="">All Countries</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="filterResultsSection" class="filter-results-section hidden">
+          <div class="section-title">
+            <span id="filterResultsTitle">Results</span>
+            <button class="nav-link" style="font-size:12px;" onclick="clearAllFilters()">Clear All</button>
+          </div>
+          <div class="media-grid-5" id="filterResultsGrid"></div>
+          <div id="filterLoading" class="filter-loading hidden">Loading...</div>
+          <div id="filterEmpty" class="filter-empty hidden">No matching titles found.</div>
+        </div>
       </div>
 
       <div class="section-title">
@@ -924,12 +1037,67 @@
 
     async function initApp() {
       loadHomeCarousels();
+      populateYearFilter();
+      await loadFilterMetadata();
+
       document.addEventListener('click', (e) => {
         if(!e.target.closest('.search-box-wrapper')) {
           const dropdown = document.getElementById('searchDropdown');
           if(dropdown) dropdown.classList.add('hidden');
         }
       });
+    }
+
+    function populateYearFilter() {
+      const select = document.getElementById('filterYear');
+      const currentYear = new Date().getFullYear();
+      let html = '<option value="">All Years</option>';
+
+      for(let year = currentYear; year >= 1980; year--) {
+        html += `<option value="${year}">${year}</option>`;
+      }
+
+      select.innerHTML = html;
+    }
+
+    async function loadFilterMetadata() {
+      try {
+        const [movieGenreRes, tvGenreRes, countryRes] = await Promise.all([
+          fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=en-US`),
+          fetch(`${BASE_URL}/genre/tv/list?api_key=${API_KEY}&language=en-US`),
+          fetch(`${BASE_URL}/configuration/countries?api_key=${API_KEY}&language=en-US`)
+        ]);
+
+        const movieGenres = await movieGenreRes.json();
+        const tvGenres = await tvGenreRes.json();
+        const countries = await countryRes.json();
+
+        window.cinevoMovieGenres = movieGenres.genres || [];
+        window.cinevoTvGenres = tvGenres.genres || [];
+
+        const genreSelect = document.getElementById('filterGenre');
+        const countrySelect = document.getElementById('filterCountry');
+
+        const mergedGenres = [...window.cinevoMovieGenres, ...window.cinevoTvGenres]
+          .filter((g, index, arr) => arr.findIndex(x => x.id === g.id) === index)
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        genreSelect.innerHTML =
+          '<option value="">All Genres</option>' +
+          mergedGenres.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+
+        const sortedCountries = (countries || [])
+          .sort((a, b) => (a.english_name || a.native_name || '').localeCompare(b.english_name || b.native_name || ''));
+
+        countrySelect.innerHTML =
+          '<option value="">All Countries</option>' +
+          sortedCountries.map(c => {
+            const name = c.english_name || c.native_name || c.iso_3166_1;
+            return `<option value="${c.iso_3166_1}">${name}</option>`;
+          }).join('');
+      } catch(e) {
+        console.error('Could not load filter metadata:', e);
+      }
     }
 
     async function loadHomeCarousels() {
@@ -963,6 +1131,205 @@
           </div>
         </div>
       `).join('');
+    }
+
+    let filterRequestToken = 0;
+
+    function getSelectedFilters() {
+      return {
+        type: document.getElementById('filterType').value,
+        genre: document.getElementById('filterGenre').value,
+        year: document.getElementById('filterYear').value,
+        country: document.getElementById('filterCountry').value,
+        query: document.getElementById('mainSearchInput').value.trim()
+      };
+    }
+
+    function hasActiveFilters() {
+      const f = getSelectedFilters();
+      return Boolean(f.query || f.type !== 'all' || f.genre || f.year || f.country);
+    }
+
+    function handleFilterChange() {
+      runUniversalSearch();
+    }
+
+    async function runUniversalSearch() {
+      const token = ++filterRequestToken;
+      const f = getSelectedFilters();
+      const section = document.getElementById('filterResultsSection');
+      const grid = document.getElementById('filterResultsGrid');
+      const loading = document.getElementById('filterLoading');
+      const empty = document.getElementById('filterEmpty');
+
+      if(!hasActiveFilters()) {
+        section.classList.add('hidden');
+        grid.innerHTML = '';
+        loading.classList.add('hidden');
+        empty.classList.add('hidden');
+        return;
+      }
+
+      section.classList.remove('hidden');
+      loading.classList.remove('hidden');
+      empty.classList.add('hidden');
+      grid.innerHTML = '';
+
+      const titleParts = [];
+      if(f.type === 'movie') titleParts.push('Movies');
+      else if(f.type === 'tv') titleParts.push('TV Shows');
+      if(f.genre) {
+        const g = [...(window.cinevoMovieGenres || []), ...(window.cinevoTvGenres || [])]
+          .find(x => String(x.id) === String(f.genre));
+        if(g) titleParts.push(g.name);
+      }
+      if(f.year) titleParts.push(f.year);
+      document.getElementById('filterResultsTitle').textContent =
+        f.query ? `Search results for "${f.query}"` : (titleParts.length ? titleParts.join(' • ') : 'Results');
+
+      try {
+        let results = [];
+
+        // Text search mode: TMDB multi-search is used so one query can return
+        // both movies and TV shows. We then apply the selected client-side filters.
+        if(f.query) {
+          const res = await fetch(
+            `${BASE_URL}/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(f.query)}&include_adult=false&page=1`
+          );
+          const data = await res.json();
+
+          results = (data.results || []).filter(item =>
+            item.media_type === 'movie' || item.media_type === 'tv'
+          );
+
+          if(f.type !== 'all') {
+            results = results.filter(item => item.media_type === f.type);
+          }
+
+          if(f.genre) {
+            results = results.filter(item => (item.genre_ids || []).map(String).includes(String(f.genre)));
+          }
+
+          if(f.year) {
+            results = results.filter(item => {
+              const date = item.release_date || item.first_air_date || '';
+              return date.startsWith(String(f.year));
+            });
+          }
+
+          if(f.country) {
+            // Search responses do not always contain origin countries, so
+            // fetch the details for a small result set to apply country accurately.
+            const candidates = results.slice(0, 20);
+            const detailed = await Promise.all(candidates.map(async item => {
+              try {
+                const r = await fetch(`${BASE_URL}/${item.media_type}/${item.id}?api_key=${API_KEY}&language=en-US`);
+                return { item, detail: await r.json() };
+              } catch {
+                return { item, detail: null };
+              }
+            }));
+
+            results = detailed
+              .filter(({detail}) => {
+                const countries = detail?.production_countries || [];
+                const origins = detail?.origin_country || [];
+                return countries.some(c => c.iso_3166_1 === f.country) || origins.includes(f.country);
+              })
+              .map(x => x.item);
+          }
+        } else {
+          // Discover mode: no text query, so TMDB's discover endpoint applies
+          // the filters directly.
+          const types = f.type === 'all' ? ['movie', 'tv'] : [f.type];
+
+          const responses = await Promise.all(types.map(async type => {
+            const params = new URLSearchParams({
+              api_key: API_KEY,
+              language: 'en-US',
+              page: '1',
+              sort_by: 'popularity.desc',
+              include_adult: 'false'
+            });
+
+            if(f.genre) params.set('with_genres', f.genre);
+            if(f.country) params.set('with_origin_country', f.country);
+
+            if(f.year) {
+              if(type === 'movie') {
+                params.set('primary_release_year', f.year);
+              } else {
+                params.set('first_air_date_year', f.year);
+              }
+            }
+
+            const res = await fetch(`${BASE_URL}/discover/${type}?${params.toString()}`);
+            const data = await res.json();
+            return (data.results || []).map(item => ({...item, media_type: type}));
+          }));
+
+          results = responses.flat()
+            .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+        }
+
+        if(token !== filterRequestToken) return;
+
+        loading.classList.add('hidden');
+
+        if(!results.length) {
+          empty.classList.remove('hidden');
+          return;
+        }
+
+        grid.innerHTML = results.slice(0, 40).map(item => {
+          const mediaType = item.media_type;
+          const title = escapeHtml(item.title || item.name || 'Untitled');
+          const year = (item.release_date || item.first_air_date || '').split('-')[0];
+          const poster = item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/180x270?text=No+Image';
+
+          return `
+            <div class="media-card" onclick="openDetails(${item.id}, '${mediaType}')">
+              <div class="poster-wrap">
+                <img src="${poster}" alt="${title}">
+                <span class="card-badge">★ ${(item.vote_average || 0).toFixed(1)}</span>
+              </div>
+              <div class="card-content">
+                <div class="card-title">${title}</div>
+                <div class="card-meta">
+                  <span>${year || 'N/A'}</span>
+                  <span>${mediaType.toUpperCase()}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch(e) {
+        console.error('Universal search failed:', e);
+        if(token !== filterRequestToken) return;
+        loading.classList.add('hidden');
+        empty.textContent = 'Could not load results. Please try again.';
+        empty.classList.remove('hidden');
+      }
+    }
+
+    function clearAllFilters() {
+      document.getElementById('mainSearchInput').value = '';
+      document.getElementById('filterType').value = 'all';
+      document.getElementById('filterGenre').value = '';
+      document.getElementById('filterYear').value = '';
+      document.getElementById('filterCountry').value = '';
+      runUniversalSearch();
+      document.getElementById('searchDropdown').classList.add('hidden');
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[char]));
     }
 
     function switchTab(tabId, mediaType = 'movie') {
@@ -1072,22 +1439,36 @@
 
     async function handleSearchInput(query) {
       const dropdown = document.getElementById('searchDropdown');
+
       if(!query.trim()) {
         dropdown.classList.add('hidden');
+        runUniversalSearch();
         return;
       }
+
       try {
-        const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
+        const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}&include_adult=false`);
         const data = await res.json();
-        const results = (data.results || []).filter(item => item.media_type === 'movie' || item.media_type === 'tv').slice(0, 5);
+
+        let results = (data.results || [])
+          .filter(item => item.media_type === 'movie' || item.media_type === 'tv')
+          .slice(0, 5);
+
+        const selectedType = document.getElementById('filterType').value;
+        if(selectedType !== 'all') {
+          results = results.filter(item => item.media_type === selectedType);
+        }
 
         if(results.length > 0) {
           dropdown.innerHTML = results.map(item => `
-            <div class="suggestion-item" onclick="openDetails(${item.id}, '${item.media_type}'); document.getElementById('searchDropdown').classList.add('hidden'); document.getElementById('mainSearchInput').value='';">
+            <div class="suggestion-item"
+                 onclick="selectSearchSuggestion(${item.id}, '${item.media_type}', '${escapeHtml(item.title || item.name || '')}')">
               <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/36x50'}">
               <div>
-                <div style="font-size:13px; font-weight:600;">${item.title || item.name}</div>
-                <div style="font-size:11px; color:var(--text-muted);">${(item.release_date || item.first_air_date || '').split('-')[0]} • ${item.media_type.toUpperCase()}</div>
+                <div style="font-size:13px; font-weight:600;">${escapeHtml(item.title || item.name || 'Untitled')}</div>
+                <div style="font-size:11px; color:var(--text-muted);">
+                  ${(item.release_date || item.first_air_date || '').split('-')[0]} • ${item.media_type.toUpperCase()}
+                </div>
               </div>
             </div>
           `).join('');
@@ -1095,7 +1476,22 @@
         } else {
           dropdown.classList.add('hidden');
         }
-      } catch(e) { dropdown.classList.add('hidden'); }
+
+        // Results below update automatically as the user types.
+        runUniversalSearch();
+      } catch(e) {
+        dropdown.classList.add('hidden');
+        runUniversalSearch();
+      }
+    }
+
+    function selectSearchSuggestion(id, mediaType, title) {
+      document.getElementById('searchDropdown').classList.add('hidden');
+      document.getElementById('mainSearchInput').value = title;
+      if(document.getElementById('filterType').value === 'all') {
+        document.getElementById('filterType').value = mediaType;
+      }
+      runUniversalSearch();
     }
 
     async function triggerRandomPick(mediaType) {
