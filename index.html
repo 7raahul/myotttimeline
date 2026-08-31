@@ -943,597 +943,58 @@
       }
     }
   </style>
-
-
 <style>
-/* =========================================================
-   CINEVO MOBILE UI — MOBILE ONLY
-   Desktop/Web UI is intentionally left untouched.
-   ========================================================= */
-@media (max-width: 600px) {
-  :root{
-    --m-bg:#08090d;
-    --m-card:#11141b;
-    --m-card2:#171b24;
-    --m-text:#f7f8fb;
-    --m-muted:#9298a7;
-    --m-line:rgba(255,255,255,.075);
-    --m-red:#ff453a;
-    --m-green:#31d56b;
-    --m-gold:#ffd43b;
-    --m-nav:74px;
-  }
 
-  html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden !important;
-    background:var(--m-bg) !important;
-  }
-
-  body{
-    display:block !important;
-  }
-
-  /* Desktop navigation is not redesigned or reused on mobile. */
-  body > nav{
-    display:none !important;
-  }
-
-  #appMain{
-    display:block !important;
-    width:100% !important;
-    height:100dvh !important;
-    max-width:none !important;
-    margin:0 !important;
-    padding:0 14px calc(var(--m-nav) + 24px + env(safe-area-inset-bottom)) !important;
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-    scrollbar-width:none !important;
-    scrollbar-gutter:auto !important;
-    background:var(--m-bg);
-    -webkit-overflow-scrolling:touch;
-  }
-
-  #appMain::-webkit-scrollbar{display:none !important}
-
-  #homeView{
-    display:block;
-    padding-top:calc(8px + env(safe-area-inset-top));
-  }
-
-  /* Mobile top bar */
-  .mobile-topbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    min-height:43px;
-    margin:0 1px 12px;
-  }
-
-  .mobile-logo{
-    font-size:25px;
-    line-height:1;
-    font-weight:950;
-    letter-spacing:-1.2px;
-    color:#fff;
-  }
-  .mobile-logo span{color:var(--m-red)}
-
-  .mobile-pick-btn{
-    border:1px solid var(--m-line);
-    background:rgba(24,27,35,.92);
-    color:var(--m-gold);
-    border-radius:13px;
-    min-height:39px;
-    padding:0 12px;
-    font-size:11px;
-    font-weight:850;
-    box-shadow:0 7px 20px rgba(0,0,0,.2);
-  }
-
-  /* Hero */
-  .mobile-hero{
-    position:relative;
-    margin:0 0 23px;
-    height:min(72vh,610px);
-    min-height:455px;
-    border-radius:27px;
-    overflow:hidden;
-    background:#11141b center/cover no-repeat;
-    border:1px solid rgba(255,255,255,.08);
-    box-shadow:0 20px 45px rgba(0,0,0,.4);
-    isolation:isolate;
-  }
-
-  .mobile-hero::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    z-index:-2;
-    background:linear-gradient(180deg,rgba(0,0,0,.02) 15%,rgba(0,0,0,.12) 38%,rgba(0,0,0,.94) 100%);
-  }
-  .mobile-hero::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    z-index:-1;
-    background:linear-gradient(90deg,rgba(0,0,0,.12),transparent 55%,rgba(0,0,0,.25));
-  }
-
-  .mobile-hero-poster{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    z-index:-3;
-  }
-
-  .mobile-hero-badge{
-    position:absolute;
-    left:14px;
-    top:14px;
-    padding:9px 13px;
-    border:1px solid rgba(255,255,255,.25);
-    background:rgba(10,11,15,.72);
-    backdrop-filter:blur(13px);
-    -webkit-backdrop-filter:blur(13px);
-    border-radius:13px;
-    font-size:13px;
-    font-weight:850;
-    color:#fff;
-  }
-
-  .mobile-hero-actions{
-    position:absolute;
-    right:12px;
-    bottom:75px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    z-index:3;
-  }
-
-  .mobile-hero-action{
-    width:57px;
-    height:57px;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,.22);
-    background:rgba(12,14,18,.78);
-    color:#fff;
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:24px;
-    box-shadow:0 9px 22px rgba(0,0,0,.32);
-  }
-
-  .mobile-hero-action.schedule{
-    width:62px;
-    height:62px;
-    background:rgba(235,238,245,.94);
-    color:#0c0e12;
-    font-size:23px;
-  }
-
-  .mobile-hero-copy{
-    position:absolute;
-    left:17px;
-    right:82px;
-    bottom:17px;
-  }
-
-  .mobile-hero-title{
-    font-size:27px;
-    line-height:1.05;
-    font-weight:950;
-    letter-spacing:-.7px;
-    margin-bottom:7px;
-    text-shadow:0 3px 18px #000;
-  }
-
-  .mobile-hero-meta{
-    color:#e4e6eb;
-    font-size:11px;
-    font-weight:650;
-    line-height:1.4;
-    text-shadow:0 2px 10px #000;
-  }
-
-  .mobile-hero-loading{
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:var(--m-muted);
-    font-size:12px;
-    background:#10131a;
-  }
-
-  /* Search */
-  .discover-panel{
-    margin-bottom:22px !important;
-  }
-
-  .search-box-wrapper{
-    max-width:none !important;
-    margin:0 0 10px !important;
-  }
-
-  .search-input{
-    height:51px !important;
-    padding:0 43px !important;
-    border-radius:15px !important;
-    background:var(--m-card) !important;
-    border:1px solid var(--m-line) !important;
-    font-size:14px !important;
-  }
-
-  .search-icon{
-    left:14px !important;
-    font-size:18px !important;
-  }
-
-  /* Compact filter chips */
-  .filter-row{
-    max-width:none !important;
-    margin:0 !important;
-    display:grid !important;
-    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
-    gap:7px !important;
-  }
-
-  .filter-control{
-    display:block !important;
-  }
-
-  .filter-control span{
-    display:none !important;
-  }
-
-  .filter-control select{
-    width:100% !important;
-    height:40px !important;
-    min-width:0 !important;
-    padding:0 6px !important;
-    border-radius:11px !important;
-    background:var(--m-card) !important;
-    border:1px solid var(--m-line) !important;
-    font-size:10px !important;
-    font-weight:800 !important;
-    text-overflow:ellipsis;
-  }
-
-  /* Search/filter results */
-  .filter-results-section{
-    margin-bottom:22px !important;
-  }
-
-  .section-title{
-    font-size:17px !important;
-    margin:0 0 10px !important;
-    line-height:1.2 !important;
-  }
-
-  .section-title .nav-link{
-    font-size:10px !important;
-  }
-
-  .media-grid-5{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:10px !important;
-  }
-
-  /* Home carousels */
-  .carousel-container{
-    margin:0 -14px 24px !important;
-    padding-left:14px !important;
-    padding-right:0 !important;
-  }
-
-  .carousel{
-    gap:10px !important;
-    padding-right:14px !important;
-    scrollbar-width:none !important;
-  }
-
-  .carousel::-webkit-scrollbar{display:none !important}
-
-  .media-card{
-    flex:0 0 143px !important;
-    width:143px !important;
-    border-radius:13px !important;
-    overflow:hidden !important;
-    background:var(--m-card) !important;
-    border:1px solid var(--m-line) !important;
-  }
-
-  .poster-wrap{
-    height:auto !important;
-    aspect-ratio:2/3 !important;
-  }
-
-  .poster-wrap img{
-    width:100% !important;
-    height:100% !important;
-    object-fit:cover !important;
-  }
-
-  .card-content{
-    padding:8px !important;
-  }
-
-  .card-title{
-    font-size:11px !important;
-    line-height:1.25 !important;
-  }
-
-  .card-meta{
-    font-size:9px !important;
-    margin-top:5px !important;
-  }
-
-  .card-badge{
-    font-size:9px !important;
-    padding:4px 6px !important;
-    border-radius:7px !important;
-  }
-
-  /* Full list / Pick / Journey mobile presentation */
-  #fullListView,#pickView,#journeyView{
-    padding-top:calc(8px + env(safe-area-inset-top));
-  }
-
-  #fullListView .media-grid-5{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-  }
-
-  #infiniteGridContainer .media-card{
-    width:100% !important;
-    flex:none !important;
-  }
-
-  #pickView > div{
-    max-width:none !important;
-    margin:10px auto !important;
-  }
-
-  #journeyView h2{
-    font-size:20px !important;
-    margin-bottom:17px !important;
-  }
-
-  .timeline-container{
-    display:block !important;
-  }
-
-  .timeline-column{
-    width:100% !important;
-    margin-bottom:24px !important;
-  }
-
-  .timeline-heading{
-    font-size:14px !important;
-    margin-bottom:9px !important;
-  }
-
-  .timeline-item{
-    min-height:92px !important;
-    padding:8px !important;
-    margin-bottom:8px !important;
-    border-radius:13px !important;
-  }
-
-  .timeline-item img{
-    width:54px !important;
-    height:78px !important;
-  }
-
-  .timeline-title{
-    font-size:12px !important;
-  }
-
-  .timeline-date,.timeline-status,.timeline-type{
-    font-size:9px !important;
-  }
-
-  /* Existing detail page becomes a full-screen mobile detail page.
-     No desktop layout changes outside this media query. */
-  #detailView{
-    position:fixed !important;
-    inset:0 !important;
-    z-index:6000 !important;
-    width:100% !important;
-    height:100dvh !important;
-    overflow-y:auto !important;
-    background:var(--m-bg) !important;
-    padding:0 0 calc(22px + env(safe-area-inset-bottom)) !important;
-    -webkit-overflow-scrolling:touch;
-  }
-
-  #detailView .back-btn{
-    position:sticky !important;
-    top:calc(8px + env(safe-area-inset-top)) !important;
-    z-index:20 !important;
-    margin:calc(8px + env(safe-area-inset-top)) 12px -42px !important;
-    background:rgba(10,11,15,.76) !important;
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
-    border-radius:12px !important;
-    padding:9px 12px !important;
-  }
-
-  .hero-backdrop-container{
-    min-height:520px !important;
-    background-position:center !important;
-  }
-
-  .hero-content{
-    min-height:520px !important;
-    padding:78px 15px 20px !important;
-    display:flex !important;
-    flex-direction:column !important;
-    justify-content:flex-end !important;
-    align-items:flex-start !important;
-    gap:10px !important;
-  }
-
-  .hero-poster{
-    display:none !important;
-  }
-
-  .hero-info{
-    width:100% !important;
-  }
-
-  .hero-info h1{
-    font-size:28px !important;
-    margin-bottom:8px !important;
-  }
-
-  .hero-info > div{
-    flex-wrap:wrap !important;
-    gap:7px !important;
-    font-size:11px !important;
-  }
-
-  .hero-info > p{
-    font-size:12px !important;
-    line-height:1.5 !important;
-    max-width:none !important;
-    display:-webkit-box;
-    -webkit-line-clamp:5;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-  }
-
-  .action-row{
-    width:100% !important;
-    display:grid !important;
-    grid-template-columns:1fr 1fr !important;
-    gap:8px !important;
-  }
-
-  .action-row button{
-    min-height:45px !important;
-    border-radius:12px !important;
-    font-size:11px !important;
-  }
-
-  .details-body{
-    padding:18px 14px !important;
-  }
-
-  .horizontal-scroll{
-    overflow-x:auto !important;
-    scrollbar-width:none !important;
-  }
-  .horizontal-scroll::-webkit-scrollbar{display:none}
-
-  /* Date/schedule dialogs: clean mobile bottom sheet */
-  .modal-overlay{
-    align-items:flex-end !important;
-    padding:0 !important;
-  }
-
-  .modal-box{
-    width:100% !important;
-    max-width:none !important;
-    margin:0 !important;
-    border-radius:22px 22px 0 0 !important;
-    padding:18px 15px calc(18px + env(safe-area-inset-bottom)) !important;
-  }
-
-  .minimal-date-picker{
-    display:grid !important;
-    grid-template-columns:repeat(3,1fr) !important;
-    gap:7px !important;
-  }
-
-  .minimal-select{
-    min-width:0 !important;
-    height:44px !important;
-    border-radius:11px !important;
-  }
-
-  /* Floating toast */
-  .cinevo-toast{
-    top:calc(12px + env(safe-area-inset-top)) !important;
-    bottom:auto !important;
-    left:12px !important;
-    right:12px !important;
-    width:auto !important;
-    max-width:none !important;
-    transform:translateY(-150%) !important;
-  }
-
-  .cinevo-toast.show{
-    transform:translateY(0) !important;
-  }
-
-  /* Mobile bottom navigation */
-  .mobile-bottom-nav{
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-    z-index:5000;
-    height:calc(var(--m-nav) + env(safe-area-inset-bottom));
-    padding:5px 9px env(safe-area-inset-bottom);
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:3px;
-    background:rgba(10,11,15,.94);
-    border-top:1px solid var(--m-line);
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
-  }
-
-  .mobile-bottom-nav button{
-    border:0;
-    background:transparent;
-    color:#7f8594;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    gap:3px;
-    font-size:9px;
-    font-weight:800;
-  }
-
-  .mobile-bottom-nav .mobile-icon{
-    font-size:20px;
-    line-height:1;
-  }
-
-  .mobile-bottom-nav button.active{
-    color:#fff;
-    background:rgba(255,255,255,.055);
-  }
-
-  .mobile-bottom-nav button.active .mobile-icon{
-    color:var(--m-red);
-  }
-
-  #scrollTopBtn{
-    display:none !important;
-  }
+@media (max-width:600px){
+:root{--mbg:#090a0f;--ms:#14161d;--ml:rgba(255,255,255,.08);--mt:#f7f8fb;--mm:#9ca2af;--mr:#ff453a;--mg:#ffd43b}
+html,body{overflow:hidden!important;background:var(--mbg)!important}
+body>nav{display:none!important}
+#appMain{width:100%!important;max-width:none!important;height:100dvh!important;margin:0!important;padding:0 13px 88px!important;overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch}
+#appMain::-webkit-scrollbar{display:none!important}
+#homeView{padding-top:8px!important}
+.mtop{display:flex;align-items:center;justify-content:space-between;height:48px;margin-bottom:10px}
+.mlogo{font-size:27px;font-weight:950;letter-spacing:-1.4px}.mlogo span{color:var(--mr)}
+.mpick{border:1px solid var(--ml);background:#191c24;color:var(--mg);border-radius:14px;padding:10px 12px;font-size:11px;font-weight:850}
+.mhero{position:relative;height:375px;border-radius:22px;overflow:hidden;margin-bottom:20px;background:#151820;border:1px solid var(--ml)}
+.mhero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mhero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.9) 100%)}
+.mnew{position:absolute;z-index:3;left:12px;top:12px;padding:8px 11px;border-radius:12px;background:rgba(12,13,17,.78);border:1px solid rgba(255,255,255,.2);font-size:12px;font-weight:850}
+.mcopy{position:absolute;z-index:4;left:14px;right:80px;bottom:14px}
+.mtitle{font-size:24px;font-weight:950;line-height:1.08;margin-bottom:6px;text-shadow:0 2px 12px #000}
+.mmeta{font-size:11px;color:#eceef3;font-weight:700}
+.mrating{display:inline-flex;margin-top:7px;padding:5px 7px;border-radius:7px;background:rgba(0,0,0,.76);color:var(--mg);font-size:10px;font-weight:900}
+.mactions{position:absolute;z-index:5;right:10px;bottom:14px;display:flex;flex-direction:column;gap:9px}
+.mbtn{width:53px;height:53px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(12,14,18,.84);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;backdrop-filter:blur(10px)}
+.mbtn.schedule{background:#eef0f4;color:#101217;font-size:25px}
+.search-box-wrapper{max-width:none!important;margin:0 0 10px!important}
+.search-input{height:49px!important;border-radius:14px!important;font-size:14px!important;padding:0 42px!important}
+.filter-row{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;margin:0 0 23px!important}
+.filter-control span{display:none!important}
+.filter-control select{width:100%!important;min-width:0!important;height:39px!important;padding:0 5px!important;border-radius:10px!important;font-size:10px!important}
+.section-title{font-size:17px!important;margin-bottom:10px!important}
+.carousel-container{margin:0 -13px 24px!important;padding-left:13px!important}
+.carousel{gap:9px!important;padding-right:13px!important;scrollbar-width:none!important}
+.carousel::-webkit-scrollbar{display:none!important}
+.media-card{flex:0 0 139px!important;width:139px!important;border-radius:12px!important}
+.poster-wrap{height:auto!important;aspect-ratio:2/3!important}
+.poster-wrap img{width:100%!important;height:100%!important;object-fit:cover!important}
+.card-content{padding:7px!important}.card-title{font-size:11px!important}.card-meta{font-size:9px!important}
+.media-grid-5{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+.media-grid-5 .media-card{width:100%!important;min-width:0!important}
+#detailView{position:fixed!important;inset:0!important;z-index:9000!important;width:100%!important;height:100dvh!important;overflow-y:auto!important;background:var(--mbg)!important}
+.hero-poster{display:none!important}.hero-backdrop-container{min-height:470px!important}
+.hero-content{min-height:470px!important;padding:65px 14px 18px!important;align-items:flex-end!important}
+.hero-info{width:100%!important}.hero-info h1{font-size:27px!important}
+.action-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+.action-row button{min-height:44px!important;border-radius:11px!important;font-size:11px!important}
+.modal-overlay{align-items:flex-end!important;padding:0!important}
+.modal-box{width:100%!important;max-width:none!important;margin:0!important;border-radius:21px 21px 0 0!important;padding:18px 14px!important}
+.cinevo-toast{top:10px!important;bottom:auto!important;left:10px!important;right:10px!important;width:auto!important}
+.mbottom{position:fixed;left:0;right:0;bottom:0;z-index:8000;height:calc(69px + env(safe-area-inset-bottom));padding:5px 7px env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(5,1fr);gap:3px;background:rgba(10,11,15,.95);border-top:1px solid var(--ml);backdrop-filter:blur(18px)}
+.mbottom button{border:0;background:transparent;color:#808696;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;font-weight:850}
+.mbottom .mi{font-size:20px;line-height:1}.mbottom button.active{color:#fff;background:rgba(255,255,255,.055)}.mbottom button.active .mi{color:var(--mr)}
 }
-
-@media (min-width:601px){
-  .mobile-topbar,
-  .mobile-hero,
-  .mobile-bottom-nav{
-    display:none !important;
-  }
-}
-
+@media(min-width:601px){.mtop,.mhero,.mbottom{display:none!important}}
 
 </style>
 </head>
@@ -1553,32 +1014,23 @@
   <main id="appMain" onscroll="handleScrollEvents()">
     <div id="homeView">
       
-<!-- =========================================================
-     MOBILE UI ONLY
-     ========================================================= -->
-<div class="mobile-topbar">
-  <div class="mobile-logo"><span>CineVo</span></div>
-  <button class="mobile-pick-btn" onclick="switchTab('pick')">🎲 Pick For Me</button>
+<div class="mtop">
+  <div class="mlogo"><span>CineVo</span></div>
+  <button class="mpick" onclick="switchTab('pick')">🎲 Pick For Me</button>
 </div>
-
-<section id="mobileHero" class="mobile-hero" aria-label="Featured title">
-  <div class="mobile-hero-loading" id="mobileHeroLoading">Loading featured title...</div>
-  <img id="mobileHeroPoster" class="mobile-hero-poster hidden" alt="">
-  <div class="mobile-hero-badge">🆕 Newly Added</div>
-
-  <div class="mobile-hero-actions">
-    <button id="mobileHeroWatched" class="mobile-hero-action" title="Mark as Watched"
-            onclick="mobileHeroWatched()">✓</button>
-    <button class="mobile-hero-action schedule" title="Add to Schedule"
-            onclick="mobileHeroSchedule()">＋</button>
+<section id="mHero" class="mhero">
+  <div class="mnew">🆕 Newly Added</div>
+  <img id="mHeroImg" alt="Featured title">
+  <div class="mactions">
+    <button id="mHeroWatched" class="mbtn" title="Mark as Watched" onclick="mWatched()">✓</button>
+    <button class="mbtn schedule" title="Add to Schedule" onclick="mSchedule()">＋</button>
   </div>
-
-  <div class="mobile-hero-copy">
-    <div id="mobileHeroTitle" class="mobile-hero-title">Featured</div>
-    <div id="mobileHeroMeta" class="mobile-hero-meta">Loading...</div>
+  <div class="mcopy">
+    <div id="mHeroTitle" class="mtitle">Loading…</div>
+    <div id="mHeroMeta" class="mmeta">Featured</div>
+    <div id="mHeroRating" class="mrating">⭐ —</div>
   </div>
 </section>
-
 
       <div class="discover-panel">
         <div class="search-box-wrapper">
@@ -2638,223 +2090,43 @@
 
     window.onload = initApp;
   </script>
-<nav class="mobile-bottom-nav" aria-label="Mobile navigation">
-  <button data-mobile-tab="home" class="active" onclick="mobileNavigate('home')">
-    <span class="mobile-icon">⌂</span><span>Home</span>
-  </button>
-  <button data-mobile-tab="movies" onclick="mobileNavigate('movies')">
-    <span class="mobile-icon">🎬</span><span>Movies</span>
-  </button>
-  <button data-mobile-tab="search" onclick="mobileNavigate('search')">
-    <span class="mobile-icon">⌕</span><span>Search</span>
-  </button>
-  <button data-mobile-tab="schedule" onclick="mobileNavigate('schedule')">
-    <span class="mobile-icon">＋</span><span>Schedule</span>
-  </button>
-  <button data-mobile-tab="journey" onclick="mobileNavigate('journey')">
-    <span class="mobile-icon">◷</span><span>Journey</span>
-  </button>
+
+<nav class="mbottom">
+ <button data-mtab="home" class="active" onclick="mNav('home')"><span class="mi">⌂</span>Home</button>
+ <button data-mtab="movies" onclick="mNav('movies')"><span class="mi">🎬</span>Movies</button>
+ <button data-mtab="search" onclick="mNav('search')"><span class="mi">⌕</span>Search</button>
+ <button data-mtab="schedule" onclick="mNav('schedule')"><span class="mi">＋</span>Schedule</button>
+ <button data-mtab="journey" onclick="mNav('journey')"><span class="mi">◷</span>Journey</button>
 </nav>
-
 <script>
-/* =========================================================
-   CINEVO MOBILE CONTROLLER
-   Uses the existing working CineVo functions/data.
-   It does NOT modify the desktop UI.
-   ========================================================= */
-
-let mobileFeaturedItem = null;
-let mobileFeaturedType = 'movie';
-
-function mobileSetNav(tab){
-  document.querySelectorAll('.mobile-bottom-nav button').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.mobileTab === tab);
-  });
+let mFeatured=null;
+function mNav(t){
+ document.querySelectorAll('.mbottom button').forEach(b=>b.classList.toggle('active',b.dataset.mtab===t));
+ if(t==='home')switchTab('home');
+ if(t==='movies')switchTab('fullList','movie');
+ if(t==='journey'||t==='schedule')switchTab('journey');
+ if(t==='search'){switchTab('home');setTimeout(()=>document.querySelector('.search-input')?.focus(),100)}
 }
-
-function mobileNavigate(tab){
-  if(tab === 'home'){
-    mobileSetNav('home');
-    switchTab('home');
-    return;
-  }
-
-  if(tab === 'movies'){
-    mobileSetNav('movies');
-    switchTab('fullList','movie');
-    return;
-  }
-
-  if(tab === 'search'){
-    mobileSetNav('search');
-    switchTab('home');
-    const input = document.getElementById('mainSearchInput');
-    if(input){
-      setTimeout(() => {
-        input.focus();
-        document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
-      },50);
-    }
-    return;
-  }
-
-  if(tab === 'schedule'){
-    mobileSetNav('journey');
-    switchTab('journey');
-    setTimeout(() => {
-      const target = document.querySelector('.scheduled-heading');
-      if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
-    },100);
-    return;
-  }
-
-  if(tab === 'journey'){
-    mobileSetNav('journey');
-    switchTab('journey');
-  }
+function mSet(item,type){
+ if(!item)return;mFeatured={...item,_type:type};
+ const im=document.getElementById('mHeroImg'),ti=document.getElementById('mHeroTitle'),me=document.getElementById('mHeroMeta'),ra=document.getElementById('mHeroRating');
+ if(im&&item.poster_path)im.src=IMG_BASE+item.poster_path;
+ if(ti)ti.textContent=item.title||item.name||'Untitled';
+ const y=(item.release_date||item.first_air_date||'').slice(0,4)||'N/A';
+ if(me)me.textContent=y+' • '+(type==='tv'?'TV Show':'Movie');
+ if(ra)ra.textContent='⭐ '+Number(item.vote_average||0).toFixed(1);
+ try{const w=checkIfWatched(item.id),b=document.getElementById('mHeroWatched');if(b){b.style.color=w?'#31d46b':'#fff';b.style.background=w?'rgba(49,212,107,.18)':'rgba(12,14,18,.84)'}}catch(e){}
 }
-
-function mobilePrepareFeatured(item,type){
-  if(!item) return;
-
-  mobileFeaturedItem = {
-    id:item.id,
-    title:item.title || item.name || 'Untitled',
-    poster:item.poster_path || null,
-    type:type
-  };
-  mobileFeaturedType = type;
-
-  const poster = document.getElementById('mobileHeroPoster');
-  const title = document.getElementById('mobileHeroTitle');
-  const meta = document.getElementById('mobileHeroMeta');
-  const loading = document.getElementById('mobileHeroLoading');
-  const watchedBtn = document.getElementById('mobileHeroWatched');
-
-  if(!poster || !title || !meta) return;
-
-  const image = item.poster_path
-    ? IMG_BASE + item.poster_path
-    : (item.backdrop_path ? BACKDROP_BASE + item.backdrop_path : '');
-
-  if(image){
-    poster.src = image;
-    poster.classList.remove('hidden');
-  }
-
-  title.textContent = item.title || item.name || 'Untitled';
-
-  const year = (item.release_date || item.first_air_date || '').split('-')[0] || 'N/A';
-  const rating = Number(item.vote_average || 0).toFixed(1);
-  const typeLabel = type === 'tv' ? 'TV Show' : 'Movie';
-
-  meta.textContent = `${year} • ${typeLabel} • ★ ${rating}`;
-
-  if(loading) loading.classList.add('hidden');
-
-  if(watchedBtn){
-    const watched = checkIfWatched(item.id);
-    watchedBtn.textContent = watched ? '✓' : '✓';
-    watchedBtn.style.background = watched ? 'rgba(49,213,107,.20)' : 'rgba(12,14,18,.78)';
-    watchedBtn.style.color = watched ? '#31d56b' : '#fff';
-  }
+async function mLoad(){
+ try{
+  let r=await fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=en-US`),d=await r.json(),x=(d.results||[]).find(a=>a.poster_path);
+  if(x){mSet(x,'movie');return}
+  r=await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=en-US`);d=await r.json();x=(d.results||[]).find(a=>a.poster_path);if(x)mSet(x,'tv');
+ }catch(e){console.warn(e)}
 }
-
-async function mobileLoadFeatured(){
-  try{
-    const res = await fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=en-US`);
-    const data = await res.json();
-    let item = (data.results || []).find(x => x && x.poster_path) || data.results?.[0];
-
-    if(!item){
-      const tvRes = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=en-US`);
-      const tvData = await tvRes.json();
-      item = (tvData.results || []).find(x => x && x.poster_path);
-      if(item) mobileFeaturedType = 'tv';
-    }
-
-    if(!item) return;
-
-    let type = mobileFeaturedType || 'movie';
-    mobilePrepareFeatured(item,type);
-
-    /* Get richer metadata for the hero without changing any existing app logic. */
-    try{
-      const detailRes = await fetch(`${BASE_URL}/${type}/${item.id}?api_key=${API_KEY}&language=en-US`);
-      const detail = await detailRes.json();
-
-      mobileFeaturedItem = {
-        id:item.id,
-        title:detail.title || detail.name || item.title || item.name,
-        poster:detail.poster_path || item.poster_path || null,
-        type:type
-      };
-
-      const poster = document.getElementById('mobileHeroPoster');
-      const title = document.getElementById('mobileHeroTitle');
-      const meta = document.getElementById('mobileHeroMeta');
-
-      if(poster && detail.poster_path) poster.src = IMG_BASE + detail.poster_path;
-      if(title) title.textContent = detail.title || detail.name || item.title || item.name;
-
-      const year = (detail.release_date || detail.first_air_date || '').split('-')[0] || 'N/A';
-      const langs = (detail.spoken_languages || []).map(x => x.name || x.english_name).filter(Boolean);
-      const genre = (detail.genres || []).slice(0,1).map(x => x.name).join('');
-      const langText = langs.length ? `${langs.length} Language${langs.length > 1 ? 's':''}` : 'Language N/A';
-      const typeText = type === 'tv' ? 'TV Show' : 'Movie';
-
-      if(meta){
-        meta.textContent = `${year} • ${langText} • ${genre || typeText}`;
-      }
-    }catch(e){
-      console.warn('Mobile hero detail metadata failed:',e);
-    }
-  }catch(e){
-    console.warn('Mobile featured load failed:',e);
-    const loading = document.getElementById('mobileHeroLoading');
-    if(loading) loading.textContent = 'Featured title unavailable';
-  }
-}
-
-function mobileHeroWatched(){
-  if(!mobileFeaturedItem) return;
-  currentOpenItem = {...mobileFeaturedItem};
-  handleWatchedClick();
-}
-
-function mobileHeroSchedule(){
-  if(!mobileFeaturedItem) return;
-  currentOpenItem = {...mobileFeaturedItem};
-  handleScheduleClick();
-}
-
-function mobileRefreshWatchedButton(){
-  if(!mobileFeaturedItem) return;
-  const btn = document.getElementById('mobileHeroWatched');
-  if(!btn) return;
-  const watched = checkIfWatched(mobileFeaturedItem.id);
-  btn.style.background = watched ? 'rgba(49,213,107,.20)' : 'rgba(12,14,18,.78)';
-  btn.style.color = watched ? '#31d56b' : '#fff';
-}
-
-/* Keep mobile hero in sync after the existing watched workflow saves data. */
-const mobileOriginalConfirmMarkWatched = window.confirmMarkWatched;
-if(typeof mobileOriginalConfirmMarkWatched === 'function'){
-  window.confirmMarkWatched = function(){
-    const result = mobileOriginalConfirmMarkWatched.apply(this, arguments);
-    mobileRefreshWatchedButton();
-    return result;
-  };
-}
-
-window.addEventListener('DOMContentLoaded',()=>{
-  /* Existing app still initializes exactly as before. */
-  setTimeout(mobileLoadFeatured,350);
-});
-
-window.addEventListener('load',()=>{
-  setTimeout(mobileLoadFeatured,100);
-});
+function mWatched(){if(!mFeatured)return;currentOpenItem={...mFeatured};handleWatchedClick();setTimeout(mLoad,250)}
+function mSchedule(){if(!mFeatured)return;currentOpenItem={...mFeatured};handleScheduleClick()}
+window.addEventListener('DOMContentLoaded',()=>setTimeout(mLoad,250));
 </script>
 
 </body>
