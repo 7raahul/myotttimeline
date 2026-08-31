@@ -199,6 +199,53 @@
       color: var(--text-muted);
       font-size: 13px;
     }
+    .cinevo-toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translate(-50%, -18px);
+      z-index: 99999;
+      min-width: 260px;
+      max-width: min(420px, calc(100vw - 32px));
+      padding: 12px 16px;
+      border: 1px solid rgba(53, 212, 106, .35);
+      border-radius: 12px;
+      background: rgba(20, 20, 20, .96);
+      box-shadow: 0 12px 35px rgba(0,0,0,.45);
+      color: var(--text-main);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease, transform .22s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .cinevo-toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .cinevo-toast.success {
+      border-color: rgba(53, 212, 106, .45);
+    }
+
+    .cinevo-toast.success .toast-title {
+      color: #35d46a;
+    }
+
+    .toast-title {
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .toast-subtitle {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
 
     @media (max-width: 700px) {
       .filter-row {
@@ -965,7 +1012,7 @@
       </div>
 
       <div class="section-title">
-        <span>Movies</span>
+        <span>🔥 Trending Movies This Week</span>
         <button class="nav-link" style="font-size:12px;" onclick="switchTab('fullList', 'movie')">See All →</button>
       </div>
       <div class="carousel-container">
@@ -973,11 +1020,25 @@
       </div>
 
       <div class="section-title">
-        <span>TV Shows</span>
+        <span>🔥 Trending TV Shows This Week</span>
         <button class="nav-link" style="font-size:12px;" onclick="switchTab('fullList', 'tv')">See All →</button>
       </div>
       <div class="carousel-container">
         <div class="carousel" id="homeTvCarousel"></div>
+      </div>
+
+      <div class="section-title">
+        <span>⭐ Top Rated Movies · 1998–Present</span>
+      </div>
+      <div class="carousel-container">
+        <div class="carousel" id="homeTopMoviesCarousel"></div>
+      </div>
+
+      <div class="section-title">
+        <span>⭐ Top Rated TV Shows · 1998–Present</span>
+      </div>
+      <div class="carousel-container">
+        <div class="carousel" id="homeTopTvCarousel"></div>
       </div>
     </div>
 
@@ -1003,11 +1064,11 @@
       <h2 style="margin-bottom: 24px;">⏱️ Watch Journey Timeline</h2>
       <div class="timeline-container">
         <div class="timeline-column">
-          <div class="timeline-heading">Watched Items</div>
+          <div class="timeline-heading watched-heading">Watched Items</div>
           <div id="watchedTimelineList"></div>
         </div>
         <div class="timeline-column">
-          <div class="timeline-heading">Scheduled Items</div>
+          <div class="timeline-heading scheduled-heading">Scheduled Items</div>
           <div id="scheduledTimelineList"></div>
         </div>
       </div>
@@ -1078,13 +1139,7 @@
         const genreSelect = document.getElementById('filterGenre');
         const countrySelect = document.getElementById('filterCountry');
 
-        const mergedGenres = [...window.cinevoMovieGenres, ...window.cinevoTvGenres]
-          .filter((g, index, arr) => arr.findIndex(x => x.id === g.id) === index)
-          .sort((a, b) => a.name.localeCompare(b.name));
-
-        genreSelect.innerHTML =
-          '<option value="">All Genres</option>' +
-          mergedGenres.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+        populateGenreFilter();
 
         const sortedCountries = (countries || [])
           .sort((a, b) => (a.english_name || a.native_name || '').localeCompare(b.english_name || b.native_name || ''));
@@ -1100,37 +1155,97 @@
       }
     }
 
+    function populateGenreFilter() {
+      const genreSelect = document.getElementById('filterGenre');
+      const type = document.getElementById('filterType')?.value || 'all';
+      const previous = genreSelect.value;
+
+      let genres = [];
+      if(type === 'movie') {
+        genres = window.cinevoMovieGenres || [];
+      } else if(type === 'tv') {
+        genres = window.cinevoTvGenres || [];
+      } else {
+        genres = [...(window.cinevoMovieGenres || []), ...(window.cinevoTvGenres || [])]
+          .filter((g, index, arr) => arr.findIndex(x => x.id === g.id) === index);
+      }
+
+      genres = genres.sort((a, b) => a.name.localeCompare(b.name));
+
+      genreSelect.innerHTML =
+        '<option value="">All Genres</option>' +
+        genres.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+
+      if(genres.some(g => String(g.id) === String(previous))) {
+        genreSelect.value = previous;
+      } else {
+        genreSelect.value = '';
+      }
+    }
+
     async function loadHomeCarousels() {
       try {
-        const [mRes, tvRes] = await Promise.all([
-          fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=1`),
-          fetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&page=1`)
-        ]);
-        const mData = await mRes.json();
-        const tvData = await tvRes.json();
+        const currentDate = new Date().toISOString().slice(0, 10);
 
-        renderCarousel(mData.results, 'homeMoviesCarousel', 'movie');
-        renderCarousel(tvData.results, 'homeTvCarousel', 'tv');
-      } catch(e) { console.error(e); }
+        const [
+          trendingMovieRes,
+          trendingTvRes,
+          topMovieRes,
+          topTvRes
+        ] = await Promise.all([
+          fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=en-US`),
+          fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=en-US`),
+
+          fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&page=1&sort_by=vote_average.desc&vote_count.gte=500&primary_release_date.gte=1998-01-01&primary_release_date.lte=${currentDate}&include_adult=false`),
+
+          fetch(`${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&page=1&sort_by=vote_average.desc&vote_count.gte=200&first_air_date.gte=1998-01-01&first_air_date.lte=${currentDate}&include_adult=false`)
+        ]);
+
+        const [trendingMovies, trendingTv, topMovies, topTv] = await Promise.all([
+          trendingMovieRes.json(),
+          trendingTvRes.json(),
+          topMovieRes.json(),
+          topTvRes.json()
+        ]);
+
+        renderCarousel(trendingMovies.results || [], 'homeMoviesCarousel', 'movie');
+        renderCarousel(trendingTv.results || [], 'homeTvCarousel', 'tv');
+        renderCarousel(topMovies.results || [], 'homeTopMoviesCarousel', 'movie');
+        renderCarousel(topTv.results || [], 'homeTopTvCarousel', 'tv');
+      } catch(e) {
+        console.error('Could not load home recommendations:', e);
+      }
     }
 
     function renderCarousel(items, containerId, mediaType) {
       const container = document.getElementById(containerId);
-      container.innerHTML = items.map(item => `
-        <div class="media-card" style="flex: 0 0 180px;" onclick="openDetails(${item.id}, '${mediaType}')">
-          <div class="poster-wrap">
-            <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/180x270?text=No+Image'}" alt="poster">
-            <span class="card-badge">★ ${(item.vote_average || 0).toFixed(1)}</span>
-          </div>
-          <div class="card-content">
-            <div class="card-title">${item.title || item.name}</div>
-            <div class="card-meta">
-              <span>${(item.release_date || item.first_air_date || '').split('-')[0]}</span>
-              <span>${mediaType.toUpperCase()}</span>
+      if(!container) return;
+
+      const usable = (items || [])
+        .filter(item => item && item.id && (item.poster_path || item.backdrop_path))
+        .slice(0, 20);
+
+      container.innerHTML = usable.map(item => {
+        const title = escapeHtml(item.title || item.name || 'Untitled');
+        const year = (item.release_date || item.first_air_date || '').split('-')[0];
+        const rating = Number(item.vote_average || 0).toFixed(1);
+
+        return `
+          <div class="media-card" style="flex: 0 0 180px;" onclick="openDetails(${item.id}, '${mediaType}')">
+            <div class="poster-wrap">
+              <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/180x270?text=No+Image'}" alt="${title}">
+              <span class="card-badge">★ ${rating}</span>
+            </div>
+            <div class="card-content">
+              <div class="card-title">${title}</div>
+              <div class="card-meta">
+                <span>${year || 'N/A'}</span>
+                <span>★ ${rating}</span>
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     let filterRequestToken = 0;
@@ -1151,6 +1266,7 @@
     }
 
     function handleFilterChange() {
+      populateGenreFilter();
       runUniversalSearch();
     }
 
@@ -1207,7 +1323,10 @@
           }
 
           if(f.genre) {
-            results = results.filter(item => (item.genre_ids || []).map(String).includes(String(f.genre)));
+            results = results.filter(item => {
+              const genreIds = (item.genre_ids || []).map(String);
+              return genreIds.includes(String(f.genre));
+            });
           }
 
           if(f.year) {
@@ -1252,7 +1371,15 @@
               include_adult: 'false'
             });
 
-            if(f.genre) params.set('with_genres', f.genre);
+            if(f.genre) {
+              const validGenres = type === 'movie'
+                ? (window.cinevoMovieGenres || [])
+                : (window.cinevoTvGenres || []);
+
+              if(validGenres.some(g => String(g.id) === String(f.genre))) {
+                params.set('with_genres', f.genre);
+              }
+            }
             if(f.country) params.set('with_origin_country', f.country);
 
             if(f.year) {
@@ -1770,6 +1897,30 @@
       document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
 
+    let cinevoToastTimer = null;
+
+    function showCineVoToast(title, subtitle = '') {
+      const toast = document.getElementById('cinevoToast');
+      const titleEl = document.getElementById('cinevoToastTitle');
+      const subtitleEl = document.getElementById('cinevoToastSubtitle');
+
+      if(!toast || !titleEl || !subtitleEl) return;
+
+      titleEl.textContent = title;
+      subtitleEl.textContent = subtitle;
+
+      toast.classList.remove('show');
+      clearTimeout(cinevoToastTimer);
+
+      requestAnimationFrame(() => {
+        toast.classList.add('show');
+      });
+
+      cinevoToastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2800);
+    }
+
     function confirmSchedule() {
       const d = document.getElementById('schedDay').value;
       const m = document.getElementById('schedMonth').value;
@@ -1787,12 +1938,54 @@
 
       localStorage.setItem('cinevo_scheduled', JSON.stringify(scheduled));
       document.getElementById('scheduleModal').remove();
-      alert('Successfully scheduled!');
+
+      const scheduledTitle = currentOpenItem?.title || currentOpenItem?.name || 'Item';
+      showCineVoToast(
+        '✓ Scheduled successfully',
+        `${scheduledTitle} · ${dateVal}`
+      );
+
+      renderWatchJourney();
+    }
+
+    function parseJourneyDate(value) {
+      if(!value) return 0;
+
+      const text = String(value).trim();
+
+      // New format: DD/MM/YYYY
+      let match = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if(match) {
+        const [, d, m, y] = match;
+        return new Date(Number(y), Number(m) - 1, Number(d)).getTime();
+      }
+
+      // Older format: M/YYYY (kept for existing localStorage entries)
+      match = text.match(/^(\d{1,2})\/(\d{4})$/);
+      if(match) {
+        const [, m, y] = match;
+        return new Date(Number(y), Number(m) - 1, 1).getTime();
+      }
+
+      const timestamp = Date.parse(text);
+      return Number.isNaN(timestamp) ? 0 : timestamp;
+    }
+
+    function sortJourneyNewestFirst(items) {
+      return [...items].sort((a, b) => {
+        const diff = parseJourneyDate(b.date) - parseJourneyDate(a.date);
+        if(diff !== 0) return diff;
+        return String(b.title || '').localeCompare(String(a.title || ''));
+      });
     }
 
     function renderWatchJourney() {
-      const watched = JSON.parse(localStorage.getItem('cinevo_watched') || '[]');
-      const scheduled = JSON.parse(localStorage.getItem('cinevo_scheduled') || '[]');
+      const watched = sortJourneyNewestFirst(
+        JSON.parse(localStorage.getItem('cinevo_watched') || '[]')
+      );
+      const scheduled = sortJourneyNewestFirst(
+        JSON.parse(localStorage.getItem('cinevo_scheduled') || '[]')
+      );
 
       const watchedList = document.getElementById('watchedTimelineList');
       const scheduledList = document.getElementById('scheduledTimelineList');
