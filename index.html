@@ -25,7 +25,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Clean Modern Scrollbar */
+    /* Modern Clean Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -46,7 +46,7 @@
       height: 100%;
       background-color: var(--bg-main);
       color: var(--text-main);
-      overflow: hidden; /* Prevent body double scrollbar glitch completely */
+      overflow: hidden;
     }
 
     body {
@@ -112,7 +112,7 @@
       background: var(--bg-hover);
     }
 
-    /* Main Container (Scrollable Area for Tab Content) */
+    /* Main Container */
     main {
       flex: 1;
       overflow-y: auto;
@@ -287,7 +287,7 @@
       color: var(--text-muted);
     }
 
-    /* Details Overlay View (Isolated Scroll View) */
+    /* Details Overlay View */
     .page-view {
       position: fixed;
       inset: 0;
@@ -682,7 +682,6 @@
 </head>
 <body>
 
-  <!-- Top Navbar -->
   <nav>
     <div class="logo" onclick="switchTab('home')">CineVo</div>
     <div class="nav-links">
@@ -694,9 +693,7 @@
     </div>
   </nav>
 
-  <!-- Main Dynamic View Container -->
   <main id="appMain" onscroll="handleScrollEvents()">
-    <!-- Home View -->
     <div id="homeView">
       <div class="search-box-wrapper">
         <span class="search-icon">🔍</span>
@@ -704,7 +701,6 @@
         <div id="searchDropdown" class="search-suggestions hidden"></div>
       </div>
 
-      <!-- Movies Section -->
       <div class="section-title">
         <span>Movies</span>
         <button class="nav-link" style="font-size:12px;" onclick="switchTab('fullList', 'movie')">See All →</button>
@@ -713,7 +709,6 @@
         <div class="carousel" id="homeMoviesCarousel"></div>
       </div>
 
-      <!-- TV Shows Section -->
       <div class="section-title">
         <span>TV Shows</span>
         <button class="nav-link" style="font-size:12px;" onclick="switchTab('fullList', 'tv')">See All →</button>
@@ -723,14 +718,12 @@
       </div>
     </div>
 
-    <!-- Infinite Scroll List View -->
     <div id="fullListView" class="hidden">
       <div class="section-title" id="fullListTitle">Movies</div>
       <div class="media-grid-5" id="infiniteGridContainer"></div>
       <div id="loadingMoreIndicator" style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">Loading more...</div>
     </div>
 
-    <!-- Pick For Me Tab -->
     <div id="pickView" class="hidden">
       <div style="max-width: 500px; margin: 40px auto; text-align: center; display:flex; flex-direction:column; gap:16px;">
         <h2>🎲 Pick For Me</h2>
@@ -743,7 +736,6 @@
       </div>
     </div>
 
-    <!-- Watch Journey Tab -->
     <div id="journeyView" class="hidden">
       <h2 style="margin-bottom: 24px;">⏱️ Watch Journey Timeline</h2>
       <div class="timeline-container">
@@ -759,16 +751,13 @@
     </div>
   </main>
 
-  <!-- Scroll To Top Button -->
   <button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
-  <!-- Detail Page View -->
   <div id="detailView" class="page-view">
     <button class="back-btn" onclick="closeDetails()">← Back</button>
     <div id="detailsContainerContent"></div>
   </div>
 
-  <!-- JavaScript Application Logic -->
   <script>
     const API_KEY = "9c95420163879f1c4726c540b305cbc6";
     const BASE_URL = "https://api.themoviedb.org/3";
@@ -988,8 +977,11 @@
     async function openDetails(id, mediaType) {
       const view = document.getElementById('detailView');
       view.classList.add('active');
-      const container = document.getElementById('detailsContainerContent');
+      
+      // FIX: Disable background scrolling when detail view opens to prevent double scrollbar
+      document.getElementById('appMain').style.overflow = 'hidden';
 
+      const container = document.getElementById('detailsContainerContent');
       container.innerHTML = '<div style="padding: 40px; color:var(--text-muted);">Loading full details...</div>';
 
       try {
@@ -1127,6 +1119,8 @@
 
     function closeDetails() {
       document.getElementById('detailView').classList.remove('active');
+      // FIX: Restore background scrolling when closing details view
+      document.getElementById('appMain').style.overflow = 'auto';
     }
 
     function checkIfWatched(id) {
