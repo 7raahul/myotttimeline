@@ -25,6 +25,22 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* Modern & Smooth 30% Transparent Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
     body {
       background-color: var(--bg-main);
       color: var(--text-main);
@@ -102,7 +118,7 @@
       padding: 24px;
     }
 
-    /* Compact Search Section with 40% Transparent Icon */
+    /* Compact Search Section */
     .search-box-wrapper {
       position: relative;
       max-width: 400px;
@@ -192,11 +208,8 @@
       overflow-x: auto;
       scroll-behavior: smooth;
       padding-bottom: 8px;
-      scrollbar-width: none;
     }
-    .carousel::-webkit-scrollbar { display: none; }
 
-    /* Media Cards - Exactly 5 items per row configuration on desktop */
     .media-grid-5 {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -270,7 +283,7 @@
       color: var(--text-muted);
     }
 
-    /* Details View Redesigned */
+    /* Details View */
     .page-view {
       position: fixed;
       inset: 0;
@@ -387,6 +400,7 @@
       cursor: pointer;
     }
 
+    /* Minimalist Date & Year Modal UI */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -403,19 +417,26 @@
       border: 1px solid var(--border);
       padding: 24px;
       border-radius: var(--radius);
-      width: 320px;
+      width: 300px;
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
-    .modal-box input[type="date"] {
+    .minimal-date-picker {
+      display: flex;
+      gap: 10px;
+    }
+
+    .minimal-select {
+      flex: 1;
       background: var(--bg-main);
       border: 1px solid var(--border);
       color: var(--text-main);
       padding: 10px;
       border-radius: 8px;
       outline: none;
+      font-size: 13px;
     }
 
     .horizontal-scroll {
@@ -423,9 +444,7 @@
       gap: 12px;
       overflow-x: auto;
       padding-bottom: 8px;
-      scrollbar-width: none;
     }
-    .horizontal-scroll::-webkit-scrollbar { display: none; }
 
     .cast-card {
       flex: 0 0 100px;
@@ -470,9 +489,7 @@
       overflow-x: auto;
       padding-bottom: 8px;
       margin-bottom: 16px;
-      scrollbar-width: none;
     }
-    .seasons-tabs::-webkit-scrollbar { display: none; }
 
     .season-tab-btn {
       background: var(--bg-card);
@@ -562,6 +579,60 @@
       cursor: pointer;
     }
 
+    /* Marvel-style Timeline Watch Journey Layout */
+    .timeline-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      position: relative;
+    }
+    .timeline-container::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+      transform: translateX(-50%);
+    }
+
+    .timeline-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .timeline-heading {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .timeline-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .timeline-item:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .timeline-item img {
+      width: 50px;
+      height: 75px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
     /* Scroll To Top Button */
     .scroll-top-btn {
       position: fixed;
@@ -594,6 +665,8 @@
 
     @media (max-width: 1024px) {
       .media-grid-5 { grid-template-columns: repeat(3, 1fr); }
+      .timeline-container { grid-template-columns: 1fr; }
+      .timeline-container::before { display: none; }
     }
     @media (max-width: 600px) {
       .media-grid-5 { grid-template-columns: repeat(2, 1fr); }
@@ -605,7 +678,6 @@
 </head>
 <body>
 
-  <!-- Top Navbar -->
   <nav>
     <div class="logo" onclick="switchTab('home')">CineVo</div>
     <div class="nav-links">
@@ -617,9 +689,7 @@
     </div>
   </nav>
 
-  <!-- Main Dynamic View Container -->
   <main id="appMain">
-    <!-- Home View -->
     <div id="homeView">
       <div class="search-box-wrapper">
         <span class="search-icon">🔍</span>
@@ -627,7 +697,6 @@
         <div id="searchDropdown" class="search-suggestions hidden"></div>
       </div>
 
-      <!-- Movies Section -->
       <div class="section-title">
         <span>Movies</span>
         <button class="nav-link" style="font-size:12px;" onclick="switchTab('fullList', 'movie')">See All →</button>
@@ -636,7 +705,6 @@
         <div class="carousel" id="homeMoviesCarousel"></div>
       </div>
 
-      <!-- TV Shows Section -->
       <div class="section-title">
         <span>TV Shows</span>
         <button class="nav-link" style="font-size:12px;" onclick="switchTab('fullList', 'tv')">See All →</button>
@@ -646,14 +714,12 @@
       </div>
     </div>
 
-    <!-- Infinite Scroll List View (Movies or TV Shows exclusively) -->
     <div id="fullListView" class="hidden">
       <div class="section-title" id="fullListTitle">Movies</div>
       <div class="media-grid-5" id="infiniteGridContainer"></div>
       <div id="loadingMoreIndicator" style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">Loading more...</div>
     </div>
 
-    <!-- Pick For Me Tab -->
     <div id="pickView" class="hidden">
       <div style="max-width: 500px; margin: 40px auto; text-align: center; display:flex; flex-direction:column; gap:16px;">
         <h2>🎲 Pick For Me</h2>
@@ -666,26 +732,28 @@
       </div>
     </div>
 
-    <!-- Watch Journey Tab -->
     <div id="journeyView" class="hidden">
-      <h2 style="margin-bottom: 16px;">⏱️ Watch Journey</h2>
-      <h3 style="font-size:15px; color:var(--text-muted); margin-bottom:10px;">Watched Items</h3>
-      <div class="media-grid-5" id="watchedGrid"></div>
-      <h3 style="font-size:15px; color:var(--text-muted); margin: 20px 0 10px;">Scheduled Items</h3>
-      <div class="media-grid-5" id="scheduledGrid"></div>
+      <h2 style="margin-bottom: 24px;">⏱️ Watch Journey Timeline</h2>
+      <div class="timeline-container">
+        <div class="timeline-column">
+          <div class="timeline-heading">Watched Items</div>
+          <div id="watchedTimelineList"></div>
+        </div>
+        <div class="timeline-column">
+          <div class="timeline-heading">Scheduled Items</div>
+          <div id="scheduledTimelineList"></div>
+        </div>
+      </div>
     </div>
   </main>
 
-  <!-- Scroll To Top Button -->
   <button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
-  <!-- Detail Page View -->
   <div id="detailView" class="page-view">
     <button class="back-btn" onclick="closeDetails()">← Back</button>
     <div id="detailsContainerContent"></div>
   </div>
 
-  <!-- JavaScript Application Logic -->
   <script>
     const API_KEY = "9c95420163879f1c4726c540b305cbc6";
     const BASE_URL = "https://api.themoviedb.org/3";
@@ -703,6 +771,13 @@
     async function initApp() {
       loadHomeCarousels();
       window.addEventListener('scroll', handleScrollEvents);
+      // Global listener to dismiss search dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if(!e.target.closest('.search-box-wrapper')) {
+          const dropdown = document.getElementById('searchDropdown');
+          if(dropdown) dropdown.classList.add('hidden');
+        }
+      });
     }
 
     async function loadHomeCarousels() {
@@ -741,6 +816,12 @@
     function switchTab(tabId, mediaType = 'movie') {
       document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
       document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+      // Clean search input & dropdown state when switching tabs
+      const searchInput = document.getElementById('mainSearchInput');
+      const searchDropdown = document.getElementById('searchDropdown');
+      if(searchInput) searchInput.value = '';
+      if(searchDropdown) searchDropdown.classList.add('hidden');
 
       if(tabId === 'home') {
         document.getElementById('homeView').classList.remove('hidden');
@@ -812,7 +893,6 @@
     }
 
     function handleScrollEvents() {
-      // Scroll to Top visibility
       const scrollTopBtn = document.getElementById('scrollTopBtn');
       if(window.scrollY > 300) {
         scrollTopBtn.classList.add('visible');
@@ -820,7 +900,6 @@
         scrollTopBtn.classList.remove('visible');
       }
 
-      // Infinite scroll trigger
       const fullListView = document.getElementById('fullListView');
       if(fullListView.classList.contains('hidden')) return;
 
@@ -849,7 +928,7 @@
 
         if(results.length > 0) {
           dropdown.innerHTML = results.map(item => `
-            <div class="suggestion-item" onclick="openDetails(${item.id}, '${item.media_type}')">
+            <div class="suggestion-item" onclick="openDetails(${item.id}, '${item.media_type}'); document.getElementById('searchDropdown').classList.add('hidden');">
               <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/36x50'}">
               <div>
                 <div style="font-size:13px; font-weight:600;">${item.title || item.name}</div>
@@ -919,8 +998,6 @@
 
         let isWatched = checkIfWatched(id);
         const backdropUrl = detail.backdrop_path ? BACKDROP_BASE + detail.backdrop_path : '';
-
-        // Filter out seasons named "Specials" or with season_number === 0
         let validSeasons = (detail.seasons || []).filter(s => s.season_number > 0 && !s.name.toLowerCase().includes('special'));
 
         container.innerHTML = `
@@ -1041,12 +1118,29 @@
       return watched.some(i => i.id === id);
     }
 
+    // Minimalist Date & Year Select Modal Builders
+    function generateMinimalDateOptions() {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const currentYear = new Date().getFullYear();
+      let monthOpts = months.map((m, idx) => `<option value="${idx+1}">${m}</option>`).join('');
+      let yearOpts = '';
+      for(let y = currentYear + 1; y >= currentYear - 5; y--) {
+        yearOpts += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`;
+      }
+      return { monthOpts, yearOpts };
+    }
+
     function handleWatchedClick() {
+      const { monthOpts, yearOpts } = generateMinimalDateOptions();
+      const currentMonth = new Date().getMonth() + 1;
       const modalHtml = `
         <div class="modal-overlay" id="dateModal">
           <div class="modal-box">
-            <h3>Select Watch Date</h3>
-            <input type="date" id="selectedDateInput" value="${new Date().toISOString().split('T')[0]}">
+            <h3>Mark as Watched</h3>
+            <div class="minimal-date-picker">
+              <select id="selMonth" class="minimal-select">${monthOpts.replace(`value="${currentMonth}"`, `value="${currentMonth}" selected`)}</select>
+              <select id="selYear" class="minimal-select">${yearOpts}</select>
+            </div>
             <div style="display:flex; gap:10px; justify-content:flex-end;">
               <button class="btn-secondary" onclick="document.getElementById('dateModal').remove()">Cancel</button>
               <button class="btn-watched watched-active" onclick="confirmMarkWatched()">Save</button>
@@ -1058,7 +1152,9 @@
     }
 
     function confirmMarkWatched() {
-      const dateVal = document.getElementById('selectedDateInput').value;
+      const m = document.getElementById('selMonth').value;
+      const y = document.getElementById('selYear').value;
+      const dateVal = `${m}/${y}`;
       let watched = JSON.parse(localStorage.getItem('cinevo_watched') || '[]');
       if(!watched.some(i => i.id === currentOpenItem.id)) {
         watched.push({...currentOpenItem, date: dateVal});
@@ -1073,11 +1169,16 @@
     }
 
     function handleScheduleClick() {
+      const { monthOpts, yearOpts } = generateMinimalDateOptions();
+      const currentMonth = new Date().getMonth() + 1;
       const modalHtml = `
         <div class="modal-overlay" id="scheduleModal">
           <div class="modal-box">
-            <h3>Schedule Watch Date</h3>
-            <input type="date" id="selectedScheduleInput" value="${new Date().toISOString().split('T')[0]}">
+            <h3>Schedule Watch</h3>
+            <div class="minimal-date-picker">
+              <select id="schedMonth" class="minimal-select">${monthOpts.replace(`value="${currentMonth}"`, `value="${currentMonth}" selected`)}</select>
+              <select id="schedYear" class="minimal-select">${yearOpts}</select>
+            </div>
             <div style="display:flex; gap:10px; justify-content:flex-end;">
               <button class="btn-secondary" onclick="document.getElementById('scheduleModal').remove()">Cancel</button>
               <button class="btn-watched watched-active" onclick="confirmSchedule()">Schedule</button>
@@ -1089,7 +1190,9 @@
     }
 
     function confirmSchedule() {
-      const dateVal = document.getElementById('selectedScheduleInput').value;
+      const m = document.getElementById('schedMonth').value;
+      const y = document.getElementById('schedYear').value;
+      const dateVal = `${m}/${y}`;
       let scheduled = JSON.parse(localStorage.getItem('cinevo_scheduled') || '[]');
       if(!scheduled.some(i => i.id === currentOpenItem.id)) {
         scheduled.push({...currentOpenItem, date: dateVal});
@@ -1103,19 +1206,25 @@
       const watched = JSON.parse(localStorage.getItem('cinevo_watched') || '[]');
       const scheduled = JSON.parse(localStorage.getItem('cinevo_scheduled') || '[]');
 
-      document.getElementById('watchedGrid').innerHTML = watched.length ? watched.map(i => `
-        <div class="media-card" onclick="openDetails(${i.id}, '${i.type}')">
-          <div class="poster-wrap"><img src="${IMG_BASE + i.poster}"></div>
-          <div class="card-content"><div class="card-title">${i.title}</div><div class="card-meta">Watched: ${i.date}</div></div>
+      document.getElementById('watchedTimelineList').innerHTML = watched.length ? watched.map(i => `
+        <div class="timeline-item" onclick="openDetails(${i.id}, '${i.type}')">
+          <img src="${IMG_BASE + i.poster}">
+          <div style="display:flex; flex-direction:column; justify-content:center; gap:4px;">
+            <div style="font-size:14px; font-weight:700;">${i.title}</div>
+            <div style="font-size:12px; color:var(--text-muted);">Watched: ${i.date}</div>
+          </div>
         </div>
-      `).join('') : '<div style="color:var(--text-muted); font-size:12px; grid-column: 1/-1;">No watched items yet.</div>';
+      `).join('') : '<div style="color:var(--text-muted); font-size:12px;">No watched items yet.</div>';
 
-      document.getElementById('scheduledGrid').innerHTML = scheduled.length ? scheduled.map(i => `
-        <div class="media-card" onclick="openDetails(${i.id}, '${i.type}')">
-          <div class="poster-wrap"><img src="${IMG_BASE + i.poster}"></div>
-          <div class="card-content"><div class="card-title">${i.title}</div><div class="card-meta">Date: ${i.date}</div></div>
+      document.getElementById('scheduledTimelineList').innerHTML = scheduled.length ? scheduled.map(i => `
+        <div class="timeline-item" onclick="openDetails(${i.id}, '${i.type}')">
+          <img src="${IMG_BASE + i.poster}">
+          <div style="display:flex; flex-direction:column; justify-content:center; gap:4px;">
+            <div style="font-size:14px; font-weight:700;">${i.title}</div>
+            <div style="font-size:12px; color:var(--text-muted);">Scheduled: ${i.date}</div>
+          </div>
         </div>
-      `).join('') : '<div style="color:var(--text-muted); font-size:12px; grid-column: 1/-1;">No scheduled items.</div>';
+      `).join('') : '<div style="color:var(--text-muted); font-size:12px;">No scheduled items.</div>';
     }
 
     window.onload = initApp;
