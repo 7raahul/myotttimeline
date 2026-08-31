@@ -1,525 +1,207 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b0c10">
-  <title>CineVo Mobile</title>
-  <style>
-    :root {
-      --bg: #0b0c10;
-      --surface: #13151b;
-      --surface-2: #191c23;
-      --surface-3: #20232b;
-      --text: #f6f7fb;
-      --muted: #9297a6;
-      --line: rgba(255,255,255,.075);
-      --accent: #ff3b30;
-      --green: #32d46b;
-      --yellow: #ffd23f;
-      --red: #ff453a;
-      --nav-h: 70px;
-      --radius: 16px;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090a0d">
+<title>CineVo Mobile</title>
+<style>
+:root{
+  --bg:#090a0d;--panel:#111319;--panel2:#171922;--text:#f5f6f8;--muted:#9297a4;
+  --line:rgba(255,255,255,.075);--red:#ff453a;--green:#32d46b;--gold:#ffd23f;
+  --nav:72px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body{overflow:hidden}
+button,input,select{font:inherit}
+img{display:block;max-width:100%}
+#app{height:100dvh;overflow:hidden}
+.mobile-wrap{height:100%;overflow-y:auto;overflow-x:hidden;
+  padding:calc(10px + env(safe-area-inset-top)) 14px calc(var(--nav) + 20px + env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.mobile-wrap::-webkit-scrollbar{display:none}
 
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      width: 100%;
-      min-height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      -webkit-text-size-adjust: 100%;
-      overscroll-behavior: none;
-    }
-    body {
-      overflow: hidden;
-      -webkit-tap-highlight-color: transparent;
-    }
-    button, input, select { font: inherit; }
-    button { -webkit-appearance: none; }
-    img { display: block; max-width: 100%; }
+.mobile-head{display:flex;align-items:center;justify-content:space-between;padding:8px 1px 15px}
+.mobile-logo{font-size:24px;font-weight:900;letter-spacing:-1px}
+.mobile-logo b{color:var(--red)}
+.mobile-pick{border:1px solid var(--line);background:var(--panel2);color:var(--gold);
+  border-radius:13px;padding:10px 12px;font-size:12px;font-weight:800}
 
-    /* ---------- App shell ---------- */
-    #app {
-      height: 100dvh;
-      min-height: 100vh;
-      overflow: hidden;
-      position: relative;
-    }
-    .mobile-main {
-      height: 100%;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: max(12px, env(safe-area-inset-top)) 15px calc(var(--nav-h) + 28px + env(safe-area-inset-bottom));
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .mobile-main::-webkit-scrollbar { display: none; }
+.mobile-search{position:relative;margin-bottom:11px}
+.mobile-search input{width:100%;height:51px;background:var(--panel);border:1px solid var(--line);
+  border-radius:15px;padding:0 44px;color:var(--text);outline:0;font-size:15px;
+  box-shadow:0 8px 25px rgba(0,0,0,.18)}
+.mobile-search .sicon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px}
+.mobile-search .x{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:none;
+  width:34px;height:34px;border:0;border-radius:50%;background:#252831;color:#ddd}
+.mobile-search.has-value .x{display:block}
 
-    /* Existing generated page containers should fill the mobile viewport. */
-    .page-view { min-height: calc(100dvh - var(--nav-h)); }
+.mobile-filters{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:21px}
+.mobile-filter{height:40px;min-width:0;border:1px solid var(--line);border-radius:11px;
+  background:var(--panel);color:#dfe2e9;font-size:11px;font-weight:750;padding:0 6px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mobile-filter.active{border-color:rgba(255,69,58,.48);background:rgba(255,69,58,.10);color:#fff}
 
-    /* ---------- Header ---------- */
-    .mobile-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 7px 1px 16px;
-    }
-    .mobile-logo {
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: -1px;
-      line-height: 1;
-    }
-    .mobile-logo span { color: var(--accent); }
-    .mobile-pick {
-      border: 1px solid rgba(255,255,255,.07);
-      background: linear-gradient(180deg, #1c1f27, #15171d);
-      color: var(--yellow);
-      min-height: 42px;
-      padding: 0 13px;
-      border-radius: 13px;
-      font-weight: 800;
-      font-size: 12px;
-      box-shadow: 0 8px 22px rgba(0,0,0,.2);
-    }
+.m-section{margin-bottom:25px}
+.m-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.m-section-head h2{font-size:17px;margin:0;font-weight:850}
+.m-see{border:0;background:transparent;color:#9ea4b1;font-size:11px;font-weight:700;padding:4px}
 
-    /* ---------- Search ---------- */
-    .mobile-search {
-      position: relative;
-      margin-bottom: 12px;
-    }
-    .mobile-search input {
-      width: 100%;
-      height: 52px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      outline: none;
-      padding: 0 48px 0 45px;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 15px;
-      box-shadow: 0 9px 25px rgba(0,0,0,.18);
-    }
-    .mobile-search input::placeholder { color: #7f8491; }
-    .mobile-search-icon {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 19px;
-      opacity: .9;
-      pointer-events: none;
-    }
-    .mobile-search-clear {
-      position: absolute;
-      right: 9px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 34px;
-      height: 34px;
-      border: 0;
-      border-radius: 50%;
-      background: #252832;
-      color: #cbd0db;
-      display: none;
-    }
-    .mobile-search.has-value .mobile-search-clear { display: block; }
+.m-carousel{display:flex;gap:10px;overflow-x:auto;padding-right:14px;scroll-snap-type:x proximity;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.m-carousel::-webkit-scrollbar{display:none}
+.m-card{flex:0 0 143px;scroll-snap-align:start;background:var(--panel);
+  border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.m-poster{aspect-ratio:2/3;background:#20232a;position:relative;overflow:hidden}
+.m-poster img{width:100%;height:100%;object-fit:cover}
+.m-rating{position:absolute;top:6px;right:6px;background:rgba(10,11,14,.88);
+  border-radius:7px;padding:4px 6px;font-size:9px;color:var(--gold);font-weight:850}
+.m-info{padding:8px}
+.m-title{font-size:12px;font-weight:750;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden}
+.m-meta{margin-top:5px;color:var(--muted);font-size:9px;display:flex;justify-content:space-between}
 
-    /* ---------- Filter chips ---------- */
-    .mobile-filter-bar {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap: 7px;
-      margin-bottom: 22px;
-    }
-    .filter-chip {
-      min-width: 0;
-      height: 40px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--surface);
-      color: #dfe2ea;
-      padding: 0 7px;
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .filter-chip.active {
-      border-color: rgba(255,59,48,.42);
-      color: #fff;
-      background: rgba(255,59,48,.10);
-    }
+.mobile-results{margin-bottom:24px}
+.mobile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mobile-grid .m-card{min-width:0;width:100%}
 
-    /* ---------- Sections / cards ---------- */
-    .section-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin: 0 0 10px;
-      font-size: 17px;
-      line-height: 1.2;
-      font-weight: 850;
-    }
-    .section-title .nav-link {
-      color: #aab0bd !important;
-      padding: 3px 2px !important;
-      min-height: 28px !important;
-      font-size: 11px !important;
-    }
-    .carousel-container {
-      margin: 0 -15px 24px 0;
-      overflow: hidden;
-    }
-    .carousel {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding: 0 15px 5px 0;
-      scrollbar-width: none;
-      scroll-snap-type: x proximity;
-      -webkit-overflow-scrolling: touch;
-    }
-    .carousel::-webkit-scrollbar { display: none; }
-    .carousel .media-card {
-      flex: 0 0 142px !important;
-      width: 142px;
-      min-width: 142px;
-      scroll-snap-align: start;
-      border-radius: 13px;
-      overflow: hidden;
-      background: var(--surface);
-      border: 1px solid var(--line);
-    }
-    .poster-wrap {
-      position: relative;
-      aspect-ratio: 2 / 3;
-      background: #20232a;
-      overflow: hidden;
-    }
-    .poster-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .card-badge {
-      position: absolute !important;
-      right: 6px !important;
-      top: 6px !important;
-      padding: 4px 6px !important;
-      border-radius: 7px !important;
-      background: rgba(20,21,25,.9) !important;
-      color: var(--yellow) !important;
-      font-size: 10px !important;
-      font-weight: 800 !important;
-    }
-    .card-content { padding: 8px 8px 9px !important; }
-    .card-title {
-      color: #f4f5f8 !important;
-      font-size: 12px !important;
-      font-weight: 750 !important;
-      line-height: 1.25 !important;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .card-meta {
-      margin-top: 5px;
-      color: var(--muted) !important;
-      font-size: 9px !important;
-      display: flex;
-      justify-content: space-between;
-      gap: 4px;
-    }
+.mobile-bottom{position:fixed;z-index:8000;left:0;right:0;bottom:0;
+  height:calc(var(--nav) + env(safe-area-inset-bottom));padding:6px 7px env(safe-area-inset-bottom);
+  display:grid;grid-template-columns:repeat(5,1fr);gap:3px;background:rgba(12,13,17,.94);
+  border-top:1px solid var(--line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.mobile-bottom button{border:0;background:transparent;color:#7d8290;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;font-weight:750}
+.mobile-bottom button .mi{font-size:20px;line-height:1}
+.mobile-bottom button.active{background:rgba(255,255,255,.055);color:#fff}
+.mobile-bottom button.active .mi{color:var(--red)}
 
-    /* ---------- Filter results ---------- */
-    .filter-results-section { margin-bottom: 24px !important; }
-    .media-grid-5 {
-      display: grid !important;
-      grid-template-columns: repeat(2, minmax(0,1fr)) !important;
-      gap: 10px !important;
-    }
-    .filter-results-section .media-card {
-      width: 100% !important;
-      min-width: 0 !important;
-      border-radius: 13px;
-      overflow: hidden;
-      background: var(--surface);
-      border: 1px solid var(--line);
-    }
-    .filter-loading, .filter-empty {
-      text-align: center;
-      color: var(--muted);
-      padding: 25px 8px;
-      font-size: 13px;
-    }
+.mobile-sheet-backdrop{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.62);
+  display:none;align-items:flex-end}
+.mobile-sheet-backdrop.show{display:flex}
+.mobile-sheet{width:100%;max-height:82dvh;background:#15171d;border:1px solid var(--line);
+  border-bottom:0;border-radius:21px 21px 0 0;padding:9px 14px calc(14px + env(safe-area-inset-bottom));
+  box-shadow:0 -20px 55px rgba(0,0,0,.55);animation:up .18s ease-out}
+@keyframes up{from{transform:translateY(25px);opacity:.7}to{transform:none;opacity:1}}
+.handle{width:38px;height:4px;border-radius:9px;background:#484b54;margin:3px auto 14px}
+.sheet-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.sheet-top strong{font-size:17px}.sheet-close{width:34px;height:34px;border:0;border-radius:50%;
+  background:#242730;color:#ddd}
+.sheet-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;
+  max-height:calc(82dvh - 100px);overflow:auto}
+.sheet-option{min-height:44px;text-align:left;border:1px solid var(--line);background:#1b1e25;
+  color:#dfe2e9;border-radius:11px;padding:8px 10px;font-size:12px}
+.sheet-option.selected{border-color:rgba(255,69,58,.5);background:rgba(255,69,58,.12);color:#fff}
 
-    /* ---------- Bottom navigation ---------- */
-    .mobile-bottom-nav {
-      position: fixed;
-      z-index: 5000;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: calc(var(--nav-h) + env(safe-area-inset-bottom));
-      padding: 6px 8px env(safe-area-inset-bottom);
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 3px;
-      background: rgba(13,14,18,.94);
-      border-top: 1px solid rgba(255,255,255,.06);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-    }
-    .mobile-nav-btn {
-      border: 0;
-      background: transparent;
-      color: #7f8491;
-      border-radius: 13px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 3px;
-      min-width: 0;
-      font-size: 9px;
-      font-weight: 700;
-    }
-    .mobile-nav-btn .icon { font-size: 21px; line-height: 1; }
-    .mobile-nav-btn.active {
-      color: #fff;
-      background: rgba(255,255,255,.055);
-    }
-    .mobile-nav-btn.active .icon { color: var(--accent); }
-
-    /* ---------- Bottom sheets ---------- */
-    .mobile-sheet-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 9000;
-      background: rgba(0,0,0,.58);
-      display: none;
-      align-items: flex-end;
-    }
-    .mobile-sheet-backdrop.show { display: flex; }
-    .mobile-sheet {
-      width: 100%;
-      max-height: 82dvh;
-      overflow: hidden;
-      background: #15171d;
-      border: 1px solid rgba(255,255,255,.08);
-      border-bottom: 0;
-      border-radius: 22px 22px 0 0;
-      padding: 10px 15px calc(15px + env(safe-area-inset-bottom));
-      box-shadow: 0 -20px 60px rgba(0,0,0,.55);
-      animation: sheetUp .18s ease-out;
-    }
-    @keyframes sheetUp { from { transform: translateY(25px); opacity: .7; } to { transform: translateY(0); opacity: 1; } }
-    .sheet-handle {
-      width: 38px;
-      height: 4px;
-      border-radius: 10px;
-      background: #4a4d56;
-      margin: 3px auto 15px;
-    }
-    .sheet-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    .sheet-head strong { font-size: 17px; }
-    .sheet-close {
-      border: 0;
-      background: #242730;
-      color: #ddd;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-    }
-    .sheet-options {
-      overflow-y: auto;
-      max-height: calc(82dvh - 100px);
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 8px;
-      padding-bottom: 4px;
-    }
-    .sheet-option {
-      border: 1px solid var(--line);
-      background: #1b1e25;
-      color: #dfe2e9;
-      min-height: 44px;
-      border-radius: 11px;
-      text-align: left;
-      padding: 8px 11px;
-      font-size: 12px;
-    }
-    .sheet-option.selected {
-      border-color: rgba(255,59,48,.5);
-      background: rgba(255,59,48,.12);
-      color: #fff;
-    }
-
-    /* ---------- Existing modal / journey / details compatibility ---------- */
-    .modal-overlay {
-      align-items: flex-end !important;
-      padding: 0 !important;
-    }
-    .modal-box {
-      width: 100% !important;
-      max-width: none !important;
-      border-radius: 20px 20px 0 0 !important;
-      padding: 18px 15px calc(18px + env(safe-area-inset-bottom)) !important;
-    }
-    .cinevo-toast {
-      top: calc(10px + env(safe-area-inset-top)) !important;
-      max-width: calc(100vw - 28px) !important;
-      min-width: 0 !important;
-    }
-
-    /* ---------- Desktop browser is intentionally not supported by this file ---------- */
-    @media (min-width: 601px) {
-      body {
-        background: #08090c;
-      }
-      #mobileOnlyMessage {
-        display: flex !important;
-      }
-      .mobile-main, .mobile-bottom-nav, .mobile-sheet-backdrop {
-        display: none !important;
-      }
-    }
-    #mobileOnlyMessage {
-      display: none;
-      position: fixed;
-      inset: 0;
-      align-items: center;
-      justify-content: center;
-      padding: 30px;
-      text-align: center;
-      color: #fff;
-      font-weight: 700;
-    }
-  </style>
+.mobile-legacy{display:none!important}
+#mobileOnlyMessage{display:none}
+@media(min-width:601px){
+  #mobileOnlyMessage{display:flex;position:fixed;inset:0;align-items:center;justify-content:center;
+    padding:30px;text-align:center;font-weight:750}
+  .mobile-wrap,.mobile-bottom,.mobile-sheet-backdrop{display:none!important}
+}
+@media(max-width:380px){
+  .mobile-wrap{padding-left:11px;padding-right:11px}
+  .m-card{flex-basis:137px}
+}
+</style>
 </head>
-
 <body>
-  <div id="mobileOnlyMessage">CineVo Mobile is designed for phones.</div>
+<div id="mobileOnlyMessage">CineVo Mobile is designed for phones.</div>
 
-  <div id="app">
-    <main class="mobile-main" id="mobileMain">
-      <header class="mobile-header">
-        <div class="mobile-logo"><span>CineVo</span></div>
-        <button class="mobile-pick" onclick="pickForMe()">🎲 Pick For Me</button>
-      </header>
+<div id="app">
+  <main id="appMain" class="mobile-wrap">
+    <header class="mobile-head">
+      <div class="mobile-logo"><b>CineVo</b></div>
+      <button class="mobile-pick" onclick="pickForMe()">🎲 Pick For Me</button>
+    </header>
 
-      <div class="mobile-search" id="mobileSearch">
-        <span class="mobile-search-icon">🔍</span>
-        <input id="mainSearchInput" type="text"
-               placeholder="Search movies, TV shows, actors..."
-               autocomplete="off" oninput="handleSearchInput(this.value)">
-        <button class="mobile-search-clear" onclick="clearMobileSearch()">×</button>
-        <div id="searchDropdown" class="search-suggestions hidden"></div>
+    <div class="mobile-search" id="mobileSearch">
+      <span class="sicon">⌕</span>
+      <input id="mainSearchInput" type="search" autocomplete="off"
+             placeholder="Search movies, TV shows, actors..."
+             oninput="handleSearchInput(this.value)">
+      <button class="x" onclick="clearMobileSearch()">×</button>
+      <div id="searchDropdown" class="search-suggestions hidden"></div>
+    </div>
+
+    <div class="mobile-filters">
+      <button id="mobileType" class="mobile-filter" onclick="openMobileFilter('type')">All</button>
+      <button id="mobileGenre" class="mobile-filter" onclick="openMobileFilter('genre')">Genre</button>
+      <button id="mobileYear" class="mobile-filter" onclick="openMobileFilter('year')">Year</button>
+      <button id="mobileCountry" class="mobile-filter" onclick="openMobileFilter('country')">Country</button>
+    </div>
+
+    <div class="mobile-legacy">
+      <select id="filterType" onchange="handleFilterChange()">
+        <option value="all">All</option><option value="movie">Movies</option><option value="tv">TV Shows</option>
+      </select>
+      <select id="filterGenre" onchange="handleFilterChange()"><option value="">All Genres</option></select>
+      <select id="filterYear" onchange="handleFilterChange()"><option value="">All Years</option></select>
+      <select id="filterCountry" onchange="handleFilterChange()"><option value="">All Countries</option></select>
+    </div>
+
+    <div id="filterResultsSection" class="mobile-results hidden">
+      <div class="m-section-head">
+        <h2 id="filterResultsTitle">Results</h2>
+        <button class="m-see" onclick="clearAllFilters()">Clear</button>
       </div>
+      <div id="filterResultsGrid" class="mobile-grid"></div>
+      <div id="filterLoading" class="filter-loading hidden">Loading...</div>
+      <div id="filterEmpty" class="filter-empty hidden">No matching titles found.</div>
+    </div>
 
-      <div class="mobile-filter-bar">
-        <button id="mobileTypeChip" class="filter-chip" onclick="openMobileFilter('type')">All</button>
-        <button id="mobileGenreChip" class="filter-chip" onclick="openMobileFilter('genre')">Genre</button>
-        <button id="mobileYearChip" class="filter-chip" onclick="openMobileFilter('year')">Year</button>
-        <button id="mobileCountryChip" class="filter-chip" onclick="openMobileFilter('country')">Country</button>
-      </div>
-
-      <!-- Hidden compatibility selects used by the existing CineVo logic. -->
-      <div id="legacyFilterControls" style="display:none;">
-        <select id="filterType" onchange="handleFilterChange()">
-          <option value="all">All</option>
-          <option value="movie">Movies</option>
-          <option value="tv">TV Shows</option>
-        </select>
-        <select id="filterGenre" onchange="handleFilterChange()"><option value="">All Genres</option></select>
-        <select id="filterYear" onchange="handleFilterChange()"><option value="">All Years</option></select>
-        <select id="filterCountry" onchange="handleFilterChange()"><option value="">All Countries</option></select>
-      </div>
-
-      <div id="filterResultsSection" class="filter-results-section hidden">
-        <div class="section-title">
-          <span id="filterResultsTitle">Results</span>
-          <button class="nav-link" style="font-size:12px;" onclick="clearAllFilters()">Clear All</button>
-        </div>
-        <div class="media-grid-5" id="filterResultsGrid"></div>
-        <div id="filterLoading" class="filter-loading hidden">Loading...</div>
-        <div id="filterEmpty" class="filter-empty hidden">No matching titles found.</div>
-      </div>
-
-      <section id="mobileHomeContent">
-        <div class="section-title">
-          <span>🔥 Trending Movies</span>
-          <button class="nav-link" onclick="switchTab('fullList','movie')">See All →</button>
-        </div>
-        <div class="carousel-container"><div class="carousel" id="homeMoviesCarousel"></div></div>
-
-        <div class="section-title">
-          <span>🔥 Trending TV Shows</span>
-          <button class="nav-link" onclick="switchTab('fullList','tv')">See All →</button>
-        </div>
-        <div class="carousel-container"><div class="carousel" id="homeTvCarousel"></div></div>
-
-        <div class="section-title"><span>⭐ Top Rated Movies</span></div>
-        <div class="carousel-container"><div class="carousel" id="homeTopMoviesCarousel"></div></div>
-
-        <div class="section-title"><span>⭐ Top Rated TV Shows</span></div>
-        <div class="carousel-container"><div class="carousel" id="homeTopTvCarousel"></div></div>
+    <section id="mobileHome">
+      <section class="m-section">
+        <div class="m-section-head"><h2>🔥 Trending Movies</h2><button class="m-see" onclick="switchTab('fullList','movie')">See all →</button></div>
+        <div id="homeMoviesCarousel" class="m-carousel"></div>
       </section>
 
-      <!-- Existing app views can still be rendered here by the original logic. -->
-      <div id="mobileDynamicView"></div>
-    </main>
+      <section class="m-section">
+        <div class="m-section-head"><h2>🔥 Trending TV Shows</h2><button class="m-see" onclick="switchTab('fullList','tv')">See all →</button></div>
+        <div id="homeTvCarousel" class="m-carousel"></div>
+      </section>
+
+      <section class="m-section">
+        <div class="m-section-head"><h2>⭐ Top Rated Movies</h2></div>
+        <div id="homeTopMoviesCarousel" class="m-carousel"></div>
+      </section>
+
+      <section class="m-section">
+        <div class="m-section-head"><h2>⭐ Top Rated TV Shows</h2></div>
+        <div id="homeTopTvCarousel" class="m-carousel"></div>
+      </section>
+    </section>
+
+    <!-- Full app compatibility area. Existing logic can inject/open its views here. -->
+    <div id="mobileDynamicView"></div>
+  </main>
+</div>
+
+<nav class="mobile-bottom">
+  <button class="active" data-tab="home" onclick="mobileGo('home')"><span class="mi">⌂</span>Home</button>
+  <button data-tab="movies" onclick="switchTab('fullList','movie');setMobileActive('movies')"><span class="mi">🎬</span>Movies</button>
+  <button data-tab="search" onclick="mobileGo('search')"><span class="mi">⌕</span>Search</button>
+  <button data-tab="pick" onclick="pickForMe();setMobileActive('pick')"><span class="mi">🎲</span>Pick</button>
+  <button data-tab="journey" onclick="mobileGo('journey')"><span class="mi">◷</span>Journey</button>
+</nav>
+
+<div id="mobileFilterSheet" class="mobile-sheet-backdrop" onclick="closeMobileFilter(event)">
+  <div class="mobile-sheet" onclick="event.stopPropagation()">
+    <div class="handle"></div>
+    <div class="sheet-top"><strong id="sheetTitle">Filter</strong><button class="sheet-close" onclick="closeMobileFilter()">×</button></div>
+    <div id="sheetOptions" class="sheet-options"></div>
   </div>
+</div>
 
-  <nav class="mobile-bottom-nav">
-    <button class="mobile-nav-btn active" data-tab="home" onclick="mobileGo('home')">
-      <span class="icon">⌂</span><span>Home</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="watchlist" onclick="mobileGo('watchlist')">
-      <span class="icon">♡</span><span>Watchlist</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="search" onclick="mobileGo('search')">
-      <span class="icon">⌕</span><span>Search</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="pick" onclick="pickForMe()">
-      <span class="icon">🎲</span><span>Pick</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="journey" onclick="mobileGo('journey')">
-      <span class="icon">◷</span><span>Journey</span>
-    </button>
-  </nav>
+<div id="cinevoToast" class="cinevo-toast success" aria-live="polite">
+  <div class="toast-title" id="cinevoToastTitle">✓ Scheduled successfully</div>
+  <div class="toast-subtitle" id="cinevoToastSubtitle"></div>
+</div>
 
-  <div id="mobileFilterSheet" class="mobile-sheet-backdrop" onclick="closeMobileFilter(event)">
-    <div class="mobile-sheet" onclick="event.stopPropagation()">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head">
-        <strong id="mobileSheetTitle">Filter</strong>
-        <button class="sheet-close" onclick="closeMobileFilter()">×</button>
-      </div>
-      <div id="mobileSheetOptions" class="sheet-options"></div>
-    </div>
-  </div>
-
-  <div id="cinevoToast" class="cinevo-toast success" aria-live="polite">
-    <div class="toast-title" id="cinevoToastTitle">✓ Scheduled successfully</div>
-    <div class="toast-subtitle" id="cinevoToastSubtitle"></div>
-  </div>
-
-  <script>
+<script>
 const API_KEY = "9c95420163879f1c4726c540b305cbc6";
     const BASE_URL = "https://api.themoviedb.org/3";
     const IMG_BASE = "https://image.tmdb.org/t/p/w500";
@@ -1454,152 +1136,95 @@ const API_KEY = "9c95420163879f1c4726c540b305cbc6";
 
     window.onload = initApp;
 
-    /* =========================================================
-       Mobile UI adapter
-       ========================================================= */
-    let mobileFilterOpen = null;
+/* ---------- Mobile presentation helpers ---------- */
+function mobileSync(){
+  const t=document.getElementById('filterType')?.value||'all';
+  const g=document.getElementById('filterGenre')?.value||'';
+  const y=document.getElementById('filterYear')?.value||'';
+  const c=document.getElementById('filterCountry')?.value||'';
+  const gn=document.querySelector('#filterGenre option:checked')?.textContent||'Genre';
+  const cn=document.querySelector('#filterCountry option:checked')?.textContent||'Country';
+  const map={mobileType:t==='movie'?'Movies':t==='tv'?'TV Shows':'All',
+              mobileGenre:g?gn:'Genre',mobileYear:y||'Year',mobileCountry:c?cn:'Country'};
+  Object.entries(map).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});
+  ['mobileType','mobileGenre','mobileYear','mobileCountry'].forEach(id=>document.getElementById(id)?.classList.remove('active'));
+  if(t!=='all')document.getElementById('mobileType')?.classList.add('active');
+  if(g)document.getElementById('mobileGenre')?.classList.add('active');
+  if(y)document.getElementById('mobileYear')?.classList.add('active');
+  if(c)document.getElementById('mobileCountry')?.classList.add('active');
+  const q=document.getElementById('mainSearchInput')?.value.trim();
+  document.getElementById('mobileSearch')?.classList.toggle('has-value',!!q);
+}
 
-    function mobileSyncChips() {
-      const type = document.getElementById('filterType')?.value || 'all';
-      const genre = document.getElementById('filterGenre')?.value || '';
-      const year = document.getElementById('filterYear')?.value || '';
-      const country = document.getElementById('filterCountry')?.value || '';
+function setMobileActive(tab){
+  document.querySelectorAll('.mobile-bottom button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+}
 
-      const genreName = document.querySelector('#filterGenre option:checked')?.textContent || 'Genre';
-      const countryName = document.querySelector('#filterCountry option:checked')?.textContent || 'Country';
+function mobileGo(tab){
+  setMobileActive(tab);
+  if(tab==='home'){
+    document.getElementById('mobileHome').style.display='';
+    document.getElementById('filterResultsSection').classList.add('hidden');
+    document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
+  }else if(tab==='search'){
+    document.getElementById('mainSearchInput').focus();
+    document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
+  }else if(tab==='journey'){
+    try{switchTab('journey')}catch(e){try{switchTab('watchJourney')}catch(e2){console.warn(e2)}}
+  }
+}
 
-      const typeEl = document.getElementById('mobileTypeChip');
-      const genreEl = document.getElementById('mobileGenreChip');
-      const yearEl = document.getElementById('mobileYearChip');
-      const countryEl = document.getElementById('mobileCountryChip');
+function clearMobileSearch(){
+  const i=document.getElementById('mainSearchInput');i.value='';
+  document.getElementById('searchDropdown')?.classList.add('hidden');
+  mobileSync();
+  try{runUniversalSearch()}catch(e){}
+  i.focus();
+}
 
-      typeEl.textContent = type === 'movie' ? 'Movies' : type === 'tv' ? 'TV Shows' : 'All';
-      genreEl.textContent = genre ? genreName : 'Genre';
-      yearEl.textContent = year || 'Year';
-      countryEl.textContent = country ? countryName : 'Country';
+function openMobileFilter(kind){
+  const id=kind==='type'?'filterType':kind==='genre'?'filterGenre':kind==='year'?'filterYear':'filterCountry';
+  const select=document.getElementById(id);if(!select)return;
+  document.getElementById('sheetTitle').textContent=kind==='type'?'Choose Type':kind==='genre'?'Choose Genre':kind==='year'?'Choose Year':'Choose Country';
+  document.getElementById('sheetOptions').innerHTML=[...select.options].map(o=>
+    `<button class="sheet-option ${o.selected?'selected':''}" data-value="${escapeHtml(o.value)}" onclick="chooseMobileFilter('${id}',this.dataset.value)">${escapeHtml(o.textContent)}</button>`
+  ).join('');
+  document.getElementById('mobileFilterSheet').classList.add('show');
+  document.body.style.overflow='hidden';
+}
 
-      typeEl.classList.toggle('active', type !== 'all');
-      genreEl.classList.toggle('active', !!genre);
-      yearEl.classList.toggle('active', !!year);
-      countryEl.classList.toggle('active', !!country);
+function chooseMobileFilter(id,value){
+  const s=document.getElementById(id);if(!s)return;
+  s.value=value;
+  if(id==='filterType'){try{populateGenreFilter()}catch(e){}}
+  try{handleFilterChange()}catch(e){}
+  mobileSync();closeMobileFilter();
+}
 
-      const search = document.getElementById('mainSearchInput')?.value.trim() || '';
-      document.getElementById('mobileSearch')?.classList.toggle('has-value', !!search);
-    }
+function closeMobileFilter(e){
+  if(e && e.target!==e.currentTarget)return;
+  document.getElementById('mobileFilterSheet').classList.remove('show');
+  document.body.style.overflow='';
+}
 
-    function openMobileFilter(kind) {
-      mobileFilterOpen = kind;
-      const sheet = document.getElementById('mobileFilterSheet');
-      const options = document.getElementById('mobileSheetOptions');
-      const title = document.getElementById('mobileSheetTitle');
+const _mobileOldFilter=window.handleFilterChange;
+window.handleFilterChange=function(){
+  const r=typeof _mobileOldFilter==='function'?_mobileOldFilter():undefined;
+  mobileSync();return r;
+};
 
-      const selectId = kind === 'type' ? 'filterType'
-        : kind === 'genre' ? 'filterGenre'
-        : kind === 'year' ? 'filterYear'
-        : 'filterCountry';
+const _mobileOldSearch=window.handleSearchInput;
+window.handleSearchInput=function(q){
+  mobileSync();
+  return typeof _mobileOldSearch==='function'?_mobileOldSearch(q):undefined;
+};
 
-      const select = document.getElementById(selectId);
-      if(!select) return;
-
-      title.textContent = kind === 'type' ? 'Choose Type'
-        : kind === 'genre' ? 'Choose Genre'
-        : kind === 'year' ? 'Choose Year'
-        : 'Choose Country';
-
-      options.innerHTML = [...select.options].map(opt => `
-        <button class="sheet-option ${opt.selected ? 'selected' : ''}"
-                data-value="${escapeHtml(opt.value)}"
-                onclick="chooseMobileFilter('${selectId}', this.dataset.value)">
-          ${escapeHtml(opt.textContent)}
-        </button>
-      `).join('');
-
-      sheet.classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function chooseMobileFilter(selectId, value) {
-      const select = document.getElementById(selectId);
-      if(!select) return;
-
-      select.value = value;
-
-      if(selectId === 'filterType') {
-        populateGenreFilter();
-      }
-
-      handleFilterChange();
-      mobileSyncChips();
-      closeMobileFilter();
-    }
-
-    function closeMobileFilter(event) {
-      if(event && event.target !== event.currentTarget) return;
-      document.getElementById('mobileFilterSheet')?.classList.remove('show');
-      document.body.style.overflow = '';
-      mobileFilterOpen = null;
-    }
-
-    function clearMobileSearch() {
-      const input = document.getElementById('mainSearchInput');
-      input.value = '';
-      document.getElementById('searchDropdown')?.classList.add('hidden');
-      mobileSyncChips();
-      runUniversalSearch();
-      input.focus();
-    }
-
-    function mobileGo(tab) {
-      document.querySelectorAll('.mobile-nav-btn').forEach(btn =>
-        btn.classList.toggle('active', btn.dataset.tab === tab)
-      );
-
-      if(tab === 'home') {
-        document.getElementById('mobileHomeContent').style.display = '';
-        document.getElementById('filterResultsSection').classList.add('hidden');
-        document.getElementById('mobileMain').scrollTo({top: 0, behavior: 'smooth'});
-        return;
-      }
-
-      if(tab === 'search') {
-        document.getElementById('mainSearchInput').focus();
-        document.getElementById('mobileMain').scrollTo({top: 0, behavior: 'smooth'});
-        return;
-      }
-
-      // Keep the existing CineVo functionality for Watchlist/Journey.
-      // The original switchTab function owns the actual content/data behavior.
-      if(tab === 'watchlist') {
-        try { switchTab('watchlist'); } catch(e) { console.warn(e); }
-      } else if(tab === 'journey') {
-        try { switchTab('watchJourney'); } catch(e) {
-          try { switchTab('journey'); } catch(e2) { console.warn(e2); }
-        }
-      }
-    }
-
-    // Keep the mobile chips in sync whenever filters/search change.
-    const originalHandleFilterChange = handleFilterChange;
-    handleFilterChange = function() {
-      originalHandleFilterChange();
-      mobileSyncChips();
-    };
-
-    const originalHandleSearchInput = handleSearchInput;
-    handleSearchInput = function(query) {
-      mobileSyncChips();
-      return originalHandleSearchInput(query);
-    };
-
-    // Mobile-safe init. Existing initApp loads metadata and recommendations.
-    window.addEventListener('DOMContentLoaded', async () => {
-      try {
-        await initApp();
-        mobileSyncChips();
-      } catch(e) {
-        console.error('CineVo Mobile init failed:', e);
-      }
-    });
-  </script>
+window.addEventListener('DOMContentLoaded',async()=>{
+  try{
+    await initApp();
+    mobileSync();
+  }catch(e){console.error('CineVo Mobile init:',e)}
+});
+</script>
 </body>
 </html>
