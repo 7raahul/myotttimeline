@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0c10">
+  <title>CineVo Mobile</title>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --surface: #13151b;
+      --surface-2: #191c23;
+      --surface-3: #20232b;
+      --text: #f6f7fb;
+      --muted: #9297a6;
+      --line: rgba(255,255,255,.075);
+      --accent: #ff3b30;
+      --green: #32d46b;
+      --yellow: #ffd23f;
+      --red: #ff453a;
+      --nav-h: 70px;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-text-size-adjust: 100%;
+      overscroll-behavior: none;
+    }
+    body {
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button, input, select { font: inherit; }
+    button { -webkit-appearance: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ---------- App shell ---------- */
+    #app {
+      height: 100dvh;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    .mobile-main {
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: max(12px, env(safe-area-inset-top)) 15px calc(var(--nav-h) + 28px + env(safe-area-inset-bottom));
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .mobile-main::-webkit-scrollbar { display: none; }
+
+    /* Existing generated page containers should fill the mobile viewport. */
+    .page-view { min-height: calc(100dvh - var(--nav-h)); }
+
+    /* ---------- Header ---------- */
+    .mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 7px 1px 16px;
+    }
+    .mobile-logo {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .mobile-logo span { color: var(--accent); }
+    .mobile-pick {
+      border: 1px solid rgba(255,255,255,.07);
+      background: linear-gradient(180deg, #1c1f27, #15171d);
+      color: var(--yellow);
+      min-height: 42px;
+      padding: 0 13px;
+      border-radius: 13px;
+      font-weight: 800;
+      font-size: 12px;
+      box-shadow: 0 8px 22px rgba(0,0,0,.2);
+    }
+
+    /* ---------- Search ---------- */
+    .mobile-search {
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .mobile-search input {
+      width: 100%;
+      height: 52px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      outline: none;
+      padding: 0 48px 0 45px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 15px;
+      box-shadow: 0 9px 25px rgba(0,0,0,.18);
+    }
+    .mobile-search input::placeholder { color: #7f8491; }
+    .mobile-search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 19px;
+      opacity: .9;
+      pointer-events: none;
+    }
+    .mobile-search-clear {
+      position: absolute;
+      right: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50%;
+      background: #252832;
+      color: #cbd0db;
+      display: none;
+    }
+    .mobile-search.has-value .mobile-search-clear { display: block; }
+
+    /* ---------- Filter chips ---------- */
+    .mobile-filter-bar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 7px;
+      margin-bottom: 22px;
+    }
+    .filter-chip {
+      min-width: 0;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      color: #dfe2ea;
+      padding: 0 7px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .filter-chip.active {
+      border-color: rgba(255,59,48,.42);
+      color: #fff;
+      background: rgba(255,59,48,.10);
+    }
+
+    /* ---------- Sections / cards ---------- */
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 0 0 10px;
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 850;
+    }
+    .section-title .nav-link {
+      color: #aab0bd !important;
+      padding: 3px 2px !important;
+      min-height: 28px !important;
+      font-size: 11px !important;
+    }
+    .carousel-container {
+      margin: 0 -15px 24px 0;
+      overflow: hidden;
+    }
+    .carousel {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 0 15px 5px 0;
+      scrollbar-width: none;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+    .carousel::-webkit-scrollbar { display: none; }
+    .carousel .media-card {
+      flex: 0 0 142px !important;
+      width: 142px;
+      min-width: 142px;
+      scroll-snap-align: start;
+      border-radius: 13px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+    .poster-wrap {
+      position: relative;
+      aspect-ratio: 2 / 3;
+      background: #20232a;
+      overflow: hidden;
+    }
+    .poster-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .card-badge {
+      position: absolute !important;
+      right: 6px !important;
+      top: 6px !important;
+      padding: 4px 6px !important;
+      border-radius: 7px !important;
+      background: rgba(20,21,25,.9) !important;
+      color: var(--yellow) !important;
+      font-size: 10px !important;
+      font-weight: 800 !important;
+    }
+    .card-content { padding: 8px 8px 9px !important; }
+    .card-title {
+      color: #f4f5f8 !important;
+      font-size: 12px !important;
+      font-weight: 750 !important;
+      line-height: 1.25 !important;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-meta {
+      margin-top: 5px;
+      color: var(--muted) !important;
+      font-size: 9px !important;
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    /* ---------- Filter results ---------- */
+    .filter-results-section { margin-bottom: 24px !important; }
+    .media-grid-5 {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+      gap: 10px !important;
+    }
+    .filter-results-section .media-card {
+      width: 100% !important;
+      min-width: 0 !important;
+      border-radius: 13px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+    .filter-loading, .filter-empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 25px 8px;
+      font-size: 13px;
+    }
+
+    /* ---------- Bottom navigation ---------- */
+    .mobile-bottom-nav {
+      position: fixed;
+      z-index: 5000;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+      padding: 6px 8px env(safe-area-inset-bottom);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+      background: rgba(13,14,18,.94);
+      border-top: 1px solid rgba(255,255,255,.06);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .mobile-nav-btn {
+      border: 0;
+      background: transparent;
+      color: #7f8491;
+      border-radius: 13px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+      min-width: 0;
+      font-size: 9px;
+      font-weight: 700;
+    }
+    .mobile-nav-btn .icon { font-size: 21px; line-height: 1; }
+    .mobile-nav-btn.active {
+      color: #fff;
+      background: rgba(255,255,255,.055);
+    }
+    .mobile-nav-btn.active .icon { color: var(--accent); }
+
+    /* ---------- Bottom sheets ---------- */
+    .mobile-sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(0,0,0,.58);
+      display: none;
+      align-items: flex-end;
+    }
+    .mobile-sheet-backdrop.show { display: flex; }
+    .mobile-sheet {
+      width: 100%;
+      max-height: 82dvh;
+      overflow: hidden;
+      background: #15171d;
+      border: 1px solid rgba(255,255,255,.08);
+      border-bottom: 0;
+      border-radius: 22px 22px 0 0;
+      padding: 10px 15px calc(15px + env(safe-area-inset-bottom));
+      box-shadow: 0 -20px 60px rgba(0,0,0,.55);
+      animation: sheetUp .18s ease-out;
+    }
+    @keyframes sheetUp { from { transform: translateY(25px); opacity: .7; } to { transform: translateY(0); opacity: 1; } }
+    .sheet-handle {
+      width: 38px;
+      height: 4px;
+      border-radius: 10px;
+      background: #4a4d56;
+      margin: 3px auto 15px;
+    }
+    .sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .sheet-head strong { font-size: 17px; }
+    .sheet-close {
+      border: 0;
+      background: #242730;
+      color: #ddd;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+    }
+    .sheet-options {
+      overflow-y: auto;
+      max-height: calc(82dvh - 100px);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 8px;
+      padding-bottom: 4px;
+    }
+    .sheet-option {
+      border: 1px solid var(--line);
+      background: #1b1e25;
+      color: #dfe2e9;
+      min-height: 44px;
+      border-radius: 11px;
+      text-align: left;
+      padding: 8px 11px;
+      font-size: 12px;
+    }
+    .sheet-option.selected {
+      border-color: rgba(255,59,48,.5);
+      background: rgba(255,59,48,.12);
+      color: #fff;
+    }
+
+    /* ---------- Existing modal / journey / details compatibility ---------- */
+    .modal-overlay {
+      align-items: flex-end !important;
+      padding: 0 !important;
+    }
+    .modal-box {
+      width: 100% !important;
+      max-width: none !important;
+      border-radius: 20px 20px 0 0 !important;
+      padding: 18px 15px calc(18px + env(safe-area-inset-bottom)) !important;
+    }
+    .cinevo-toast {
+      top: calc(10px + env(safe-area-inset-top)) !important;
+      max-width: calc(100vw - 28px) !important;
+      min-width: 0 !important;
+    }
+
+    /* ---------- Desktop browser is intentionally not supported by this file ---------- */
+    @media (min-width: 601px) {
+      body {
+        background: #08090c;
+      }
+      #mobileOnlyMessage {
+        display: flex !important;
+      }
+      .mobile-main, .mobile-bottom-nav, .mobile-sheet-backdrop {
+        display: none !important;
+      }
+    }
+    #mobileOnlyMessage {
+      display: none;
+      position: fixed;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      text-align: center;
+      color: #fff;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="mobileOnlyMessage">CineVo Mobile is designed for phones.</div>
+
+  <div id="app">
+    <main class="mobile-main" id="mobileMain">
+      <header class="mobile-header">
+        <div class="mobile-logo"><span>CineVo</span></div>
+        <button class="mobile-pick" onclick="pickForMe()">🎲 Pick For Me</button>
+      </header>
+
+      <div class="mobile-search" id="mobileSearch">
+        <span class="mobile-search-icon">🔍</span>
+        <input id="mainSearchInput" type="text"
+               placeholder="Search movies, TV shows, actors..."
+               autocomplete="off" oninput="handleSearchInput(this.value)">
+        <button class="mobile-search-clear" onclick="clearMobileSearch()">×</button>
+        <div id="searchDropdown" class="search-suggestions hidden"></div>
+      </div>
+
+      <div class="mobile-filter-bar">
+        <button id="mobileTypeChip" class="filter-chip" onclick="openMobileFilter('type')">All</button>
+        <button id="mobileGenreChip" class="filter-chip" onclick="openMobileFilter('genre')">Genre</button>
+        <button id="mobileYearChip" class="filter-chip" onclick="openMobileFilter('year')">Year</button>
+        <button id="mobileCountryChip" class="filter-chip" onclick="openMobileFilter('country')">Country</button>
+      </div>
+
+      <!-- Hidden compatibility selects used by the existing CineVo logic. -->
+      <div id="legacyFilterControls" style="display:none;">
+        <select id="filterType" onchange="handleFilterChange()">
+          <option value="all">All</option>
+          <option value="movie">Movies</option>
+          <option value="tv">TV Shows</option>
+        </select>
+        <select id="filterGenre" onchange="handleFilterChange()"><option value="">All Genres</option></select>
+        <select id="filterYear" onchange="handleFilterChange()"><option value="">All Years</option></select>
+        <select id="filterCountry" onchange="handleFilterChange()"><option value="">All Countries</option></select>
+      </div>
+
+      <div id="filterResultsSection" class="filter-results-section hidden">
+        <div class="section-title">
+          <span id="filterResultsTitle">Results</span>
+          <button class="nav-link" style="font-size:12px;" onclick="clearAllFilters()">Clear All</button>
+        </div>
+        <div class="media-grid-5" id="filterResultsGrid"></div>
+        <div id="filterLoading" class="filter-loading hidden">Loading...</div>
+        <div id="filterEmpty" class="filter-empty hidden">No matching titles found.</div>
+      </div>
+
+      <section id="mobileHomeContent">
+        <div class="section-title">
+          <span>🔥 Trending Movies</span>
+          <button class="nav-link" onclick="switchTab('fullList','movie')">See All →</button>
+        </div>
+        <div class="carousel-container"><div class="carousel" id="homeMoviesCarousel"></div></div>
+
+        <div class="section-title">
+          <span>🔥 Trending TV Shows</span>
+          <button class="nav-link" onclick="switchTab('fullList','tv')">See All →</button>
+        </div>
+        <div class="carousel-container"><div class="carousel" id="homeTvCarousel"></div></div>
+
+        <div class="section-title"><span>⭐ Top Rated Movies</span></div>
+        <div class="carousel-container"><div class="carousel" id="homeTopMoviesCarousel"></div></div>
+
+        <div class="section-title"><span>⭐ Top Rated TV Shows</span></div>
+        <div class="carousel-container"><div class="carousel" id="homeTopTvCarousel"></div></div>
+      </section>
+
+      <!-- Existing app views can still be rendered here by the original logic. -->
+      <div id="mobileDynamicView"></div>
+    </main>
+  </div>
+
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-btn active" data-tab="home" onclick="mobileGo('home')">
+      <span class="icon">⌂</span><span>Home</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="watchlist" onclick="mobileGo('watchlist')">
+      <span class="icon">♡</span><span>Watchlist</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="search" onclick="mobileGo('search')">
+      <span class="icon">⌕</span><span>Search</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="pick" onclick="pickForMe()">
+      <span class="icon">🎲</span><span>Pick</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="journey" onclick="mobileGo('journey')">
+      <span class="icon">◷</span><span>Journey</span>
+    </button>
+  </nav>
+
+  <div id="mobileFilterSheet" class="mobile-sheet-backdrop" onclick="closeMobileFilter(event)">
+    <div class="mobile-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <strong id="mobileSheetTitle">Filter</strong>
+        <button class="sheet-close" onclick="closeMobileFilter()">×</button>
+      </div>
+      <div id="mobileSheetOptions" class="sheet-options"></div>
+    </div>
+  </div>
+
+  <div id="cinevoToast" class="cinevo-toast success" aria-live="polite">
+    <div class="toast-title" id="cinevoToastTitle">✓ Scheduled successfully</div>
+    <div class="toast-subtitle" id="cinevoToastSubtitle"></div>
+  </div>
+
+  <script>
+const API_KEY = "9c95420163879f1c4726c540b305cbc6";
+    const BASE_URL = "https://api.themoviedb.org/3";
+    const IMG_BASE = "https://image.tmdb.org/t/p/w500";
+    const BACKDROP_BASE = "https://image.tmdb.org/t/p/original";
+
+    let currentOpenItem = null;
+    let infiniteState = {
+      mediaType: 'movie',
+      page: 1,
+      loading: false,
+      hasMore: true
+    };
+
+    async function initApp() {
+      loadHomeCarousels();
+      populateYearFilter();
+      await loadFilterMetadata();
+
+      document.addEventListener('click', (e) => {
+        if(!e.target.closest('.search-box-wrapper')) {
+          const dropdown = document.getElementById('searchDropdown');
+          if(dropdown) dropdown.classList.add('hidden');
+        }
+      });
+    }
+
+    function populateYearFilter() {
+      const select = document.getElementById('filterYear');
+      const currentYear = new Date().getFullYear();
+      let html = '<option value="">All Years</option>';
+
+      for(let year = currentYear; year >= 1980; year--) {
+        html += `<option value="${year}">${year}</option>`;
+      }
+
+      select.innerHTML = html;
+    }
+
+    async function loadFilterMetadata() {
+      try {
+        const [movieGenreRes, tvGenreRes, countryRes] = await Promise.all([
+          fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=en-US`),
+          fetch(`${BASE_URL}/genre/tv/list?api_key=${API_KEY}&language=en-US`),
+          fetch(`${BASE_URL}/configuration/countries?api_key=${API_KEY}&language=en-US`)
+        ]);
+
+        const movieGenres = await movieGenreRes.json();
+        const tvGenres = await tvGenreRes.json();
+        const countries = await countryRes.json();
+
+        window.cinevoMovieGenres = movieGenres.genres || [];
+        window.cinevoTvGenres = tvGenres.genres || [];
+
+        const genreSelect = document.getElementById('filterGenre');
+        const countrySelect = document.getElementById('filterCountry');
+
+        populateGenreFilter();
+
+        const sortedCountries = (countries || [])
+          .sort((a, b) => (a.english_name || a.native_name || '').localeCompare(b.english_name || b.native_name || ''));
+
+        countrySelect.innerHTML =
+          '<option value="">All Countries</option>' +
+          sortedCountries.map(c => {
+            const name = c.english_name || c.native_name || c.iso_3166_1;
+            return `<option value="${c.iso_3166_1}">${name}</option>`;
+          }).join('');
+      } catch(e) {
+        console.error('Could not load filter metadata:', e);
+      }
+    }
+
+    function populateGenreFilter() {
+      const genreSelect = document.getElementById('filterGenre');
+      const type = document.getElementById('filterType')?.value || 'all';
+      const previous = genreSelect.value;
+
+      let genres = [];
+      if(type === 'movie') {
+        genres = window.cinevoMovieGenres || [];
+      } else if(type === 'tv') {
+        genres = window.cinevoTvGenres || [];
+      } else {
+        genres = [...(window.cinevoMovieGenres || []), ...(window.cinevoTvGenres || [])]
+          .filter((g, index, arr) => arr.findIndex(x => x.id === g.id) === index);
+      }
+
+      genres = genres.sort((a, b) => a.name.localeCompare(b.name));
+
+      genreSelect.innerHTML =
+        '<option value="">All Genres</option>' +
+        genres.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+
+      if(genres.some(g => String(g.id) === String(previous))) {
+        genreSelect.value = previous;
+      } else {
+        genreSelect.value = '';
+      }
+    }
+
+    async function loadHomeCarousels() {
+      try {
+        const currentDate = new Date().toISOString().slice(0, 10);
+
+        const [
+          trendingMovieRes,
+          trendingTvRes,
+          topMovieRes,
+          topTvRes
+        ] = await Promise.all([
+          fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=en-US`),
+          fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=en-US`),
+
+          fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&page=1&sort_by=vote_average.desc&vote_count.gte=500&primary_release_date.gte=1998-01-01&primary_release_date.lte=${currentDate}&include_adult=false`),
+
+          fetch(`${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&page=1&sort_by=vote_average.desc&vote_count.gte=200&first_air_date.gte=1998-01-01&first_air_date.lte=${currentDate}&include_adult=false`)
+        ]);
+
+        const [trendingMovies, trendingTv, topMovies, topTv] = await Promise.all([
+          trendingMovieRes.json(),
+          trendingTvRes.json(),
+          topMovieRes.json(),
+          topTvRes.json()
+        ]);
+
+        renderCarousel(trendingMovies.results || [], 'homeMoviesCarousel', 'movie');
+        renderCarousel(trendingTv.results || [], 'homeTvCarousel', 'tv');
+        renderCarousel(topMovies.results || [], 'homeTopMoviesCarousel', 'movie');
+        renderCarousel(topTv.results || [], 'homeTopTvCarousel', 'tv');
+      } catch(e) {
+        console.error('Could not load home recommendations:', e);
+      }
+    }
+
+    function renderCarousel(items, containerId, mediaType) {
+      const container = document.getElementById(containerId);
+      if(!container) return;
+
+      const usable = (items || [])
+        .filter(item => item && item.id && (item.poster_path || item.backdrop_path))
+        .slice(0, 20);
+
+      container.innerHTML = usable.map(item => {
+        const title = escapeHtml(item.title || item.name || 'Untitled');
+        const year = (item.release_date || item.first_air_date || '').split('-')[0];
+        const rating = Number(item.vote_average || 0).toFixed(1);
+
+        return `
+          <div class="media-card" style="flex: 0 0 180px;" onclick="openDetails(${item.id}, '${mediaType}')">
+            <div class="poster-wrap">
+              <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/180x270?text=No+Image'}" alt="${title}">
+              <span class="card-badge">★ ${rating}</span>
+            </div>
+            <div class="card-content">
+              <div class="card-title">${title}</div>
+              <div class="card-meta">
+                <span>${year || 'N/A'}</span>
+                <span>★ ${rating}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    let filterRequestToken = 0;
+
+    function getSelectedFilters() {
+      return {
+        type: document.getElementById('filterType').value,
+        genre: document.getElementById('filterGenre').value,
+        year: document.getElementById('filterYear').value,
+        country: document.getElementById('filterCountry').value,
+        query: document.getElementById('mainSearchInput').value.trim()
+      };
+    }
+
+    function hasActiveFilters() {
+      const f = getSelectedFilters();
+      return Boolean(f.query || f.type !== 'all' || f.genre || f.year || f.country);
+    }
+
+    function handleFilterChange() {
+      populateGenreFilter();
+      runUniversalSearch();
+    }
+
+    async function runUniversalSearch() {
+      const token = ++filterRequestToken;
+      const f = getSelectedFilters();
+      const section = document.getElementById('filterResultsSection');
+      const grid = document.getElementById('filterResultsGrid');
+      const loading = document.getElementById('filterLoading');
+      const empty = document.getElementById('filterEmpty');
+
+      if(!hasActiveFilters()) {
+        section.classList.add('hidden');
+        grid.innerHTML = '';
+        loading.classList.add('hidden');
+        empty.classList.add('hidden');
+        return;
+      }
+
+      section.classList.remove('hidden');
+      loading.classList.remove('hidden');
+      empty.classList.add('hidden');
+      grid.innerHTML = '';
+
+      const titleParts = [];
+      if(f.type === 'movie') titleParts.push('Movies');
+      else if(f.type === 'tv') titleParts.push('TV Shows');
+      if(f.genre) {
+        const g = [...(window.cinevoMovieGenres || []), ...(window.cinevoTvGenres || [])]
+          .find(x => String(x.id) === String(f.genre));
+        if(g) titleParts.push(g.name);
+      }
+      if(f.year) titleParts.push(f.year);
+      document.getElementById('filterResultsTitle').textContent =
+        f.query ? `Search results for "${f.query}"` : (titleParts.length ? titleParts.join(' • ') : 'Results');
+
+      try {
+        let results = [];
+
+        // Text search mode: TMDB multi-search is used so one query can return
+        // both movies and TV shows. We then apply the selected client-side filters.
+        if(f.query) {
+          const res = await fetch(
+            `${BASE_URL}/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(f.query)}&include_adult=false&page=1`
+          );
+          const data = await res.json();
+
+          results = (data.results || []).filter(item =>
+            item.media_type === 'movie' || item.media_type === 'tv'
+          );
+
+          if(f.type !== 'all') {
+            results = results.filter(item => item.media_type === f.type);
+          }
+
+          if(f.genre) {
+            results = results.filter(item => {
+              const genreIds = (item.genre_ids || []).map(String);
+              return genreIds.includes(String(f.genre));
+            });
+          }
+
+          if(f.year) {
+            results = results.filter(item => {
+              const date = item.release_date || item.first_air_date || '';
+              return date.startsWith(String(f.year));
+            });
+          }
+
+          if(f.country) {
+            // Search responses do not always contain origin countries, so
+            // fetch the details for a small result set to apply country accurately.
+            const candidates = results.slice(0, 20);
+            const detailed = await Promise.all(candidates.map(async item => {
+              try {
+                const r = await fetch(`${BASE_URL}/${item.media_type}/${item.id}?api_key=${API_KEY}&language=en-US`);
+                return { item, detail: await r.json() };
+              } catch {
+                return { item, detail: null };
+              }
+            }));
+
+            results = detailed
+              .filter(({detail}) => {
+                const countries = detail?.production_countries || [];
+                const origins = detail?.origin_country || [];
+                return countries.some(c => c.iso_3166_1 === f.country) || origins.includes(f.country);
+              })
+              .map(x => x.item);
+          }
+        } else {
+          // Discover mode: no text query, so TMDB's discover endpoint applies
+          // the filters directly.
+          const types = f.type === 'all' ? ['movie', 'tv'] : [f.type];
+
+          const responses = await Promise.all(types.map(async type => {
+            const params = new URLSearchParams({
+              api_key: API_KEY,
+              language: 'en-US',
+              page: '1',
+              sort_by: 'popularity.desc',
+              include_adult: 'false'
+            });
+
+            if(f.genre) {
+              const validGenres = type === 'movie'
+                ? (window.cinevoMovieGenres || [])
+                : (window.cinevoTvGenres || []);
+
+              if(validGenres.some(g => String(g.id) === String(f.genre))) {
+                params.set('with_genres', f.genre);
+              }
+            }
+            if(f.country) params.set('with_origin_country', f.country);
+
+            if(f.year) {
+              if(type === 'movie') {
+                params.set('primary_release_year', f.year);
+              } else {
+                params.set('first_air_date_year', f.year);
+              }
+            }
+
+            const res = await fetch(`${BASE_URL}/discover/${type}?${params.toString()}`);
+            const data = await res.json();
+            return (data.results || []).map(item => ({...item, media_type: type}));
+          }));
+
+          results = responses.flat()
+            .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+        }
+
+        if(token !== filterRequestToken) return;
+
+        loading.classList.add('hidden');
+
+        if(!results.length) {
+          empty.classList.remove('hidden');
+          return;
+        }
+
+        grid.innerHTML = results.slice(0, 40).map(item => {
+          const mediaType = item.media_type;
+          const title = escapeHtml(item.title || item.name || 'Untitled');
+          const year = (item.release_date || item.first_air_date || '').split('-')[0];
+          const poster = item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/180x270?text=No+Image';
+
+          return `
+            <div class="media-card" onclick="openDetails(${item.id}, '${mediaType}')">
+              <div class="poster-wrap">
+                <img src="${poster}" alt="${title}">
+                <span class="card-badge">★ ${(item.vote_average || 0).toFixed(1)}</span>
+              </div>
+              <div class="card-content">
+                <div class="card-title">${title}</div>
+                <div class="card-meta">
+                  <span>${year || 'N/A'}</span>
+                  <span>${mediaType.toUpperCase()}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch(e) {
+        console.error('Universal search failed:', e);
+        if(token !== filterRequestToken) return;
+        loading.classList.add('hidden');
+        empty.textContent = 'Could not load results. Please try again.';
+        empty.classList.remove('hidden');
+      }
+    }
+
+    function clearAllFilters() {
+      document.getElementById('mainSearchInput').value = '';
+      document.getElementById('filterType').value = 'all';
+      document.getElementById('filterGenre').value = '';
+      document.getElementById('filterYear').value = '';
+      document.getElementById('filterCountry').value = '';
+      runUniversalSearch();
+      document.getElementById('searchDropdown').classList.add('hidden');
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[char]));
+    }
+
+    function switchTab(tabId, mediaType = 'movie') {
+      document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+      const searchInput = document.getElementById('mainSearchInput');
+      const searchDropdown = document.getElementById('searchDropdown');
+      if(searchInput) searchInput.value = '';
+      if(searchDropdown) searchDropdown.classList.add('hidden');
+
+      if(tabId === 'home') {
+        document.getElementById('homeView').classList.remove('hidden');
+        document.getElementById('navHome').classList.add('active');
+      } else if(tabId === 'fullList') {
+        document.getElementById('fullListView').classList.remove('hidden');
+        if(mediaType === 'movie') {
+          document.getElementById('navMovies').classList.add('active');
+          document.getElementById('fullListTitle').textContent = 'Movies';
+        } else {
+          document.getElementById('navTv').classList.add('active');
+          document.getElementById('fullListTitle').textContent = 'TV Shows';
+        }
+        initInfiniteList(mediaType);
+      } else if(tabId === 'pick') {
+        document.getElementById('pickView').classList.remove('hidden');
+      } else if(tabId === 'journey') {
+        document.getElementById('journeyView').classList.remove('hidden');
+        document.getElementById('navJourney').classList.add('active');
+        renderWatchJourney();
+      }
+      const mainEl = document.getElementById('appMain');
+      if(mainEl) mainEl.scrollTop = 0;
+    }
+
+    async function initInfiniteList(mediaType) {
+      infiniteState.mediaType = mediaType;
+      infiniteState.page = 1;
+      infiniteState.hasMore = true;
+      document.getElementById('infiniteGridContainer').innerHTML = '';
+      await loadMoreItems();
+    }
+
+    async function loadMoreItems() {
+      if(infiniteState.loading || !infiniteState.hasMore) return;
+      infiniteState.loading = true;
+      document.getElementById('loadingMoreIndicator').style.display = 'block';
+
+      try {
+        const res = await fetch(`${BASE_URL}/${infiniteState.mediaType}/popular?api_key=${API_KEY}&page=${infiniteState.page}`);
+        const data = await res.json();
+        const results = data.results || [];
+
+        if(results.length === 0) {
+          infiniteState.hasMore = false;
+        } else {
+          const container = document.getElementById('infiniteGridContainer');
+          container.insertAdjacentHTML('beforeend', results.map(item => `
+            <div class="media-card" onclick="openDetails(${item.id}, '${infiniteState.mediaType}')">
+              <div class="poster-wrap">
+                <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/180x270'}">
+                <span class="card-badge">★ ${(item.vote_average || 0).toFixed(1)}</span>
+              </div>
+              <div class="card-content">
+                <div class="card-title">${item.title || item.name}</div>
+                <div class="card-meta">
+                  <span>${(item.release_date || item.first_air_date || '').split('-')[0]}</span>
+                </div>
+              </div>
+            </div>
+          `).join(''));
+          infiniteState.page++;
+        }
+      } catch(e) { console.error(e); }
+
+      infiniteState.loading = false;
+      if(!infiniteState.hasMore) {
+        document.getElementById('loadingMoreIndicator').style.display = 'none';
+      }
+    }
+
+    function handleScrollEvents() {
+      const mainEl = document.getElementById('appMain');
+      const scrollTopBtn = document.getElementById('scrollTopBtn');
+      
+      if(mainEl.scrollTop > 300) {
+        scrollTopBtn.classList.add('visible');
+      } else {
+        scrollTopBtn.classList.remove('visible');
+      }
+
+      const fullListView = document.getElementById('fullListView');
+      if(fullListView.classList.contains('hidden')) return;
+
+      const scrollPosition = mainEl.clientHeight + mainEl.scrollTop;
+      const threshold = mainEl.scrollHeight - 400;
+
+      if(scrollPosition >= threshold) {
+        loadMoreItems();
+      }
+    }
+
+    function scrollToTop() {
+      const mainEl = document.getElementById('appMain');
+      mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function handleSearchInput(query) {
+      const dropdown = document.getElementById('searchDropdown');
+
+      if(!query.trim()) {
+        dropdown.classList.add('hidden');
+        runUniversalSearch();
+        return;
+      }
+
+      try {
+        const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}&include_adult=false`);
+        const data = await res.json();
+
+        let results = (data.results || [])
+          .filter(item => item.media_type === 'movie' || item.media_type === 'tv')
+          .slice(0, 5);
+
+        const selectedType = document.getElementById('filterType').value;
+        if(selectedType !== 'all') {
+          results = results.filter(item => item.media_type === selectedType);
+        }
+
+        if(results.length > 0) {
+          dropdown.innerHTML = results.map(item => `
+            <div class="suggestion-item"
+                 onclick="selectSearchSuggestion(${item.id}, '${item.media_type}', '${escapeHtml(item.title || item.name || '')}')">
+              <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/36x50'}">
+              <div>
+                <div style="font-size:13px; font-weight:600;">${escapeHtml(item.title || item.name || 'Untitled')}</div>
+                <div style="font-size:11px; color:var(--text-muted);">
+                  ${(item.release_date || item.first_air_date || '').split('-')[0]} • ${item.media_type.toUpperCase()}
+                </div>
+              </div>
+            </div>
+          `).join('');
+          dropdown.classList.remove('hidden');
+        } else {
+          dropdown.classList.add('hidden');
+        }
+
+        // Results below update automatically as the user types.
+        runUniversalSearch();
+      } catch(e) {
+        dropdown.classList.add('hidden');
+        runUniversalSearch();
+      }
+    }
+
+    function selectSearchSuggestion(id, mediaType, title) {
+      document.getElementById('searchDropdown').classList.add('hidden');
+      document.getElementById('mainSearchInput').value = title;
+      if(document.getElementById('filterType').value === 'all') {
+        document.getElementById('filterType').value = mediaType;
+      }
+      runUniversalSearch();
+    }
+
+    async function triggerRandomPick(mediaType) {
+      const container = document.getElementById('randomResultContainer');
+      container.innerHTML = 'Picking random title...';
+      try {
+        const randomPage = Math.floor(Math.random() * 5) + 1;
+        const res = await fetch(`${BASE_URL}/${mediaType}/popular?api_key=${API_KEY}&page=${randomPage}`);
+        const data = await res.json();
+        const items = data.results || [];
+        if(items.length === 0) return;
+        const randomItem = items[Math.floor(Math.random() * items.length)];
+
+        container.innerHTML = `
+          <div class="media-card" style="max-width:220px; margin:0 auto;" onclick="openDetails(${randomItem.id}, '${mediaType}')">
+            <div class="poster-wrap">
+              <img src="${IMG_BASE + randomItem.poster_path}">
+              <span class="card-badge">★ ${randomItem.vote_average.toFixed(1)}</span>
+            </div>
+            <div class="card-content">
+              <div class="card-title">${randomItem.title || randomItem.name}</div>
+              <div style="font-size:11px; color:var(--text-muted); text-align:left; margin-top:4px;">${(randomItem.overview || '').slice(0, 60)}...</div>
+            </div>
+          </div>
+        `;
+      } catch(e) { container.innerHTML = 'Failed to pick.'; }
+    }
+
+    async function openDetails(id, mediaType) {
+      const view = document.getElementById('detailView');
+      view.classList.add('active');
+      
+      // FIX: Disable background scrolling when detail view opens to prevent double scrollbar
+      document.getElementById('appMain').style.overflow = 'hidden';
+
+      const container = document.getElementById('detailsContainerContent');
+      container.innerHTML = '<div style="padding: 40px; color:var(--text-muted);">Loading full details...</div>';
+
+      try {
+        const [detailRes, creditsRes, ottRes, recRes] = await Promise.all([
+          fetch(`${BASE_URL}/${mediaType}/${id}?api_key=${API_KEY}`),
+          fetch(`${BASE_URL}/${mediaType}/${id}/credits?api_key=${API_KEY}`),
+          fetch(`${BASE_URL}/${mediaType}/${id}/watch/providers?api_key=${API_KEY}`),
+          fetch(`${BASE_URL}/${mediaType}/${id}/similar?api_key=${API_KEY}`)
+        ]);
+
+        const detail = await detailRes.json();
+        const credits = await creditsRes.json();
+        const ottData = await ottRes.json();
+        const recData = await recRes.json();
+
+        currentOpenItem = { id, title: detail.title || detail.name, poster: detail.poster_path, type: mediaType };
+
+        let ottProviders = [];
+        if(ottData.results && ottData.results.IN) {
+          ottProviders = ottData.results.IN.flatrate || ottData.results.IN.rent || [];
+        }
+
+        let isWatched = checkIfWatched(id);
+        const backdropUrl = detail.backdrop_path ? BACKDROP_BASE + detail.backdrop_path : '';
+        let validSeasons = (detail.seasons || []).filter(s => s.season_number > 0 && !s.name.toLowerCase().includes('special'));
+
+        container.innerHTML = `
+          <div class="hero-backdrop-container" style="background-image: url('${backdropUrl}');">
+            <div class="hero-content">
+              <img class="hero-poster" src="${detail.poster_path ? IMG_BASE + detail.poster_path : 'https://via.placeholder.com/220x330'}">
+              <div class="hero-info">
+                <div style="font-size: 11px; font-weight:700; color:var(--text-muted); letter-spacing:1px;">${mediaType === 'tv' ? 'TV SHOW' : 'MOVIE'}</div>
+                <h1 style="font-size: 36px; font-weight:900; line-height:1.1;">${detail.title || detail.name}</h1>
+                <div style="font-size: 13px; color: var(--text-muted); display:flex; gap:14px; align-items:center;">
+                  <span>📅 ${detail.release_date || detail.first_air_date || 'N/A'}</span>
+                  <span>★ <strong style="color:var(--imdb-yellow);">${(detail.vote_average || 0).toFixed(1)}</strong></span>
+                  <span>🎬 ${(detail.genres || []).map(g => g.name).slice(0, 2).join(', ')}</span>
+                  <span>${mediaType === 'tv' ? (validSeasons.length + ' Seasons') : (detail.runtime + ' mins')}</span>
+                </div>
+                <p style="font-size: 13px; color: #d1d5db; line-height: 1.5; max-width: 800px; margin-top: 4px;">${detail.overview || 'No overview available.'}</p>
+                <div class="action-row" style="margin-top: 8px;">
+                  <button class="btn-watched ${isWatched ? 'watched-active' : ''}" id="watchedBtnMain" onclick="handleWatchedClick()">✓ ${isWatched ? 'Watched' : 'Mark as Watched'}</button>
+                  <button class="btn-secondary" onclick="handleScheduleClick()">📅 Schedule to Watch</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="details-body">
+            ${ottProviders.length ? `
+              <div>
+                <h3 style="font-size:16px; margin-bottom:10px;">Where to Watch (OTT)</h3>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  ${ottProviders.map(p => `<a href="${ottData.results.IN.link || '#'}" target="_blank" class="ott-logo"><img src="${IMG_BASE + p.logo_path}">${p.provider_name}</a>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <div>
+              <h3 style="font-size:16px; margin-bottom:10px;">Top Cast</h3>
+              <div class="horizontal-scroll">
+                ${(credits.cast || []).slice(0, 12).map(c => `
+                  <div class="cast-card">
+                    <img src="${c.profile_path ? IMG_BASE + c.profile_path : 'https://via.placeholder.com/100'}">
+                    <div class="cast-name">${c.name}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            ${mediaType === 'tv' && validSeasons.length ? `
+              <div>
+                <h3 style="font-size:18px; margin-bottom:14px;">Seasons & Episodes</h3>
+                <div class="seasons-tabs" id="seasonsTabsContainer">
+                  ${validSeasons.map((s, idx) => `
+                    <button class="season-tab-btn ${idx === 0 ? 'active' : ''}" onclick="fetchSeasonEpisodes(${id}, ${s.season_number}, this)">${s.name}</button>
+                  `).join('')}
+                </div>
+                <div class="episodes-grid" id="episodeListContainer"></div>
+              </div>
+            ` : ''}
+
+            <div>
+              <h3 style="font-size:16px; margin-bottom:10px;">More Like This</h3>
+              <div class="horizontal-scroll">
+                ${(recData.results || []).map(item => `
+                  <div class="media-card" style="flex:0 0 160px;" onclick="openDetails(${item.id}, '${mediaType}')">
+                    <div class="poster-wrap" style="aspect-ratio:2/3;">
+                      <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/160x240'}">
+                      <span class="card-badge">★ ${(item.vote_average || 0).toFixed(1)}</span>
+                    </div>
+                    <div class="card-content">
+                      <div class="card-title">${item.title || item.name}</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+
+        if(mediaType === 'tv' && validSeasons.length > 0) {
+          fetchSeasonEpisodes(id, validSeasons[0].season_number);
+        }
+
+      } catch(e) { container.innerHTML = '<div style="padding:40px;">Error loading details.</div>'; }
+    }
+
+    async function fetchSeasonEpisodes(tvId, seasonNum, btnElement) {
+      if(btnElement) {
+        document.querySelectorAll('.season-tab-btn').forEach(b => b.classList.remove('active'));
+        btnElement.classList.add('active');
+      }
+      const container = document.getElementById('episodeListContainer');
+      container.innerHTML = '<div style="color:var(--text-muted); font-size:13px;">Loading episodes...</div>';
+      try {
+        const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNum}?api_key=${API_KEY}`);
+        const data = await res.json();
+        container.innerHTML = (data.episodes || []).map(ep => `
+          <div class="episode-card">
+            <img class="episode-thumb" src="${ep.still_path ? IMG_BASE + ep.still_path : 'https://via.placeholder.com/160x95?text=No+Still'}">
+            <div class="episode-info">
+              <div class="episode-title">${ep.episode_number}. ${ep.name}</div>
+              <div class="episode-meta">📅 ${ep.air_date || 'N/A'} &nbsp;|&nbsp; ★ <span style="color:var(--imdb-yellow);">${(ep.vote_average || 0).toFixed(1)}</span></div>
+              <div class="episode-overview">${ep.overview || 'No description available for this episode.'}</div>
+              <div class="episode-actions">
+                <button class="btn-ep-action" onclick="handleWatchedClick()">Mark Watched</button>
+                <button class="btn-ep-action" onclick="handleScheduleClick()">Schedule</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } catch(e) { container.innerHTML = 'Could not load episodes.'; }
+    }
+
+    function closeDetails() {
+      document.getElementById('detailView').classList.remove('active');
+      // FIX: Restore background scrolling when closing details view
+      document.getElementById('appMain').style.overflow = 'auto';
+    }
+
+    function checkIfWatched(id) {
+      let watched = JSON.parse(localStorage.getItem('cinevo_watched') || '[]');
+      return watched.some(i => i.id === id);
+    }
+
+    function generateMinimalDateOptions() {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().getMonth() + 1;
+      const currentDay = new Date().getDate();
+
+      let dayOpts = '';
+      for(let d = 1; d <= 31; d++) {
+        dayOpts += `<option value="${d}" ${d === currentDay ? 'selected' : ''}>${String(d).padStart(2, '0')}</option>`;
+      }
+
+      let monthOpts = months.map((m, idx) =>
+        `<option value="${idx + 1}" ${idx + 1 === currentMonth ? 'selected' : ''}>${m}</option>`
+      ).join('');
+
+      let yearOpts = '';
+      for(let y = currentYear + 1; y >= currentYear - 5; y--) {
+        yearOpts += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`;
+      }
+
+      return { dayOpts, monthOpts, yearOpts };
+    }
+
+    function formatJourneyDate(day, month, year) {
+      const d = String(day).padStart(2, '0');
+      const m = String(month).padStart(2, '0');
+      return `${d}/${m}/${year}`;
+    }
+
+    function handleWatchedClick() {
+      const { dayOpts, monthOpts, yearOpts } = generateMinimalDateOptions();
+      const modalHtml = `
+        <div class="modal-overlay" id="dateModal">
+          <div class="modal-box">
+            <h3>Mark as Watched</h3>
+            <div class="minimal-date-picker">
+              <select id="selDay" class="minimal-select">${dayOpts}</select>
+              <select id="selMonth" class="minimal-select">${monthOpts}</select>
+              <select id="selYear" class="minimal-select">${yearOpts}</select>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+              <button class="btn-secondary" onclick="document.getElementById('dateModal').remove()">Cancel</button>
+              <button class="btn-watched watched-active" onclick="confirmMarkWatched()">Save</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    function confirmMarkWatched() {
+      const d = document.getElementById('selDay').value;
+      const m = document.getElementById('selMonth').value;
+      const y = document.getElementById('selYear').value;
+      const dateVal = formatJourneyDate(d, m, y);
+
+      let watched = JSON.parse(localStorage.getItem('cinevo_watched') || '[]');
+      const existingIndex = watched.findIndex(i => i.id === currentOpenItem.id);
+
+      if(existingIndex === -1) {
+        watched.push({...currentOpenItem, date: dateVal});
+      } else {
+        watched[existingIndex] = {...watched[existingIndex], ...currentOpenItem, date: dateVal};
+      }
+
+      localStorage.setItem('cinevo_watched', JSON.stringify(watched));
+
+      document.getElementById('dateModal').remove();
+      const btn = document.getElementById('watchedBtnMain');
+      if(btn) {
+        btn.classList.add('watched-active');
+        btn.textContent = '✓ Watched';
+      }
+    }
+
+    function handleScheduleClick() {
+      const { dayOpts, monthOpts, yearOpts } = generateMinimalDateOptions();
+      const modalHtml = `
+        <div class="modal-overlay" id="scheduleModal">
+          <div class="modal-box">
+            <h3>Schedule Watch</h3>
+            <div class="minimal-date-picker">
+              <select id="schedDay" class="minimal-select">${dayOpts}</select>
+              <select id="schedMonth" class="minimal-select">${monthOpts}</select>
+              <select id="schedYear" class="minimal-select">${yearOpts}</select>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+              <button class="btn-secondary" onclick="document.getElementById('scheduleModal').remove()">Cancel</button>
+              <button class="btn-watched watched-active" onclick="confirmSchedule()">Schedule</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    let cinevoToastTimer = null;
+
+    function showCineVoToast(title, subtitle = '') {
+      const toast = document.getElementById('cinevoToast');
+      const titleEl = document.getElementById('cinevoToastTitle');
+      const subtitleEl = document.getElementById('cinevoToastSubtitle');
+
+      if(!toast || !titleEl || !subtitleEl) return;
+
+      titleEl.textContent = title;
+      subtitleEl.textContent = subtitle;
+
+      toast.classList.remove('show');
+      clearTimeout(cinevoToastTimer);
+
+      requestAnimationFrame(() => {
+        toast.classList.add('show');
+      });
+
+      cinevoToastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2800);
+    }
+
+    function confirmSchedule() {
+      const d = document.getElementById('schedDay').value;
+      const m = document.getElementById('schedMonth').value;
+      const y = document.getElementById('schedYear').value;
+      const dateVal = formatJourneyDate(d, m, y);
+
+      let scheduled = JSON.parse(localStorage.getItem('cinevo_scheduled') || '[]');
+      const existingIndex = scheduled.findIndex(i => i.id === currentOpenItem.id);
+
+      if(existingIndex === -1) {
+        scheduled.push({...currentOpenItem, date: dateVal});
+      } else {
+        scheduled[existingIndex] = {...scheduled[existingIndex], ...currentOpenItem, date: dateVal};
+      }
+
+      localStorage.setItem('cinevo_scheduled', JSON.stringify(scheduled));
+      document.getElementById('scheduleModal').remove();
+
+      const scheduledTitle = currentOpenItem?.title || currentOpenItem?.name || 'Item';
+      showCineVoToast(
+        '✓ Scheduled successfully',
+        `${scheduledTitle} · ${dateVal}`
+      );
+
+      renderWatchJourney();
+    }
+
+    function parseJourneyDate(value) {
+      if(!value) return 0;
+
+      const text = String(value).trim();
+
+      // New format: DD/MM/YYYY
+      let match = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if(match) {
+        const [, d, m, y] = match;
+        return new Date(Number(y), Number(m) - 1, Number(d)).getTime();
+      }
+
+      // Older format: M/YYYY (kept for existing localStorage entries)
+      match = text.match(/^(\d{1,2})\/(\d{4})$/);
+      if(match) {
+        const [, m, y] = match;
+        return new Date(Number(y), Number(m) - 1, 1).getTime();
+      }
+
+      const timestamp = Date.parse(text);
+      return Number.isNaN(timestamp) ? 0 : timestamp;
+    }
+
+    function sortJourneyNewestFirst(items) {
+      return [...items].sort((a, b) => {
+        const diff = parseJourneyDate(b.date) - parseJourneyDate(a.date);
+        if(diff !== 0) return diff;
+        return String(b.title || '').localeCompare(String(a.title || ''));
+      });
+    }
+
+    function renderWatchJourney() {
+      const watched = sortJourneyNewestFirst(
+        JSON.parse(localStorage.getItem('cinevo_watched') || '[]')
+      );
+      const scheduled = sortJourneyNewestFirst(
+        JSON.parse(localStorage.getItem('cinevo_scheduled') || '[]')
+      );
+
+      const watchedList = document.getElementById('watchedTimelineList');
+      const scheduledList = document.getElementById('scheduledTimelineList');
+
+      watchedList.innerHTML = watched.length ? watched.map(i => `
+        <div class="timeline-item watched-item" onclick="openDetails(${i.id}, '${i.type}')">
+          <img src="${i.poster ? IMG_BASE + i.poster : 'https://via.placeholder.com/58x82'}" alt="poster">
+          <div class="timeline-info">
+            <div class="timeline-title">${i.title}</div>
+            <div class="timeline-type">${i.type === 'tv' ? 'TV SHOW' : 'MOVIE'}</div>
+            <div class="timeline-status watched">WATCHED</div>
+            <div class="timeline-date">📅 ${i.date || 'N/A'}</div>
+          </div>
+        </div>
+      `).join('') : '<div class="timeline-empty">No watched items yet.</div>';
+
+      scheduledList.innerHTML = scheduled.length ? scheduled.map(i => `
+        <div class="timeline-item scheduled-item" onclick="openDetails(${i.id}, '${i.type}')">
+          <img src="${i.poster ? IMG_BASE + i.poster : 'https://via.placeholder.com/58x82'}" alt="poster">
+          <div class="timeline-info">
+            <div class="timeline-title">${i.title}</div>
+            <div class="timeline-type">${i.type === 'tv' ? 'TV SHOW' : 'MOVIE'}</div>
+            <div class="timeline-status scheduled">SCHEDULED</div>
+            <div class="timeline-date">📅 ${i.date || 'N/A'}</div>
+          </div>
+        </div>
+      `).join('') : '<div class="timeline-empty">No scheduled items.</div>';
+    }
+
+    window.onload = initApp;
+
+    /* =========================================================
+       Mobile UI adapter
+       ========================================================= */
+    let mobileFilterOpen = null;
+
+    function mobileSyncChips() {
+      const type = document.getElementById('filterType')?.value || 'all';
+      const genre = document.getElementById('filterGenre')?.value || '';
+      const year = document.getElementById('filterYear')?.value || '';
+      const country = document.getElementById('filterCountry')?.value || '';
+
+      const genreName = document.querySelector('#filterGenre option:checked')?.textContent || 'Genre';
+      const countryName = document.querySelector('#filterCountry option:checked')?.textContent || 'Country';
+
+      const typeEl = document.getElementById('mobileTypeChip');
+      const genreEl = document.getElementById('mobileGenreChip');
+      const yearEl = document.getElementById('mobileYearChip');
+      const countryEl = document.getElementById('mobileCountryChip');
+
+      typeEl.textContent = type === 'movie' ? 'Movies' : type === 'tv' ? 'TV Shows' : 'All';
+      genreEl.textContent = genre ? genreName : 'Genre';
+      yearEl.textContent = year || 'Year';
+      countryEl.textContent = country ? countryName : 'Country';
+
+      typeEl.classList.toggle('active', type !== 'all');
+      genreEl.classList.toggle('active', !!genre);
+      yearEl.classList.toggle('active', !!year);
+      countryEl.classList.toggle('active', !!country);
+
+      const search = document.getElementById('mainSearchInput')?.value.trim() || '';
+      document.getElementById('mobileSearch')?.classList.toggle('has-value', !!search);
+    }
+
+    function openMobileFilter(kind) {
+      mobileFilterOpen = kind;
+      const sheet = document.getElementById('mobileFilterSheet');
+      const options = document.getElementById('mobileSheetOptions');
+      const title = document.getElementById('mobileSheetTitle');
+
+      const selectId = kind === 'type' ? 'filterType'
+        : kind === 'genre' ? 'filterGenre'
+        : kind === 'year' ? 'filterYear'
+        : 'filterCountry';
+
+      const select = document.getElementById(selectId);
+      if(!select) return;
+
+      title.textContent = kind === 'type' ? 'Choose Type'
+        : kind === 'genre' ? 'Choose Genre'
+        : kind === 'year' ? 'Choose Year'
+        : 'Choose Country';
+
+      options.innerHTML = [...select.options].map(opt => `
+        <button class="sheet-option ${opt.selected ? 'selected' : ''}"
+                data-value="${escapeHtml(opt.value)}"
+                onclick="chooseMobileFilter('${selectId}', this.dataset.value)">
+          ${escapeHtml(opt.textContent)}
+        </button>
+      `).join('');
+
+      sheet.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function chooseMobileFilter(selectId, value) {
+      const select = document.getElementById(selectId);
+      if(!select) return;
+
+      select.value = value;
+
+      if(selectId === 'filterType') {
+        populateGenreFilter();
+      }
+
+      handleFilterChange();
+      mobileSyncChips();
+      closeMobileFilter();
+    }
+
+    function closeMobileFilter(event) {
+      if(event && event.target !== event.currentTarget) return;
+      document.getElementById('mobileFilterSheet')?.classList.remove('show');
+      document.body.style.overflow = '';
+      mobileFilterOpen = null;
+    }
+
+    function clearMobileSearch() {
+      const input = document.getElementById('mainSearchInput');
+      input.value = '';
+      document.getElementById('searchDropdown')?.classList.add('hidden');
+      mobileSyncChips();
+      runUniversalSearch();
+      input.focus();
+    }
+
+    function mobileGo(tab) {
+      document.querySelectorAll('.mobile-nav-btn').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.tab === tab)
+      );
+
+      if(tab === 'home') {
+        document.getElementById('mobileHomeContent').style.display = '';
+        document.getElementById('filterResultsSection').classList.add('hidden');
+        document.getElementById('mobileMain').scrollTo({top: 0, behavior: 'smooth'});
+        return;
+      }
+
+      if(tab === 'search') {
+        document.getElementById('mainSearchInput').focus();
+        document.getElementById('mobileMain').scrollTo({top: 0, behavior: 'smooth'});
+        return;
+      }
+
+      // Keep the existing CineVo functionality for Watchlist/Journey.
+      // The original switchTab function owns the actual content/data behavior.
+      if(tab === 'watchlist') {
+        try { switchTab('watchlist'); } catch(e) { console.warn(e); }
+      } else if(tab === 'journey') {
+        try { switchTab('watchJourney'); } catch(e) {
+          try { switchTab('journey'); } catch(e2) { console.warn(e2); }
+        }
+      }
+    }
+
+    // Keep the mobile chips in sync whenever filters/search change.
+    const originalHandleFilterChange = handleFilterChange;
+    handleFilterChange = function() {
+      originalHandleFilterChange();
+      mobileSyncChips();
+    };
+
+    const originalHandleSearchInput = handleSearchInput;
+    handleSearchInput = function(query) {
+      mobileSyncChips();
+      return originalHandleSearchInput(query);
+    };
+
+    // Mobile-safe init. Existing initApp loads metadata and recommendations.
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await initApp();
+        mobileSyncChips();
+      } catch(e) {
+        console.error('CineVo Mobile init failed:', e);
+      }
+    });
+  </script>
+</body>
+</html>
