@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Movie & TV Tracker</title>
+<title>CineVo — Movie & TV Discovery</title>
 
 <style>
 :root{
@@ -26,6 +26,31 @@
 
 html{
   scroll-behavior:smooth;
+}
+
+/* MODERN THIN SCROLLBARS */
+*{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.18) transparent;
+}
+
+::-webkit-scrollbar{
+  width:6px;
+  height:6px;
+}
+
+::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.18);
+  border-radius:10px;
+  transition:background .2s;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:rgba(255,255,255,.32);
 }
 
 body{
@@ -805,7 +830,6 @@ header{
   gap:13px;
   overflow-x:auto;
   padding-bottom:8px;
-  scrollbar-width:thin;
 }
 
 .horizontal-card{
@@ -1512,7 +1536,7 @@ header{
 
 <header>
   <div class="nav">
-    <div class="logo">Movie<span>Tracker</span></div>
+    <div class="logo">Cine<span>Vo</span></div>
 
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
@@ -1879,10 +1903,6 @@ function uniqueAgainst(items, existing){
     seen.add(key);
     return true;
   });
-}
-
-function sleep(ms){
-  return new Promise(resolve=>setTimeout(resolve,ms));
 }
 
 function toast(message){
@@ -3725,48 +3745,6 @@ function openSearchSuggestion(id,type){
   document.getElementById("searchSuggestions").classList.add("hidden");
   document.getElementById("searchInput").blur();
   openDetails(id,type);
-}
-
-async function performSearch(query){
-  showResultsLoading();
-
-  try{
-    let all = [];
-
-    for(let page=1;page<=3;page++){
-      const data = await api("/search/multi",{
-        query,
-        page,
-        include_adult:false
-      });
-
-      all.push(
-        ...(data.results || [])
-          .filter(x=>x.media_type==="movie" || x.media_type==="tv")
-      );
-    }
-
-    state.currentResults = uniqueItems(all).slice(0,50);
-
-    document.getElementById("resultsTitle").textContent =
-      `Search: ${query}`;
-
-    document.getElementById("resultsCount").textContent =
-      `${state.currentResults.length} unique results`;
-
-    renderResults();
-
-    document.getElementById("pagination").innerHTML = "";
-
-  }catch(error){
-    console.error(error);
-
-    document.getElementById("results").innerHTML = `
-      <div class="empty" style="grid-column:1/-1">
-        Search failed. Try again.
-      </div>
-    `;
-  }
 }
 
 /* ============================================================
