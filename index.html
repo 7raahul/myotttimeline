@@ -133,6 +133,31 @@ header{
   background:#1b202a;
 }
 
+/* HEADER BRAND ROW */
+.header-brand-row{
+  display:contents;
+}
+
+.account-btn{
+  display:none;
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  border-radius:50%;
+  border:1px solid #3a414d;
+  background:#151922;
+  color:#f4f6f8;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+  line-height:1;
+}
+
+.account-btn:hover{
+  background:#1d222c;
+}
+
 /* MAIN */
 
 .container{
@@ -1743,46 +1768,6 @@ header{
 </style>
 
 
-<style id="cinevo-mobile-nav-css">
-#cinevoMobileNav{display:none}
-@media(max-width:700px){
-  #cinevoMobileNav{
-    position:fixed;
-    z-index:9999;
-    left:0;
-    right:0;
-    bottom:0;
-    height:72px;
-    padding:7px 10px max(7px,env(safe-area-inset-bottom));
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:4px;
-    background:rgba(13,18,27,.97);
-    border-top:1px solid var(--border,#252c38);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-  }
-  #cinevoMobileNav button{
-    appearance:none;
-    border:0;
-    background:transparent;
-    color:#c7ccd5;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:2px;
-    font:inherit;
-    font-size:11px;
-    line-height:1.15;
-    cursor:pointer;
-  }
-  #cinevoMobileNav .mobile-nav-icon{font-size:24px;line-height:1}
-  body{padding-bottom:78px}
-}
-</style>
-
-
 <style id="cinevo-mobile-final-layout">
 @media (max-width:700px){
 
@@ -1966,13 +1951,306 @@ header{
 }
 </style>
 
+
+
+<style id="cinevo-mobile-approved-final">
+@media (max-width:700px){
+  /* Mobile header only: CINEVO, then the four requested actions. */
+  header{position:sticky !important;top:0 !important;z-index:1000 !important;padding:0 !important;}
+  header .nav{display:block !important;min-height:0 !important;padding:12px 14px 0 !important;}
+  header .logo{display:block !important;font-size:22px !important;line-height:1 !important;margin:0 0 12px !important;}
+  header .search-wrap, header .nav-actions{display:none !important;}
+  #cinevoMobileNav{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:6px !important;height:58px !important;padding:0 14px 8px !important;box-sizing:border-box !important;}
+  #cinevoMobileNav button{appearance:none !important;min-width:0 !important;height:48px !important;padding:3px 2px !important;border:1px solid var(--border,#2a303b) !important;border-radius:10px !important;background:#141821 !important;color:#cbd0d9 !important;display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important;gap:2px !important;font:inherit !important;font-size:9px !important;line-height:1.05 !important;white-space:normal !important;}
+  #cinevoMobileNav button:first-child{color:#f5c518 !important;}
+  #cinevoMobileNav button span{font-size:18px !important;line-height:1 !important;}
+  #cinevoMobileNav button b{font-weight:600 !important;}
+  body{padding-bottom:0 !important;}
+
+  /* Browse By: all controls remain on one horizontal row. */
+  .browse-box{width:100% !important;box-sizing:border-box !important;padding:0 !important;overflow-x:auto !important;overflow-y:visible !important;scrollbar-width:none !important;-webkit-overflow-scrolling:touch !important;}
+  .browse-box::-webkit-scrollbar{display:none !important;}
+  .browse-row{width:max-content !important;min-width:100% !important;height:54px !important;min-height:54px !important;display:flex !important;flex-wrap:nowrap !important;align-items:center !important;gap:0 !important;}
+  .browse-label{flex:0 0 auto !important;height:54px !important;display:flex !important;align-items:center !important;padding:0 14px !important;white-space:nowrap !important;font-size:11px !important;}
+  .browse-row .filter{flex:0 0 auto !important;height:54px !important;}
+  .browse-row .filter-btn{height:54px !important;min-width:0 !important;width:auto !important;border-radius:0 !important;border-top:0 !important;border-bottom:0 !important;padding:0 14px !important;white-space:nowrap !important;font-size:11px !important;}
+  .browse-row .apply-btn{flex:0 0 auto !important;width:auto !important;height:40px !important;min-height:40px !important;margin:0 8px !important;padding:0 16px !important;border-radius:10px !important;white-space:nowrap !important;font-size:11px !important;}
+}
+@media (min-width:701px){#cinevoMobileNav{display:none !important;}}
+</style>
+<script id="cinevo-mobile-approved-search">
+function cinevoMobileSearch(){
+  const input=document.getElementById('searchInput');
+  const wrap=input ? input.closest('.search-wrap') : null;
+  if(!input || !wrap) return;
+
+  // Mobile search is hidden by the mobile header CSS until the Search
+  // navigation item is tapped. Use a class with !important so it wins
+  // against the hidden desktop search rule.
+  wrap.classList.add('mobile-search-open');
+  if(!window.__restoringRoute && location.hash !== '#search'){ history.pushState({cinevoSearch:true},'', '#search'); }
+  wrap.style.width='calc(100% - 28px)';
+  wrap.style.maxWidth='none';
+  wrap.style.margin='0 14px 10px';
+  wrap.style.boxSizing='border-box';
+
+  requestAnimationFrame(()=>{
+    input.focus();
+    input.select();
+  });
+}
+</script>
+<style id="cinevo-mobile-trending-final">
+@media(max-width:700px){
+body{padding-bottom:0!important}
+header{position:sticky!important;top:0!important;z-index:1000!important;padding:0!important}
+header .nav{display:block!important;min-height:0!important;padding:12px 14px 10px!important}
+header .logo{display:block!important;width:max-content!important;margin:0 0 12px!important;font-size:22px!important;line-height:1!important}
+header .search-wrap,header .nav-actions{display:none!important}
+#cinevoMobileNav{position:static!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;width:100%!important;height:52px!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important}
+#cinevoMobileNav button{min-width:0!important;height:46px!important;padding:3px 2px!important;border:1px solid var(--border,#2a303b)!important;border-radius:10px!important;background:#141821!important;color:#cbd0d9!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;font-size:9px!important;line-height:1.05!important;white-space:nowrap!important}
+#cinevoMobileNav button:first-child{color:#f5c518!important}
+#cinevoMobileNav button span{font-size:18px!important;line-height:1!important}
+#cinevoMobileNav button b{font-weight:600!important}
+.global-media-filter{width:100%!important;box-sizing:border-box!important;margin:0!important;padding:10px 14px 0!important;display:flex!important;gap:7px!important;overflow-x:auto!important;scrollbar-width:none!important}
+.global-media-filter::-webkit-scrollbar{display:none!important}
+.global-media-btn{flex:0 0 auto!important;min-height:40px!important;padding:8px 16px!important;border-radius:11px!important;font-size:10px!important}
+#trendingBox.trending{min-height:0!important;height:auto!important;overflow:hidden!important;border-radius:18px!important}
+#trendingBox .trend-slide{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important}
+#trendingBox .trend-slide.active{position:relative!important;inset:auto!important;height:auto!important}
+#trendingBox .trend-visual{position:relative!important;width:100%!important;aspect-ratio:16/9!important;overflow:hidden!important;background:#10131a!important}
+#trendingBox .trend-bg{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;display:block!important}
+#trendingBox .trend-visual:after{content:""!important;position:absolute!important;inset:0!important;z-index:2!important;background:linear-gradient(90deg,rgba(0,0,0,.3),rgba(0,0,0,.04) 65%,rgba(0,0,0,.12))!important;pointer-events:none!important}
+#trendingBox .trend-poster{position:absolute!important;z-index:3!important;left:12px!important;bottom:12px!important;width:74px!important;height:111px!important;object-fit:cover!important;border-radius:7px!important;border:1px solid rgba(255,255,255,.22)!important;box-shadow:0 8px 20px rgba(0,0,0,.45)!important;background:#171b24!important}
+#trendingBox .trend-overlay{display:none!important}
+#trendingBox .trend-content{position:relative!important;z-index:4!important;width:100%!important;min-height:0!important;padding:12px 13px 15px!important;display:block!important;background:#10131a!important}
+#trendingBox .trend-type{font-size:9px!important;letter-spacing:1px!important;margin:0 0 4px!important}
+#trendingBox .trend-title{font-size:17px!important;line-height:1.15!important;margin:0 0 6px!important}
+#trendingBox .trend-meta{gap:7px!important;font-size:10px!important;margin:0 0 8px!important}
+#trendingBox .trend-overview{font-size:10px!important;line-height:1.4!important;-webkit-line-clamp:2!important}
+#trendingBox .trend-btn{margin-top:10px!important;padding:8px 12px!important;font-size:11px!important;border-radius:8px!important}
+.browse-box{width:100%!important;box-sizing:border-box!important;padding:0!important;overflow-x:auto!important;overflow-y:visible!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important}
+.browse-box::-webkit-scrollbar{display:none!important}
+.browse-row{width:max-content!important;min-width:100%!important;height:54px!important;min-height:54px!important;display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:0!important}
+.browse-label{flex:0 0 auto!important;height:54px!important;display:flex!important;align-items:center!important;padding:0 14px!important;white-space:nowrap!important;font-size:10px!important}
+.browse-row .filter{flex:0 0 auto!important;height:54px!important}
+.browse-row .filter-btn{height:54px!important;min-width:0!important;width:auto!important;border-radius:0!important;border-top:0!important;border-bottom:0!important;padding:0 13px!important;white-space:nowrap!important;font-size:10px!important}
+.browse-row .apply-btn{flex:0 0 auto!important;height:40px!important;min-height:40px!important;margin:0 8px!important;padding:0 15px!important;border-radius:10px!important;font-size:10px!important;white-space:nowrap!important}
+}
+@media(min-width:701px){#cinevoMobileNav{display:none!important}}
+</style>
+
+<style id="cinevo-mobile-modern-final">
+@media (max-width:700px){
+  html,body{overflow-x:hidden!important;background:#080a0f!important}
+  body{padding-bottom:0!important}
+
+  /* Header */
+  header{position:relative!important;padding:0!important;background:#090b10!important;border-bottom:1px solid rgba(255,255,255,.06)!important}
+  header .nav{display:block!important;padding:15px 14px 9px!important}
+  header .header-brand-row{display:flex!important;width:100%!important;min-width:0!important;align-items:center!important;justify-content:space-between!important}
+  header .logo{display:block!important;width:max-content!important;margin:0!important;color:#f5f7fb!important;font-size:23px!important;line-height:1!important;font-weight:900!important;letter-spacing:-.6px!important}
+  header .search-wrap,header .nav-actions{display:none!important}
+  header .account-btn{display:inline-flex!important;width:42px!important;height:42px!important;flex:0 0 42px!important;border-radius:50%!important;font-size:20px!important}
+
+  #cinevoMobileNav{display:grid!important;position:static!important;width:100%!important;height:58px!important;min-height:58px!important;margin:0!important;padding:0 14px 8px!important;box-sizing:border-box!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;background:transparent!important;border:0!important}
+  #cinevoMobileNav button{appearance:none!important;min-width:0!important;height:48px!important;margin:0!important;padding:4px 2px!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:12px!important;background:#121620!important;color:#aeb5c0!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;font-family:inherit!important;font-size:9px!important;font-weight:700!important;line-height:1!important;white-space:nowrap!important;box-shadow:0 4px 14px rgba(0,0,0,.12)!important;transition:transform .16s ease,border-color .16s ease,background .16s ease,color .16s ease!important}
+  #cinevoMobileNav button:active{transform:scale(.97)!important}
+  #cinevoMobileNav button:first-child{color:#f5c518!important;border-color:rgba(245,197,24,.28)!important;background:#171a20!important}
+  #cinevoMobileNav button span{font-size:17px!important;line-height:1!important}
+  #cinevoMobileNav button b{font-size:8px!important;font-weight:700!important;letter-spacing:.1px!important}
+
+  /* Content type pills */
+  .global-media-filter{margin:0!important;padding:10px 14px 0!important;display:flex!important;gap:7px!important;overflow-x:auto!important;scrollbar-width:none!important}
+  .global-media-filter::-webkit-scrollbar{display:none!important}
+  .global-media-btn{flex:0 0 auto!important;min-height:40px!important;padding:8px 16px!important;border:1px solid rgba(255,255,255,.10)!important;border-radius:11px!important;background:#121620!important;color:#aeb5c0!important;font-size:10px!important;font-weight:850!important;transition:all .16s ease!important}
+  .global-media-btn.active{background:#f5c518!important;border-color:#f5c518!important;color:#111!important}
+
+  /* Main spacing */
+  .container{padding:18px 14px 45px!important}
+  .section{margin-bottom:24px!important}
+  .section-title{font-size:20px!important;line-height:1.15!important;letter-spacing:-.45px!important}
+  .section-subtitle{margin:5px 0 14px!important;font-size:12px!important;color:#8f98a7!important}
+
+  /* Trending: clean modern 16:9 backdrop, then information. */
+  #trendingBox.trending{min-height:0!important;height:auto!important;border-radius:18px!important;border:1px solid rgba(255,255,255,.10)!important;background:#10141c!important;box-shadow:0 12px 30px rgba(0,0,0,.24)!important;overflow:hidden!important}
+  #trendingBox .trend-slide{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important;transition:opacity .3s ease!important}
+  #trendingBox .trend-slide.active{position:relative!important;inset:auto!important;height:auto!important;opacity:1!important;pointer-events:auto!important}
+  #trendingBox .trend-visual{position:relative!important;width:100%!important;height:auto!important;aspect-ratio:16/9!important;overflow:hidden!important;background:#151922!important}
+  #trendingBox .trend-bg{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;object-position:center!important}
+  #trendingBox .trend-visual:after{content:""!important;position:absolute!important;inset:0!important;z-index:2!important;background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.16))!important;pointer-events:none!important}
+  #trendingBox .trend-poster{position:absolute!important;z-index:3!important;left:13px!important;bottom:13px!important;width:72px!important;height:108px!important;display:block!important;object-fit:cover!important;border-radius:8px!important;border:1px solid rgba(255,255,255,.24)!important;background:#171b24!important;box-shadow:0 10px 24px rgba(0,0,0,.48)!important}
+  #trendingBox .trend-overlay{display:none!important}
+  #trendingBox .trend-content{position:relative!important;z-index:4!important;width:100%!important;min-height:0!important;padding:14px 14px 16px!important;display:block!important;background:#10141c!important}
+  #trendingBox .trend-type{font-size:9px!important;letter-spacing:1.1px!important;margin:0 0 5px!important;color:#9da5b2!important}
+  #trendingBox .trend-title{font-size:20px!important;line-height:1.08!important;margin:0 0 7px!important;letter-spacing:-.5px!important}
+  #trendingBox .trend-meta{display:flex!important;gap:7px!important;font-size:11px!important;margin:0 0 9px!important;color:#c8ced8!important}
+  #trendingBox .trend-overview{font-size:11px!important;line-height:1.45!important;color:#aeb6c3!important;-webkit-line-clamp:2!important;margin:0!important}
+  #trendingBox .trend-btn{margin-top:11px!important;padding:9px 13px!important;border:0!important;border-radius:9px!important;background:#f5f7fb!important;color:#0a0c11!important;font-size:11px!important;font-weight:850!important}
+  #trendingBox .trend-dots{left:14px!important;bottom:11px!important;z-index:7!important}
+  #trendingBox .dot{width:6px!important;height:6px!important}
+  #trendingBox .dot.active{width:22px!important}
+  #trendingBox .trend-arrow{width:32px!important;height:32px!important;z-index:8!important;background:rgba(7,9,13,.72)!important;border-color:rgba(255,255,255,.16)!important}
+  #trendingBox .trend-prev{right:48px!important;bottom:8px!important;top:auto!important;left:auto!important;transform:none!important}
+  #trendingBox .trend-next{right:8px!important;bottom:8px!important;top:auto!important;left:auto!important;transform:none!important}
+
+  /* Browse By: compact single horizontal rail */
+  .browse-box{width:100%!important;padding:0!important;border-radius:14px!important;background:#10141c!important;border:1px solid rgba(255,255,255,.09)!important;overflow-x:auto!important;overflow-y:visible!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important}
+  .browse-box::-webkit-scrollbar{display:none!important}
+  .browse-row{width:max-content!important;min-width:100%!important;height:50px!important;min-height:50px!important;display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:0!important}
+  .browse-label{height:50px!important;flex:0 0 auto!important;display:flex!important;align-items:center!important;padding:0 12px!important;color:#8992a1!important;font-size:8px!important;letter-spacing:.8px!important;font-weight:850!important;white-space:nowrap!important}
+  .browse-row .filter{height:50px!important;flex:0 0 auto!important}
+  .browse-row .filter-btn{height:50px!important;min-width:0!important;width:auto!important;padding:0 13px!important;border:0!important;border-left:1px solid rgba(255,255,255,.06)!important;border-radius:0!important;background:transparent!important;color:#c5cbd5!important;font-size:9px!important;white-space:nowrap!important}
+  .browse-row .apply-btn{height:34px!important;min-height:34px!important;flex:0 0 auto!important;margin:0 8px!important;padding:0 14px!important;border:0!important;border-radius:9px!important;background:#f5c518!important;color:#111!important;font-size:9px!important;font-weight:900!important;white-space:nowrap!important}
+
+  /* Poster grid */
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+}
+@media(min-width:701px){#cinevoMobileNav{display:none!important}}
+</style>
+
+<style id="cinevo-mobile-search-fix">
+@media (max-width:700px){
+  header .search-wrap.mobile-search-open{
+    display:block !important;
+    width:calc(100% - 28px) !important;
+    max-width:none !important;
+    margin:0 14px 10px !important;
+    box-sizing:border-box !important;
+  }
+
+  header .search-wrap.mobile-search-open .search-suggestions{
+    display:block;
+  }
+
+  header .search-wrap.mobile-search-open .search{
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
+}
+</style>
+
+
+<style id="cinevo-mobile-browse-final-fix">
+/* MOBILE ONLY — compact one-line Browse By.
+   Desktop/browser layout is intentionally untouched. */
+@media (max-width:700px){
+  .browse-box{
+    width:100% !important;
+    max-width:100% !important;
+    height:52px !important;
+    min-height:52px !important;
+    padding:0 !important;
+    margin:0 !important;
+    border-radius:14px !important;
+    overflow-x:auto !important;
+    overflow-y:visible !important;
+    scrollbar-width:none !important;
+    -webkit-overflow-scrolling:touch !important;
+    overscroll-behavior-x:contain !important;
+  }
+
+  .browse-box::-webkit-scrollbar{
+    display:none !important;
+  }
+
+  .browse-row{
+    width:max-content !important;
+    min-width:max-content !important;
+    height:50px !important;
+    min-height:50px !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:stretch !important;
+    gap:0 !important;
+  }
+
+  .browse-label{
+    flex:0 0 auto !important;
+    height:50px !important;
+    display:flex !important;
+    align-items:center !important;
+    padding:0 13px !important;
+    margin:0 !important;
+    border-right:1px solid rgba(255,255,255,.07) !important;
+    white-space:nowrap !important;
+    font-size:9px !important;
+    letter-spacing:.8px !important;
+  }
+
+  .browse-row .filter{
+    flex:0 0 auto !important;
+    height:50px !important;
+    min-width:0 !important;
+    position:relative !important;
+  }
+
+  .browse-row .filter-btn{
+    height:50px !important;
+    min-width:0 !important;
+    width:auto !important;
+    max-width:none !important;
+    padding:0 12px !important;
+    margin:0 !important;
+    border:0 !important;
+    border-right:1px solid rgba(255,255,255,.07) !important;
+    border-radius:0 !important;
+    background:transparent !important;
+    color:#d8dde5 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:9px !important;
+    white-space:nowrap !important;
+    font-size:10px !important;
+    line-height:1 !important;
+  }
+
+  .browse-row .filter-btn:hover,
+  .browse-row .filter-btn:focus{
+    background:rgba(255,255,255,.045) !important;
+    outline:none !important;
+  }
+
+  .browse-row .filter-menu{
+    position:absolute !important;
+    top:calc(100% + 6px) !important;
+    left:0 !important;
+    z-index:9999 !important;
+    width:190px !important;
+    max-width:calc(100vw - 30px) !important;
+    max-height:260px !important;
+    overflow:auto !important;
+  }
+
+  .browse-row .apply-btn{
+    flex:0 0 auto !important;
+    align-self:center !important;
+    height:34px !important;
+    min-height:34px !important;
+    width:auto !important;
+    min-width:58px !important;
+    margin:0 8px !important;
+    padding:0 13px !important;
+    border:0 !important;
+    border-radius:9px !important;
+    white-space:nowrap !important;
+    font-size:10px !important;
+    font-weight:900 !important;
+  }
+}
+</style>
+
 </head>
 
 <body>
 
 <header>
   <div class="nav">
-    <div class="logo" role="button" tabindex="0" aria-label="CINEVO Home" onclick="goHome()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goHome()}">CINEVO</div>
+    <div class="header-brand-row">
+      <div class="logo" role="button" tabindex="0" aria-label="CINEVO Home" onclick="goHome()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goHome()}">CINEVO</div>
+      <button type="button" class="account-btn" id="accountBtn" aria-label="Account" title="Account">◉</button>
+    </div>
 
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
@@ -1986,6 +2264,13 @@ header{
       <button class="nav-btn" id="randomBtn">🎲 Pick for Me</button>
     </div>
   </div>
+
+  <nav id="cinevoMobileNav" aria-label="Mobile navigation">
+    <button type="button" onclick="goHome()"><span>🏠</span><b>Home</b></button>
+    <button type="button" onclick="cinevoMobileSearch()"><span>⌕</span><b>Search</b></button>
+    <button type="button" onclick="document.getElementById('timelineBtn')?.click()"><span>◇</span><b>Watch Journey</b></button>
+    <button type="button" onclick="document.getElementById('randomBtn')?.click()"><span>🎲</span><b>Pick for Me</b></button>
+  </nav>
 </header>
 
 <div class="global-media-filter" id="globalMediaFilter" aria-label="Content type">
@@ -2475,9 +2760,10 @@ function renderTrending(){
       <div class="trend-slide ${index===state.trendIndex ? "active":""}"
            data-index="${index}"
            onclick="if(!event.target.closest('button'))openDetails(${item.id},'${type}')">
-        <img class="trend-bg"
-             src="${backdrop(item.backdrop_path)}"
-             alt="${esc(title)}">
+        <div class="trend-visual">
+          <img class="trend-bg" src="${backdrop(item.backdrop_path)}" alt="${esc(title)}">
+          <img class="trend-poster" src="${image(item.poster_path, POSTER_SIZE)}" alt="${esc(title)}">
+        </div>
 
         <div class="trend-overlay"></div>
 
@@ -4011,16 +4297,18 @@ function openRandomResult(){
   }
 }
 
-function openRandomPage(){
+function openRandomPage(fromHistory=false){
+  if(!fromHistory && location.hash !== "#random"){ history.pushState({cinevoRandom:true},"","#random"); }
   document.getElementById("randomModal").classList.remove("hidden");
   document.body.style.overflow="hidden";
   window.scrollTo(0,0);
 }
 
-function closeRandom(){
+function closeRandom(fromHistory=false){
   document.getElementById("randomModal").classList.add("hidden");
   if(document.getElementById("detailOverlay").classList.contains("hidden") && document.getElementById("timelinePage").classList.contains("hidden")) document.body.style.overflow="";
   document.getElementById("randomResult")?.classList.remove("show");
+  if(!fromHistory && location.hash === "#random"){ history.pushState({cinevoHome:true},"","#home"); }
 }
 
 async function pickRandom(){
@@ -4304,20 +4592,30 @@ document.getElementById("dateModal")?.addEventListener("click",event=>{
   });
 
 /* ============================================================
+   ACCOUNT BUTTON
+============================================================ */
+document.getElementById("accountBtn")?.addEventListener("click",()=>{
+  // Account UI is intentionally left untouched here; this fix only restores
+  // the requested top-right placement and prevents accidental navigation.
+});
+
+/* ============================================================
    TIMELINE BUTTON
 ============================================================ */
 
 document.getElementById("timelineBtn")?.addEventListener("click",openTimelinePage);
 
-function openTimelinePage(){
+function openTimelinePage(fromHistory=false){
+  if(!fromHistory && location.hash !== "#journey"){ history.pushState({cinevoJourney:true},"","#journey"); }
   renderTimelinePage();
   document.getElementById("timelinePage").classList.remove("hidden");
   document.body.style.overflow="hidden";
 }
 
-function closeTimelinePage(){
+function closeTimelinePage(fromHistory=false){
   document.getElementById("timelinePage").classList.add("hidden");
   document.body.style.overflow="";
+  if(!fromHistory && location.hash === "#journey"){ history.pushState({cinevoHome:true},"","#home"); }
 }
 
 document.getElementById("closeTimeline")?.addEventListener("click",closeTimelinePage);
@@ -4435,12 +4733,38 @@ document.addEventListener("keydown",event=>{
 });
 
 window.addEventListener("popstate", async ()=>{
-  const m=location.hash.match(/^#(movie|tv)-(\d+)$/);
+  const hash=location.hash || "#home";
+  const m=hash.match(/^#(movie|tv)-(\d+)$/);
   window.__popstateDetail=true;
+  window.__restoringRoute=true;
   try{
-    if(m){ await openDetails(Number(m[2]),m[1],true); }
-    else { closeDetails(true); closeRandom(); closeTimelinePage(); }
-  }finally{ window.__popstateDetail=false; }
+    if(m){
+      closeRandom(true);
+      closeTimelinePage(true);
+      await openDetails(Number(m[2]),m[1],true);
+    }else if(hash === "#journey"){
+      closeDetails(true);
+      closeRandom(true);
+      openTimelinePage(true);
+    }else if(hash === "#random"){
+      closeDetails(true);
+      closeTimelinePage(true);
+      openRandomPage(true);
+    }else if(hash === "#search"){
+      closeDetails(true);
+      closeTimelinePage(true);
+      closeRandom(true);
+      cinevoMobileSearch();
+    }else{
+      closeDetails(true);
+      closeRandom(true);
+      closeTimelinePage(true);
+      if(typeof goHome === "function") goHome();
+    }
+  }finally{
+    window.__restoringRoute=false;
+    window.__popstateDetail=false;
+  }
 });
 
 /* ============================================================
@@ -4462,6 +4786,26 @@ async function init(){
     loadTrending(),
     loadBrowse()
   ]);
+
+  // Restore the exact page after a browser refresh instead of always
+  // falling back to Home. Hash routes are deliberately used so GitHub
+  // Pages/static hosting can preserve the current view without server rewrites.
+  const hash = location.hash || "#home";
+  window.__restoringRoute = true;
+  try{
+    const m = hash.match(/^#(movie|tv)-(\d+)$/);
+    if(m){
+      await openDetails(Number(m[2]),m[1],true);
+    }else if(hash === "#journey"){
+      openTimelinePage(true);
+    }else if(hash === "#random"){
+      openRandomPage(true);
+    }else if(hash === "#search"){
+      cinevoMobileSearch();
+    }
+  }finally{
+    window.__restoringRoute = false;
+  }
 }
 
 init().catch(error=>{
@@ -4577,22 +4921,6 @@ window.openRandomPage=openRandomPage;
 </script>
 
 
-<nav id="cinevoMobileNav" aria-label="Mobile navigation">
-  <button type="button" data-mobile-nav="home">
-    <span class="mobile-nav-icon">🏠</span><span>Home</span>
-  </button>
-  <button type="button" data-mobile-nav="search">
-    <span class="mobile-nav-icon">⌕</span><span>Search</span>
-  </button>
-  <button type="button" data-mobile-nav="journey">
-    <span class="mobile-nav-icon">◇</span><span>Watch Journey</span>
-  </button>
-  <button type="button" data-mobile-nav="random">
-    <span class="mobile-nav-icon">🎲</span><span>Pick for Me</span>
-  </button>
-</nav>
-
-
 <script id="cinevo-mobile-trending-fix">
 (function(){
   function fixMobileTrending(){
@@ -4699,70 +5027,6 @@ window.openRandomPage=openRandomPage;
   new MutationObserver(function(){
     if(window.innerWidth <= 700) mobileTrending();
   }).observe(document.body,{childList:true,subtree:true});
-})();
-</script>
-
-
-<!-- CINEVO MOBILE V2 FINAL FIXES: desktop/browser layout untouched -->
-<style id="cinevo-mobile-v2-final-css">
-@media (max-width:700px){
-#toTop{display:none!important}.trend-arrow,.trend-prev,.trend-next{display:none!important}.global-media-filter{display:none!important}header .search-wrap,header .nav-actions{display:none!important}body{padding-bottom:86px!important;overflow-x:hidden!important}
-header{display:block!important;padding:14px 16px 12px!important;background:#090c12!important;border-bottom:1px solid #171c25!important}header .nav{display:flex!important;align-items:center!important;justify-content:space-between!important;padding:0!important;min-height:42px!important}header .logo{font-size:25px!important;font-weight:900!important;letter-spacing:-1px!important}#cinevoMobileAccount{display:flex!important;align-items:center!important;justify-content:center!important;width:42px!important;height:42px!important;border-radius:50%!important;border:1px solid #3a414c!important;background:#121720!important;color:#fff!important;font-size:20px!important}
-main.container{padding:20px 14px 40px!important}.section{margin-bottom:22px!important}.section-title{font-size:24px!important;line-height:1.1!important}.section-subtitle{font-size:13px!important}
-#trendingBox{position:relative!important;display:block!important;width:100%!important;height:auto!important;min-height:0!important}#trendingBox .trend-slide{position:relative!important;display:none!important;width:100%!important;height:auto!important;min-height:0!important;border-radius:16px!important;overflow:hidden!important;background:#11161e!important;border:1px solid #2c3440!important}#trendingBox .trend-slide.active{display:block!important}#trendingBox .trend-bg{position:relative!important;inset:auto!important;display:block!important;width:100%!important;height:auto!important;aspect-ratio:16/9!important;object-fit:cover!important;object-position:center!important;border-radius:0!important;transform:none!important}#trendingBox .trend-overlay{position:absolute!important;left:0!important;right:0!important;top:0!important;height:56%!important;background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.28))!important;z-index:1!important;pointer-events:none!important}#trendingBox .trend-content{position:relative!important;inset:auto!important;width:100%!important;min-height:0!important;padding:14px 14px 58px!important;background:#11161e!important;z-index:2!important}#trendingBox .trend-type{font-size:9px!important;letter-spacing:1px!important;color:#aeb7c3!important;font-weight:900!important;margin-bottom:6px!important}#trendingBox .trend-title{font-size:22px!important;line-height:1.08!important;margin:0 0 6px!important}#trendingBox .trend-meta{font-size:11px!important;gap:7px!important;margin-bottom:8px!important}#trendingBox .trend-overview{font-size:11px!important;line-height:1.42!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;margin-bottom:10px!important}#trendingBox .trend-btn{font-size:11px!important;padding:9px 13px!important;border-radius:8px!important}#trendingBox .trend-dots{position:absolute!important;right:14px!important;bottom:12px!important;z-index:5!important;display:flex!important;gap:5px!important;align-items:center!important}#trendingBox .trend-dots .dot{width:6px!important;height:6px!important;border-radius:50%!important;border:0!important;padding:0!important;background:#6d7580!important}#trendingBox .trend-dots .dot.active{width:18px!important;border-radius:5px!important;background:#f5c518!important}
-#mobileMediaTabs{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:7px!important;margin:12px 0 0!important}#mobileMediaTabs button{min-width:0!important;padding:10px 5px!important;border-radius:11px!important;border:1px solid #303845!important;background:#141922!important;color:#aeb6c2!important;font-size:10px!important;font-weight:900!important}#mobileMediaTabs button.active{background:#f5c518!important;color:#111!important;border-color:#f5c518!important}
-#results{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}.movie-card{min-width:0!important}.movie-card .card-actions .quick-btn{display:none!important}.movie-card .details-btn{width:100%!important}#pagination{display:none!important}
-#cinevoMobileNav{position:fixed!important;left:10px!important;right:10px!important;bottom:10px!important;width:auto!important;height:66px!important;padding:6px!important;display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:3px!important;background:rgba(12,16,23,.96)!important;border:1px solid #2b333f!important;border-radius:16px!important;box-shadow:0 16px 45px rgba(0,0,0,.55)!important;backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important}#cinevoMobileNav button{border:0!important;background:transparent!important;color:#aeb6c1!important;border-radius:11px!important;gap:2px!important;font-size:9px!important;font-weight:700!important;min-width:0!important;white-space:nowrap!important}#cinevoMobileNav button.active{background:#1b222d!important;color:#f5c518!important}#cinevoMobileNav .mobile-nav-icon{font-size:20px!important}body.cinevo-view-open #cinevoMobileNav{display:none!important}
-#cinevoAccountPage,#cinevoSearchPage{position:fixed!important;inset:0!important;z-index:100000!important;background:#080b10!important;overflow:auto!important;padding:16px 14px 30px!important}#cinevoAccountPage .v2-page-head,#cinevoSearchPage .v2-page-head{display:flex!important;align-items:center!important;justify-content:space-between!important;padding:8px 0 16px!important}.v2-page-head h2{font-size:22px!important;margin:0!important}.v2-close{width:40px!important;height:40px!important;border-radius:50%!important;border:1px solid #343c48!important;background:#141922!important;color:#fff!important;font-size:22px!important}
-#cinevoSearchInput{width:100%!important;height:48px!important;padding:0 14px!important;border:1px solid #353d49!important;border-radius:13px!important;background:#121720!important;color:#fff!important;font-size:15px!important;outline:none!important}#cinevoSearchInput:focus{border-color:#f5c518!important;box-shadow:0 0 0 3px rgba(245,197,24,.08)!important}.v2-search-filters{display:flex!important;gap:7px!important;overflow-x:auto!important;padding:10px 0!important;scrollbar-width:none!important}.v2-search-filters button{flex:0 0 auto!important;border:1px solid #303844!important;background:#141922!important;color:#b8c0cb!important;border-radius:10px!important;padding:8px 11px!important;font-size:10px!important;font-weight:800!important}.v2-search-filters button.active{background:#f5c518!important;color:#111!important;border-color:#f5c518!important}#cinevoSearchResults{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;padding-bottom:30px!important}.v2-result{border:1px solid #29313d!important;background:#11161e!important;border-radius:12px!important;overflow:hidden!important;cursor:pointer!important}.v2-result img{width:100%!important;aspect-ratio:2/3!important;object-fit:cover!important;display:block!important}.v2-result-body{padding:9px!important}.v2-result-title{font-size:12px!important;font-weight:900!important;line-height:1.25!important}.v2-result-meta{font-size:9px!important;color:#98a2af!important;margin-top:5px!important}.v2-person{grid-column:1/-1!important;display:flex!important;align-items:center!important;gap:10px!important;padding:10px!important}.v2-person img{width:54px!important;height:70px!important;aspect-ratio:auto!important;border-radius:8px!important;flex:0 0 54px!important}
-#cinevoAccountPage .account-box{max-width:none!important;margin:22vh auto 0!important;padding:22px!important;border:1px solid #343c48!important;border-radius:20px!important;background:#121720!important;text-align:center!important}.account-avatar{font-size:38px!important;margin-bottom:10px!important}.account-box h2{font-size:25px!important;margin:0 0 8px!important}.account-box p{color:#9aa4b1!important;line-height:1.5!important;margin:0 0 20px!important}.account-box button{width:100%!important;height:48px!important;border-radius:12px!important;margin-top:9px!important;font-size:14px!important;font-weight:900!important}.account-signin{background:#f5c518!important;color:#111!important;border:0!important}.account-signup,.account-close{background:#171d26!important;color:#fff!important;border:1px solid #343c48!important}
-#detailOverlay{z-index:100001!important;padding-bottom:20px!important}#detailOverlay .detail-back{top:12px!important;left:12px!important;z-index:30!important;border-radius:11px!important;background:rgba(5,8,12,.72)!important}#detailOverlay .detail-hero{min-height:0!important;display:block!important;padding:0!important;background:#080b10!important}#detailOverlay .detail-bg{position:relative!important;left:auto!important;right:auto!important;top:auto!important;width:100%!important;height:auto!important;aspect-ratio:16/9!important;object-fit:cover!important;display:block!important}#detailOverlay .detail-bg-overlay{inset:auto!important;top:auto!important;height:45%!important;bottom:0!important;background:linear-gradient(0deg,#080b10,transparent)!important}#detailOverlay .detail-main{display:block!important;width:auto!important;padding:16px 16px 20px!important;margin:0!important}#detailOverlay .detail-poster{display:none!important}#detailOverlay .detail-info{max-width:none!important}#detailOverlay .detail-title{font-size:30px!important;line-height:1.05!important;letter-spacing:-.8px!important}#detailOverlay .detail-logo{display:block!important;max-width:75%!important;max-height:75px!important;width:auto!important;height:auto!important;object-fit:contain!important;margin:0 0 12px!important}#detailOverlay .detail-overview{font-size:12px!important;line-height:1.55!important}#detailOverlay .detail-buttons{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:14px!important}#detailOverlay .action-btn{min-width:0!important;padding:10px 8px!important;font-size:10px!important}#detailContent{padding:0 16px 30px!important}#detailContent .cast-card{cursor:pointer!important}
-#timelinePage{z-index:100002!important;background:#080b10!important;overflow:auto!important}#timelinePage .page-shell{width:100%!important;min-height:100vh!important;padding:16px 10px 100px!important}#timelinePage .page-head{padding:5px 6px 15px!important}#timelinePage .timeline-columns{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:16px!important;position:relative!important;padding:10px 0 30px!important}#timelinePage .timeline-columns:before{content:""!important;display:block!important;position:absolute!important;left:50%!important;top:62px!important;bottom:20px!important;width:2px!important;background:#2b333e!important;transform:translateX(-50%)!important;z-index:0!important}#timelinePage .timeline-column{position:relative!important;z-index:1!important;min-width:0!important;padding:0 4px!important}#timelinePage .timeline-column h2{font-size:13px!important;margin:0 0 12px!important;text-align:center!important}#timelinePage .timeline-column h2:before{content:""!important;display:inline-block!important;width:8px!important;height:8px!important;border-radius:50%!important;margin-right:6px!important;vertical-align:1px!important;background:#6ee7b7!important}.scheduled-col h2:before{background:#ef4444!important}#timelinePage .timeline-entry{width:100%!important;min-height:0!important;margin:0 0 12px!important;padding:7px!important;display:block!important;border-radius:12px!important;background:#11161e!important;border:1px solid #2b333e!important;box-sizing:border-box!important}#timelinePage .timeline-entry:after{display:block!important;content:""!important;position:absolute!important;top:28px!important;width:9px!important;height:9px!important;border-radius:50%!important;background:#6ee7b7!important;border:2px solid #080b10!important}.watched-col .timeline-entry:after{right:-22px!important}.scheduled-col .timeline-entry:after{left:-22px!important;background:#ef4444!important}#timelinePage .timeline-entry img{width:100%!important;height:auto!important;aspect-ratio:2/3!important;object-fit:cover!important;border-radius:8px!important;display:block!important;margin-bottom:7px!important}#timelinePage .timeline-entry .te-title{font-size:10px!important;white-space:normal!important;line-height:1.25!important}#timelinePage .timeline-entry .te-date{font-size:8px!important;color:#b7bec8!important;margin-top:4px!important}#timelinePage .timeline-entry .te-status{font-size:8px!important;margin-top:4px!important}.timeline-entry .te-status.watched{color:#6ee7b7!important;font-weight:900!important}.timeline-entry .te-status.scheduled{color:#ef4444!important;font-weight:900!important}
-#randomModal{z-index:100003!important;background:#080b10!important}#randomModal .random-page-shell{width:100%!important;padding:14px!important}
-}
-</style>
-<script id="cinevo-mobile-v2-final-js">
-(function(){
-const mobile=()=>window.innerWidth<=700,$=id=>document.getElementById(id),safe=s=>typeof esc==='function'?esc(s):String(s||'');let searchTimer,searchMode='all',searchToken=0,moreBusy=false,moreDone=false;
-function active(n){document.querySelectorAll('#cinevoMobileNav button').forEach(b=>b.classList.toggle('active',b.dataset.mobileNav===n))}function viewOpen(){document.body.classList.add('cinevo-view-open')}function viewClose(){document.body.classList.remove('cinevo-view-open')}
-function header(){if(!mobile()||$('cinevoMobileAccount'))return;const n=document.querySelector('header .nav');if(!n)return;const b=document.createElement('button');b.id='cinevoMobileAccount';b.type='button';b.textContent='◎';b.setAttribute('aria-label','Account');b.onclick=openAccount;n.appendChild(b)}
-function tabs(){if(!mobile()||$('mobileMediaTabs'))return;const h=$('trendingBox');if(!h)return;const t=document.createElement('div');t.id='mobileMediaTabs';t.innerHTML='<button data-v="all" class="active">ALL</button><button data-v="movie">MOVIES</button><button data-v="tv">TV SHOWS</button>';t.querySelectorAll('button').forEach(b=>b.onclick=()=>{t.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));if(typeof setMainMediaType==='function')setMainMediaType(b.dataset.v)});h.parentNode.insertBefore(t,h.nextSibling)}
-function searchPage(){if($('cinevoSearchPage'))return;const p=document.createElement('div');p.id='cinevoSearchPage';p.hidden=true;p.innerHTML='<div class="v2-page-head"><h2>Search CINEVO</h2><button class="v2-close" type="button">×</button></div><input id="cinevoSearchInput" type="search" autocomplete="off" placeholder="Search movies, TV shows, actors, actresses, directors..."><div class="v2-search-filters"><button class="active" data-mode="all">ALL</button><button data-mode="movie">MOVIES</button><button data-mode="tv">TV SHOWS</button><button data-mode="person">PEOPLE</button></div><div id="cinevoSearchResults"><div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:40px 10px">Type at least one character to search.</div></div>';document.body.appendChild(p);p.querySelector('.v2-close').onclick=closeSearch;p.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{searchMode=b.dataset.mode;p.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));runSearch(p.querySelector('#cinevoSearchInput').value)});p.querySelector('#cinevoSearchInput').addEventListener('input',e=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>runSearch(e.target.value),180)})}
-async function runSearch(q0){if(!mobile())return;const q=q0.trim(),box=$('cinevoSearchResults');if(!box)return;if(!q){box.innerHTML='<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:40px 10px">Type at least one character to search.</div>';return}const token=++searchToken;box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8f99a6">Searching…</div>';try{const d=await api('/search/multi',{query:q,page:1,include_adult:false});if(token!==searchToken)return;let items=(d.results||[]).filter(x=>['movie','tv','person'].includes(x.media_type));if(searchMode!=='all')items=items.filter(x=>x.media_type===searchMode);items=uniqueItems(items).slice(0,30);if(!items.length){box.innerHTML='<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:40px 10px">No matching results.</div>';return}box.innerHTML=items.map(x=>{if(x.media_type==='person')return '<article class="v2-result v2-person" data-person="'+(Number(x.id)||0)+'"><img src="'+image(x.profile_path,PROFILE_SIZE)+'" alt=""><div><div class="v2-result-title">'+safe(x.name)+'</div><div class="v2-result-meta">PERSON · '+safe(x.known_for_department||'Cast/Director')+'</div></div></article>';return '<article class="v2-result" data-id="'+(Number(x.id)||0)+'" data-type="'+x.media_type+'"><img src="'+image(x.poster_path)+'" alt="'+safe(titleOf(x))+'" loading="lazy"><div class="v2-result-body"><div class="v2-result-title">'+safe(titleOf(x))+'</div><div class="v2-result-meta">'+(x.media_type==='tv'?'TV SHOW':'MOVIE')+' · '+yearFromDate(dateOf(x))+' · ★ '+Number(x.vote_average||0).toFixed(1)+'</div></div></article>'}).join('');box.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>{closeSearch();openDetails(Number(e.dataset.id),e.dataset.type)});box.querySelectorAll('[data-person]').forEach(e=>e.onclick=()=>personCredits(Number(e.dataset.person),e.querySelector('.v2-result-title')?.textContent||''))}catch(e){box.innerHTML='<div style="grid-column:1/-1;color:#ef8f8f;text-align:center;padding:40px 10px">Search failed. Try again.</div>'}}
-function openSearch(){searchPage();viewOpen();active('search');$('cinevoSearchPage').hidden=false;$('cinevoSearchInput').focus()}function closeSearch(){if($('cinevoSearchPage'))$('cinevoSearchPage').hidden=true;viewClose();active('home')}
-function openAccount(){if(!$('cinevoAccountPage')){const p=document.createElement('div');p.id='cinevoAccountPage';p.innerHTML='<div class="v2-page-head"><h2>Account</h2><button class="v2-close" type="button">×</button></div><div class="account-box"><div class="account-avatar">◎</div><h2>Welcome to CINEVO</h2><p>Sign in to keep your watch journey, scheduled titles and preferences in one place.</p><button class="account-signin">Sign In</button><button class="account-signup">Sign Up</button><button class="account-close">Close</button></div>';document.body.appendChild(p);p.querySelector('.v2-close').onclick=closeAccount;p.querySelector('.account-close').onclick=closeAccount}viewOpen();$('cinevoAccountPage').hidden=false}
-function closeAccount(){if($('cinevoAccountPage'))$('cinevoAccountPage').hidden=true;viewClose();active('home')}
-async function personCredits(id,name){searchPage();viewOpen();const box=$('cinevoSearchResults');box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8f99a6">Loading credits…</div>';try{const d=await api('/person/'+id+'/combined_credits',{language:'en-US'});const items=uniqueItems([...(d.cast||[]),...(d.crew||[])].filter(x=>x.media_type==='movie'||x.media_type==='tv')).sort((a,b)=>Number(b.popularity||0)-Number(a.popularity||0)).slice(0,50);box.innerHTML='<div style="grid-column:1/-1;padding:4px 2px 10px"><button id="personBack" class="v2-close" style="width:auto;padding:0 14px;border-radius:10px">← Back</button><strong style="margin-left:10px;font-size:18px">'+safe(name)+'</strong></div>'+(items.length?items.map(x=>'<article class="v2-result" data-id="'+(Number(x.id)||0)+'" data-type="'+x.media_type+'"><img src="'+image(x.poster_path)+'" alt="" loading="lazy"><div class="v2-result-body"><div class="v2-result-title">'+safe(titleOf(x))+'</div><div class="v2-result-meta">'+(x.media_type==='tv'?'TV SHOW':'MOVIE')+' · '+yearFromDate(dateOf(x))+'</div></div></article>').join(''):'<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:30px">No credits found.</div>');$('personBack')?.addEventListener('click',()=>runSearch($('cinevoSearchInput').value));box.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>{closeSearch();openDetails(Number(e.dataset.id),e.dataset.type)})}catch(e){box.innerHTML='<div style="grid-column:1/-1;color:#ef8f8f;text-align:center;padding:40px">Unable to load credits.</div>'}}
-function patchDetail(){if(!mobile())return;const o=$('detailOverlay');if(!o||o.classList.contains('hidden'))return;const p=o.querySelector('.detail-poster');if(p)p.remove();const title=o.querySelector('.detail-title'),d=state.currentDetail;if(title&&d&&!title.dataset.logoChecked){title.dataset.logoChecked='1';api('/'+d.media_type+'/'+d.id+'/images',{include_image_language:'en,null'}).then(x=>{const l=(x.logos||[]).find(a=>a.file_path&&(a.iso_639_1==='en'||!a.iso_639_1));if(l&&title.isConnected){const i=document.createElement('img');i.className='detail-logo';i.src=image(l.file_path,'original');i.alt=title.textContent;title.replaceWith(i)}}).catch(()=>{})}}
-if(typeof window.openDetails==='function'&&!window.openDetails.__v2){const old=window.openDetails;const wrap=async function(id,type,fromRandom){const r=await old(id,type,fromRandom);if(mobile()){const o=$('detailOverlay');try{o.__v2Credits=(await api('/'+type+'/'+id+'/credits')).cast||[]}catch(e){o.__v2Credits=[]}patchDetail();const cards=o.querySelectorAll('.cast-card');cards.forEach((c,i)=>{const person=o.__v2Credits[i];if(person&&!c.dataset.v2){c.dataset.v2='1';c.onclick=()=>{if(typeof closeDetails==='function')closeDetails();openSearch();setTimeout(()=>personCredits(person.id,person.name),60)}}})}return r};wrap.__v2=true;window.openDetails=wrap}
-function bindNav(){const n=$('cinevoMobileNav');if(!n||n.dataset.v2)return;n.dataset.v2='1';n.querySelector('[data-mobile-nav="home"]')?.addEventListener('click',()=>{closeSearch();closeAccount();active('home');goHome()});n.querySelector('[data-mobile-nav="search"]')?.addEventListener('click',openSearch);n.querySelector('[data-mobile-nav="journey"]')?.addEventListener('click',()=>{closeSearch();closeAccount();viewOpen();active('journey');openTimelinePage()});n.querySelector('[data-mobile-nav="random"]')?.addEventListener('click',()=>{closeSearch();closeAccount();viewOpen();active('random');openRandomPage()})}
-async function more(){if(!mobile()||moreBusy||moreDone)return;if($('cinevoSearchPage')&&!$('cinevoSearchPage').hidden)return;if($('detailOverlay')&&!$('detailOverlay').classList.contains('hidden'))return;const near=document.documentElement.scrollHeight-innerHeight-scrollY<650;if(!near)return;moreBusy=true;try{const n=state.page+1;let a;if(state.filters.type==='all'){const [m,t]=await Promise.all([fetch50('movie',n),fetch50('tv',n)]);a=uniqueItems([...(m||[]),...(t||[])])}else a=await fetch50(state.filters.type,n);const seen=new Set((state.currentResults||[]).map(x=>x.media_type+':'+x.id));const fresh=uniqueItems(a||[]).filter(x=>{const k=x.media_type+':'+x.id;if(seen.has(k))return false;seen.add(k);return true});if(!fresh.length){moreDone=true;return}state.currentResults=(state.currentResults||[]).concat(fresh);state.page=n;renderResults()}catch(e){console.warn(e)}finally{moreBusy=false}}
-document.addEventListener('click',e=>{if(mobile()&&e.target.closest('.search-wrap')){e.preventDefault();e.stopPropagation();openSearch()}},true);window.addEventListener('scroll',more,{passive:true});window.addEventListener('resize',()=>{header();tabs();bindNav();patchDetail()});document.addEventListener('DOMContentLoaded',()=>{header();tabs();searchPage();bindNav()});new MutationObserver(()=>{if(mobile()){header();tabs();bindNav();patchDetail()}}).observe(document.body,{childList:true,subtree:true});
-})();
-</script>
-
-
-<style id="cinevo-mobile-v2-search-advanced-css">
-@media(max-width:700px){
-  #cinevoSearchAdvanced{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:2px 0 10px}
-  #cinevoSearchAdvanced select{width:100%;height:38px;border:1px solid #303844;border-radius:10px;background:#141922;color:#cbd1da;padding:0 9px;font-size:10px;outline:none}
-  #cinevoSearchAdvanced select:focus{border-color:#f5c518}
-  #cinevoSearchResults .v2-person{grid-column:1/-1}
-}
-</style>
-<script id="cinevo-mobile-v2-search-advanced-js">
-(function(){
-const $=id=>document.getElementById(id),mobile=()=>innerWidth<=700;let timer=0,token=0,mode='all',year='',genre='',country='',sort='relevance';
-function inject(){const p=$('cinevoSearchPage'),tabs=p?.querySelector('.v2-search-filters');if(!p||!tabs||$('cinevoSearchAdvanced'))return;const box=document.createElement('div');box.id='cinevoSearchAdvanced';box.innerHTML='<select id="v2Year"><option value="">All Years</option></select><select id="v2Sort"><option value="relevance">Relevance</option><option value="popular">Popular</option><option value="rating">Highest Rated</option><option value="newest">Newest</option><option value="oldest">Oldest</option></select><select id="v2Genre"><option value="">All Genres</option></select><select id="v2Country"><option value="">All Countries</option></select>';tabs.insertAdjacentElement('afterend',box);
-const ys=$('v2Year'),now=new Date().getFullYear();for(let y=now;y>=1901;y--){const o=document.createElement('option');o.value=y;o.textContent=y;ys.appendChild(o)}
-const genres=[...(typeof MOVIE_GENRES!=='undefined'?MOVIE_GENRES:[]),...(typeof TV_GENRES!=='undefined'?TV_GENRES:[])];const seen=new Set();genres.forEach(g=>{if(seen.has(g[0]))return;seen.add(g[0]);const o=document.createElement('option');o.value=g[0];o.textContent=g[1];$('v2Genre').appendChild(o)});
-if(typeof COUNTRIES!=='undefined')COUNTRIES.forEach(c=>{const o=document.createElement('option');o.value=c[0];o.textContent=c[1];$('v2Country').appendChild(o)});
-$('v2Year').onchange=()=>{year=ys.value;search()};$('v2Genre').onchange=()=>{genre=$('v2Genre').value;search()};$('v2Country').onchange=()=>{country=$('v2Country').value;search()};$('v2Sort').onchange=()=>{sort=$('v2Sort').value;search()};tabs.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;search()}));
-}
-async function search(){if(!mobile())return;inject();const q=$('cinevoSearchInput')?.value.trim(),box=$('cinevoSearchResults');if(!q||!box)return;const t=++token;box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8f99a6">Searching…</div>';try{const d=await api('/search/multi',{query:q,page:1,include_adult:false});if(t!==token)return;let items=(d.results||[]).filter(x=>['movie','tv','person'].includes(x.media_type));if(mode!=='all')items=items.filter(x=>x.media_type===mode);if(year)items=items.filter(x=>yearFromDate(dateOf(x))===year);if(genre)items=items.filter(x=>(x.genre_ids||[]).map(Number).includes(Number(genre)));if(country){const details=await Promise.all(items.filter(x=>x.media_type!=='person').slice(0,30).map(async x=>{try{return [x.media_type,x.id,await api('/'+x.media_type+'/'+x.id)]}catch(e){return [x.media_type,x.id,null]}}));const ok=new Set(details.filter(d=>{const z=d[2];return z&&(z.origin_country||[]).includes(country)||(z&&(z.production_countries||[]).some(c=>c.iso_3166_1===country))}).map(d=>d[1]));items=items.filter(x=>x.media_type==='person'||ok.has(x.id))}if(sort==='popular')items.sort((a,b)=>Number(b.popularity||0)-Number(a.popularity||0));else if(sort==='rating')items.sort((a,b)=>Number(b.vote_average||0)-Number(a.vote_average||0));else if(sort==='newest')items.sort((a,b)=>String(dateOf(b)||'').localeCompare(String(dateOf(a)||'')));else if(sort==='oldest')items.sort((a,b)=>String(dateOf(a)||'').localeCompare(String(dateOf(b)||'')));items=uniqueItems(items).slice(0,40);if(!items.length){box.innerHTML='<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:40px 10px">No results for these filters.</div>';return}box.innerHTML=items.map(x=>x.media_type==='person'?'<article class="v2-result v2-person" data-person="'+(Number(x.id)||0)+'"><img src="'+image(x.profile_path,PROFILE_SIZE)+'" alt=""><div><div class="v2-result-title">'+esc(x.name)+'</div><div class="v2-result-meta">PERSON · '+esc(x.known_for_department||'Cast/Director')+'</div></div></article>':'<article class="v2-result" data-id="'+(Number(x.id)||0)+'" data-type="'+x.media_type+'"><img src="'+image(x.poster_path)+'" alt="" loading="lazy"><div class="v2-result-body"><div class="v2-result-title">'+esc(titleOf(x))+'</div><div class="v2-result-meta">'+(x.media_type==='tv'?'TV SHOW':'MOVIE')+' · '+yearFromDate(dateOf(x))+' · ★ '+Number(x.vote_average||0).toFixed(1)+'</div></div></article>').join('');box.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>{if(typeof closeDetails==='function'){} $('cinevoSearchPage').hidden=true;document.body.classList.remove('cinevo-view-open');openDetails(Number(e.dataset.id),e.dataset.type)});box.querySelectorAll('[data-person]').forEach(e=>e.onclick=()=>{personCreditsV2(Number(e.dataset.person),e.querySelector('.v2-result-title')?.textContent||'')})}catch(e){if(t===token)box.innerHTML='<div style="grid-column:1/-1;color:#ef8f8f;text-align:center;padding:40px">Search failed. Try again.</div>'}}
-async function personCreditsV2(id,name){const box=$('cinevoSearchResults');if(!box)return;box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8f99a6">Loading credits…</div>';try{const d=await api('/person/'+id+'/combined_credits',{language:'en-US'}),items=uniqueItems([...(d.cast||[]),...(d.crew||[])].filter(x=>x.media_type==='movie'||x.media_type==='tv')).sort((a,b)=>Number(b.popularity||0)-Number(a.popularity||0)).slice(0,50);box.innerHTML='<div style="grid-column:1/-1;padding:4px 2px 10px"><button id="v2PersonBack" class="v2-close" style="width:auto;padding:0 14px;border-radius:10px">← Back</button><strong style="margin-left:10px;font-size:18px">'+esc(name)+'</strong></div>'+(items.length?items.map(x=>'<article class="v2-result" data-id="'+x.id+'" data-type="'+x.media_type+'"><img src="'+image(x.poster_path)+'" alt=""><div class="v2-result-body"><div class="v2-result-title">'+esc(titleOf(x))+'</div><div class="v2-result-meta">'+(x.media_type==='tv'?'TV SHOW':'MOVIE')+' · '+yearFromDate(dateOf(x))+'</div></div></article>').join(''):'<div style="grid-column:1/-1;text-align:center;color:#8f99a6;padding:30px">No credits found.</div>');$('v2PersonBack')?.addEventListener('click',search);box.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>{ $('cinevoSearchPage').hidden=true;document.body.classList.remove('cinevo-view-open');openDetails(Number(e.dataset.id),e.dataset.type)})}catch(e){box.innerHTML='<div style="grid-column:1/-1;color:#ef8f8f;text-align:center;padding:40px">Unable to load credits.</div>'}}
-function boot(){inject();const i=$('cinevoSearchInput');if(!i||i.dataset.advBound)return;i.dataset.advBound='1';i.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(search,220)});}
-new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});document.addEventListener('DOMContentLoaded',boot);
 })();
 </script>
 
