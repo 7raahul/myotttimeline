@@ -2407,312 +2407,6 @@ header .search-wrap,header .nav-actions{display:none!important}
 @media(min-width:701px){#cinevoMobileSearchHub{display:none!important;}}
 </style>
 
-<style id="cinevo-mobile-final-v2">
-@media (max-width:700px){
-  html,body{scroll-behavior:auto!important;overflow-x:hidden!important}
-  body{padding-bottom:76px!important}
-
-  /* Mobile header */
-  .mobile-header,.app-header{position:sticky;top:0;z-index:1000}
-  .cinevo-mobile-nav{
-    position:fixed!important;left:10px!important;right:10px!important;bottom:10px!important;
-    z-index:99999!important;height:58px!important;border-radius:18px!important;
-    display:flex!important;align-items:center!important;justify-content:space-around!important;
-    background:rgba(15,18,24,.96)!important;backdrop-filter:blur(16px)!important;
-    box-shadow:0 10px 35px rgba(0,0,0,.35)!important;
-  }
-  .cinevo-mobile-nav button{
-    flex:1!important;height:48px!important;border:0!important;background:transparent!important;
-    color:#aeb5c1!important;font-size:9px!important;font-weight:800!important;
-    display:flex!important;flex-direction:column!important;align-items:center!important;
-    justify-content:center!important;gap:3px!important;cursor:pointer!important;
-  }
-  .cinevo-mobile-nav button.active{color:#F5C518!important}
-  .cinevo-mobile-nav .nav-icon{font-size:18px!important;line-height:18px!important}
-  .cinevo-mobile-nav .pick{font-size:10px!important}
-
-  /* Hide home Browse By only on mobile. */
-  .browse-box,.browse-row,.browse-by,.browse-section{display:none!important}
-
-  /* Search Hub */
-  #cinevoMobileSearchHub{
-    display:none;position:fixed;inset:0;z-index:99990;
-    background:#090b10;padding:18px 14px 90px;overflow:auto;
-  }
-  #cinevoMobileSearchHub.open{display:block}
-  .c-search-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-  .c-search-head button{border:0;background:#171b23;color:#fff;border-radius:10px;width:38px;height:38px}
-  .c-search-input{
-    flex:1;height:40px;border:1px solid #292f39;border-radius:11px;
-    background:#11151c;color:#fff;padding:0 12px;outline:none;
-  }
-  .c-search-by{font-size:10px;font-weight:900;letter-spacing:1px;color:#8e97a6;margin:12px 0 8px}
-  .c-filter-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
-  .c-filter-row::-webkit-scrollbar{display:none}
-  .c-filter{
-    flex:0 0 auto;border:1px solid #2b313b;background:#121720;color:#dfe4eb;
-    border-radius:10px;padding:8px 11px;font-size:10px;font-weight:800;
-  }
-  .c-filter.active{border-color:#F5C518;color:#F5C518}
-  .c-filter-panel{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
-  .c-filter-panel select{
-    width:100%;height:42px;background:#121720;color:#fff;border:1px solid #2b313b;
-    border-radius:10px;padding:0 10px;
-  }
-  .c-suggestions{margin-top:10px;display:grid;gap:7px}
-  .c-suggestion{
-    display:flex;gap:10px;padding:8px;border:1px solid #222833;background:#11151c;
-    border-radius:12px;color:#fff;text-align:left;
-  }
-  .c-suggestion img{width:42px;height:62px;object-fit:cover;border-radius:6px}
-  .c-suggestion small{color:#8e97a6}
-
-  /* Mobile page/view overlay for non-home destinations. */
-  .cinevo-mobile-view{
-    display:none;position:fixed;inset:0;z-index:99980;background:#090b10;
-    overflow:auto;padding:18px 14px 90px;
-  }
-  .cinevo-mobile-view.open{display:block}
-  .c-view-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-  .c-view-top button{border:0;background:#171b23;color:#fff;border-radius:10px;width:38px;height:38px}
-  .c-view-title{font-size:20px;font-weight:900;color:#fff}
-
-  /* Infinite-scroll loading marker */
-  #cinevoInfiniteLoader{display:none;text-align:center;padding:18px;color:#929aa8;font-size:11px}
-  #cinevoInfiniteLoader.show{display:block}
-
-  /* Trending: landscape hero only; no portrait hero poster. */
-  #trendingBox .trend-visual{
-    position:relative!important;width:100%!important;aspect-ratio:16/9!important;
-    overflow:hidden!important;
-  }
-  #trendingBox .trend-visual img{
-    width:100%!important;height:100%!important;object-fit:cover!important;
-  }
-  #trendingBox .trend-visual .trend-dots{
-    position:absolute!important;right:12px!important;bottom:10px!important;left:auto!important;
-    z-index:20!important;display:flex!important;gap:5px!important;
-  }
-  #trendingBox .trend-visual .trend-dots>*{
-    width:5px!important;height:5px!important;border-radius:50%!important;
-    background:rgba(255,255,255,.5)!important;
-  }
-  #trendingBox .trend-visual .trend-dots .active,
-  #trendingBox .trend-visual .trend-dots .active-dot,
-  #trendingBox .trend-visual .trend-dots .is-active,
-  #trendingBox .trend-visual .trend-dots>[aria-current=true]{
-    background:#F5C518!important;
-  }
-  #trendingBox .trend-content{
-    position:relative!important;padding:13px 82px 15px 13px!important;
-  }
-  #trendingBox .trend-content .trend-arrow{
-    position:absolute!important;top:10px!important;bottom:auto!important;
-    width:30px!important;height:30px!important;
-  }
-  #trendingBox .trend-content .trend-prev{right:46px!important}
-  #trendingBox .trend-content .trend-next{right:9px!important}
-  #trendingBox .trend-content .trend-dots{display:none!important}
-
-  /* Prevent any old bottom arrow from colliding with fixed nav. */
-  .back-to-top,.scroll-top,#backToTop{
-    bottom:82px!important;z-index:9000!important;
-  }
-}
-</style>
-
-<script id="cinevo-mobile-final-v2-js">
-(function(){
-  const isMobile=()=>window.matchMedia('(max-width:700px)').matches;
-
-  function currentYear(){return new Date().getFullYear();}
-  function makeYears(){
-    let s='<option value="">Year</option>';
-    for(let y=currentYear();y>=1901;y--) s+=`<option value="${y}">${y}</option>`;
-    return s;
-  }
-
-  function openMobileView(title, key){
-    let v=document.getElementById('cinevoMobileView');
-    if(!v){
-      v=document.createElement('section');
-      v.id='cinevoMobileView';
-      v.className='cinevo-mobile-view';
-      v.innerHTML='<div class="c-view-top"><div class="c-view-title"></div><button type="button" data-close>✕</button></div><div data-view-body></div>';
-      document.body.appendChild(v);
-      v.querySelector('[data-close]').onclick=()=>{v.classList.remove('open');history.back()};
-    }
-    v.querySelector('.c-view-title').textContent=title;
-    v.querySelector('[data-view-body]').innerHTML='';
-    v.classList.add('open');
-    history.pushState({cinevoView:key},'', '#'+key);
-  }
-
-  function buildSearch(){
-    if(document.getElementById('cinevoMobileSearchHub')) return;
-    const s=document.createElement('section');
-    s.id='cinevoMobileSearchHub';
-    s.innerHTML=`
-      <div class="c-search-head">
-        <button type="button" data-search-close>‹</button>
-        <input class="c-search-input" autocomplete="off" placeholder="Search movies & TV shows...">
-      </div>
-      <div class="c-search-by">SEARCH BY</div>
-      <div class="c-filter-row">
-        <button class="c-filter active" data-type="all">ALL</button>
-        <button class="c-filter" data-type="movie">MOVIES</button>
-        <button class="c-filter" data-type="tv">TV SHOWS</button>
-      </div>
-      <div class="c-filter-panel">
-        <select data-genre><option value="">Genre</option></select>
-        <select data-year>${makeYears()}</select>
-        <select data-country><option value="">Country</option></select>
-      </div>
-      <div class="c-suggestions"></div>`;
-    document.body.appendChild(s);
-
-    const input=s.querySelector('.c-search-input');
-    input.addEventListener('input',()=>renderSearchSuggestions(input.value.trim()));
-    s.querySelector('[data-search-close]').onclick=closeSearch;
-    s.querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>{
-      s.querySelectorAll('[data-type]').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-    });
-  }
-
-  function openSearch(){
-    if(!isMobile()) return;
-    buildSearch();
-    const s=document.getElementById('cinevoMobileSearchHub');
-    s.classList.add('open');
-    history.pushState({cinevoView:'search'},'', '#search');
-    setTimeout(()=>s.querySelector('input').focus(),50);
-  }
-  function closeSearch(){
-    const s=document.getElementById('cinevoMobileSearchHub');
-    if(s) s.classList.remove('open');
-  }
-
-  /* Suggestions use the site's existing search function if one exists. */
-  function renderSearchSuggestions(q){
-    const s=document.querySelector('#cinevoMobileSearchHub .c-suggestions');
-    if(!s) return;
-    if(!q){s.innerHTML='';return;}
-    let data=[];
-    try{
-      const fn=window.searchTMDB||window.searchMovies||window.performSearch||window.search;
-      if(typeof fn==='function'){
-        const r=fn(q);
-        if(Array.isArray(r)) data=r;
-      }
-    }catch(e){}
-    if(!data.length){
-      s.innerHTML='<div style="color:#7f8795;font-size:11px;padding:12px">Search results will appear here.</div>';
-      return;
-    }
-    s.innerHTML=data.slice(0,8).map(x=>{
-      const poster=x.poster_path?('https://image.tmdb.org/t/p/w185'+x.poster_path):'';
-      const type=x.media_type==='tv'?'TV Show':'Movie';
-      return `<button class="c-suggestion" data-id="${x.id}" data-media="${x.media_type||'movie'}">
-        ${poster?`<img src="${poster}" alt="">`:''}
-        <span><b>${x.title||x.name||''}</b><br><small>${type} • ${(x.release_date||x.first_air_date||'').slice(0,4)}</small></span>
-      </button>`;
-    }).join('');
-  }
-
-  function installNav(){
-    if(!isMobile() || document.getElementById('cinevoMobileNav')) return;
-    const n=document.createElement('nav');
-    n.id='cinevoMobileNav'; n.className='cinevo-mobile-nav';
-    n.innerHTML=`
-      <button data-nav="home"><span class="nav-icon">🏠</span>Home</button>
-      <button data-nav="search"><span class="nav-icon">🔍</span>Search</button>
-      <button class="pick" data-nav="pick"><span class="nav-icon">🎲</span>Pick for Me</button>
-      <button data-nav="watch"><span class="nav-icon">◇</span>Watch Timeline</button>`;
-    document.body.appendChild(n);
-    n.onclick=e=>{
-      const b=e.target.closest('[data-nav]'); if(!b)return;
-      if(b.dataset.nav==='home') goHome();
-      if(b.dataset.nav==='search') openSearch();
-      if(b.dataset.nav==='pick') openMobileView('Pick for Me','pick');
-      if(b.dataset.nav==='watch') openMobileView('Watch Timeline','watch');
-    };
-  }
-
-  function goHome(){
-    closeSearch();
-    const v=document.getElementById('cinevoMobileView'); if(v)v.classList.remove('open');
-    if(location.hash) history.pushState({},'',location.pathname+location.search);
-    window.scrollTo({top:0,behavior:'auto'});
-  }
-
-  function installInfinite(){
-    if(!isMobile() || document.getElementById('cinevoInfiniteLoader')) return;
-    const marker=document.createElement('div');
-    marker.id='cinevoInfiniteLoader';
-    marker.textContent='Loading more…';
-    document.body.appendChild(marker);
-    let busy=false,seen=new Set();
-
-    function getCards(){
-      return [...document.querySelectorAll('[data-id], .movie-card, .show-card, .media-card')];
-    }
-    getCards().forEach(c=>{const id=c.dataset.id||c.getAttribute('data-tmdb-id');if(id)seen.add(id)});
-
-    window.addEventListener('scroll',async()=>{
-      if(busy)return;
-      if(window.innerHeight+window.scrollY<document.documentElement.scrollHeight-700)return;
-      const fn=window.loadMore||window.loadNextPage||window.fetchNextPage;
-      if(typeof fn!=='function')return;
-      busy=true;marker.classList.add('show');
-      try{
-        const before=seen.size;
-        await fn();
-        getCards().forEach(c=>{
-          const id=c.dataset.id||c.getAttribute('data-tmdb-id');
-          if(id && seen.has(id) && c.parentElement){
-            /* duplicate DOM card protection */
-          }
-          if(id)seen.add(id);
-        });
-        if(seen.size===before) await new Promise(r=>setTimeout(r,250));
-      }catch(e){} finally{
-        busy=false;marker.classList.remove('show');
-      }
-    },{passive:true});
-  }
-
-  /* Pull-to-refresh: allow native refresh gesture; reset the home state
-     without changing desktop behavior. */
-  let startY=0;
-  window.addEventListener('touchstart',e=>{if(isMobile()&&window.scrollY===0)startY=e.touches[0].clientY},{passive:true});
-  window.addEventListener('touchend',()=>{
-    if(!isMobile()||window.scrollY!==0)return;
-    /* Native browser pull-to-refresh remains enabled. If the site exposes
-       a refresh function, use it after a real pull gesture. */
-  },{passive:true});
-
-  window.addEventListener('popstate',()=>{
-    closeSearch();
-    const v=document.getElementById('cinevoMobileView');if(v)v.classList.remove('open');
-    window.scrollTo({top:0,behavior:'auto'});
-  });
-
-  document.addEventListener('DOMContentLoaded',()=>{
-    if(!isMobile())return;
-    installNav();
-    buildSearch();
-    installInfinite();
-
-    /* CINEVO/logo click returns home on mobile. */
-    document.addEventListener('click',e=>{
-      const el=e.target.closest('.logo,.brand,.site-logo,[data-home]');
-      if(el){e.preventDefault();goHome();}
-    },true);
-  });
-})();
-</script>
-
 </head>
 
 <body>
@@ -5458,5 +5152,320 @@ window.openRandomPage=openRandomPage;
 })();
 </script>
 
-\n<script id="cinevo-mobile-search-hub-js">\n(function(){\n  let ready=false;\n  const hub=()=>document.getElementById("cinevoMobileSearchHub");\n  const q=()=>document.getElementById("mshQuery");\n  function label(type){\n    const f=state.filters;\n    if(type==="genre") return f.genre==="bollywood" ? "Bollywood" : (f.genre ? getGenreName(f.genre) : "Genre");\n    if(type==="year") return f.year || "Year";\n    if(type==="country"){ const c=COUNTRIES.find(x=>x[0]===f.country); return c ? c[1] : "Country"; }\n    return type;\n  }\n  function build(){\n    if(window.innerWidth>700 || !hub() || ready) return;\n    ready=true;\n    const typeBox=document.getElementById("mshType");\n    typeBox.innerHTML=[["all","ALL"],["movie","MOVIES"],["tv","TV SHOWS"]].map(x=>`<button type="button" data-mtype="${x[0]}">${x[1]}</button>`).join("");\n    typeBox.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{\n      state.filters.type=b.dataset.mtype; state.page=1;\n      typeBox.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));\n      // reset genre if a TV-only genre was selected\n      if(state.filters.type==="tv" && state.filters.genre && !TV_GENRES.some(g=>String(g[0])===String(state.filters.genre)) && state.filters.genre!=="bollywood") state.filters.genre="";\n      buildMenus();\n    }));\n    buildMenus();\n    document.querySelector("#cinevoMobileSearchHub .msh-close")?.addEventListener("click",close);\n    document.getElementById("mshApply")?.addEventListener("click",apply);\n    q()?.addEventListener("input",onQuery);\n    q()?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();applyQuery();}});\n  }\n  function buildMenus(){\n    const current=state.filters.type||"all";\n    const genreSource=current==="tv"?TV_GENRES:current==="movie"?MOVIE_GENRES:[...MOVIE_GENRES,...TV_GENRES].filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i);\n    const genreMenu=document.querySelector('[data-mfilter="genre"] .msh-menu');\n    if(genreMenu){\n      const genres=[ ["","All Genres"], ["bollywood","Bollywood"], ...genreSource.map(g=>[String(g[0]),g[1]]) ].filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i).sort((a,b)=>a[1].localeCompare(b[1]));\n      genreMenu.innerHTML=genres.map(x=>`<button type="button" data-value="${x[0]}">${x[1]}</button>`).join("");\n    }\n    const yearMenu=document.querySelector('[data-mfilter="year"] .msh-menu');\n    if(yearMenu){\n      const currentYear=new Date().getFullYear();\n      let out=`<button type="button" data-value="">All Years</button>`;\n      for(let y=currentYear;y>=1901;y--) out+=`<button type="button" data-value="${y}">${y}</button>`;\n      yearMenu.innerHTML=out;\n    }\n    const countryMenu=document.querySelector('[data-mfilter="country"] .msh-menu');\n    if(countryMenu){\n      countryMenu.innerHTML=`<button type="button" data-value="">All Countries</button>`+COUNTRIES.slice().sort((a,b)=>a[1].localeCompare(b[1])).map(x=>`<button type="button" data-value="${x[0]}">${x[1]}</button>`).join("");\n    }\n    document.querySelectorAll("#cinevoMobileSearchHub .msh-filter").forEach(f=>{\n      const type=f.dataset.mfilter, button=f.querySelector(".msh-filter-btn"), menu=f.querySelector(".msh-menu");\n      button.querySelector("span:first-child").textContent=label(type);\n      button.onclick=e=>{e.stopPropagation(); document.querySelectorAll("#cinevoMobileSearchHub .msh-menu").forEach(m=>{if(m!==menu)m.classList.add("hidden")}); menu.classList.toggle("hidden");};\n      menu.querySelectorAll("button").forEach(item=>{\n        item.onclick=e=>{e.stopPropagation();state.filters[type]=item.dataset.value;menu.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));item.classList.add("selected");button.querySelector("span:first-child").textContent=label(type);menu.classList.add("hidden");};\n      });\n    });\n    document.querySelectorAll("#mshType button").forEach(b=>b.classList.toggle("active",b.dataset.mtype===state.filters.type));\n  }\n  async function applyQuery(){\n    const query=(q()?.value||"").trim();\n    if(query){\n      closeMenus();\n      if(typeof performSearch==="function") await performSearch(query);\n    }else{\n      await apply();\n    }\n  }\n  async function apply(){\n    closeMenus();\n    state.page=1;\n    const query=(q()?.value||"").trim();\n    if(query){\n      await applyQuery();\n      return;\n    }\n    if(typeof loadTrending==="function") await loadTrending();\n    if(typeof loadBrowse==="function") await loadBrowse();\n    document.getElementById("results")?.scrollIntoView({behavior:"smooth",block:"start"});\n  }\n  function onQuery(){\n    // Keep the normal desktop suggestion engine intact; mobile suggestions are intentionally minimal.\n  }\n  function closeMenus(){document.querySelectorAll("#cinevoMobileSearchHub .msh-menu").forEach(m=>m.classList.add("hidden"));}\n  function close(){hub()?.classList.remove("open");closeMenus();}\n  window.cinevoInitMobileSearchHub=build;\n  document.addEventListener("click",e=>{if(!e.target.closest("#cinevoMobileSearchHub"))closeMenus();});\n  document.addEventListener("DOMContentLoaded",()=>{if(window.innerWidth<=700)build();});\n})();\n</script>\n</body>
+\n<script id="cinevo-mobile-search-hub-js">\n(function(){\n  let ready=false;\n  const hub=()=>document.getElementById("cinevoMobileSearchHub");\n  const q=()=>document.getElementById("mshQuery");\n  function label(type){\n    const f=state.filters;\n    if(type==="genre") return f.genre==="bollywood" ? "Bollywood" : (f.genre ? getGenreName(f.genre) : "Genre");\n    if(type==="year") return f.year || "Year";\n    if(type==="country"){ const c=COUNTRIES.find(x=>x[0]===f.country); return c ? c[1] : "Country"; }\n    return type;\n  }\n  function build(){\n    if(window.innerWidth>700 || !hub() || ready) return;\n    ready=true;\n    const typeBox=document.getElementById("mshType");\n    typeBox.innerHTML=[["all","ALL"],["movie","MOVIES"],["tv","TV SHOWS"]].map(x=>`<button type="button" data-mtype="${x[0]}">${x[1]}</button>`).join("");\n    typeBox.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{\n      state.filters.type=b.dataset.mtype; state.page=1;\n      typeBox.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));\n      // reset genre if a TV-only genre was selected\n      if(state.filters.type==="tv" && state.filters.genre && !TV_GENRES.some(g=>String(g[0])===String(state.filters.genre)) && state.filters.genre!=="bollywood") state.filters.genre="";\n      buildMenus();\n    }));\n    buildMenus();\n    document.querySelector("#cinevoMobileSearchHub .msh-close")?.addEventListener("click",close);\n    document.getElementById("mshApply")?.addEventListener("click",apply);\n    q()?.addEventListener("input",onQuery);\n    q()?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();applyQuery();}});\n  }\n  function buildMenus(){\n    const current=state.filters.type||"all";\n    const genreSource=current==="tv"?TV_GENRES:current==="movie"?MOVIE_GENRES:[...MOVIE_GENRES,...TV_GENRES].filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i);\n    const genreMenu=document.querySelector('[data-mfilter="genre"] .msh-menu');\n    if(genreMenu){\n      const genres=[ ["","All Genres"], ["bollywood","Bollywood"], ...genreSource.map(g=>[String(g[0]),g[1]]) ].filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i).sort((a,b)=>a[1].localeCompare(b[1]));\n      genreMenu.innerHTML=genres.map(x=>`<button type="button" data-value="${x[0]}">${x[1]}</button>`).join("");\n    }\n    const yearMenu=document.querySelector('[data-mfilter="year"] .msh-menu');\n    if(yearMenu){\n      const currentYear=new Date().getFullYear();\n      let out=`<button type="button" data-value="">All Years</button>`;\n      for(let y=currentYear;y>=1901;y--) out+=`<button type="button" data-value="${y}">${y}</button>`;\n      yearMenu.innerHTML=out;\n    }\n    const countryMenu=document.querySelector('[data-mfilter="country"] .msh-menu');\n    if(countryMenu){\n      countryMenu.innerHTML=`<button type="button" data-value="">All Countries</button>`+COUNTRIES.slice().sort((a,b)=>a[1].localeCompare(b[1])).map(x=>`<button type="button" data-value="${x[0]}">${x[1]}</button>`).join("");\n    }\n    document.querySelectorAll("#cinevoMobileSearchHub .msh-filter").forEach(f=>{\n      const type=f.dataset.mfilter, button=f.querySelector(".msh-filter-btn"), menu=f.querySelector(".msh-menu");\n      button.querySelector("span:first-child").textContent=label(type);\n      button.onclick=e=>{e.stopPropagation(); document.querySelectorAll("#cinevoMobileSearchHub .msh-menu").forEach(m=>{if(m!==menu)m.classList.add("hidden")}); menu.classList.toggle("hidden");};\n      menu.querySelectorAll("button").forEach(item=>{\n        item.onclick=e=>{e.stopPropagation();state.filters[type]=item.dataset.value;menu.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));item.classList.add("selected");button.querySelector("span:first-child").textContent=label(type);menu.classList.add("hidden");};\n      });\n    });\n    document.querySelectorAll("#mshType button").forEach(b=>b.classList.toggle("active",b.dataset.mtype===state.filters.type));\n  }\n  async function applyQuery(){\n    const query=(q()?.value||"").trim();\n    if(query){\n      closeMenus();\n      if(typeof performSearch==="function") await performSearch(query);\n    }else{\n      await apply();\n    }\n  }\n  async function apply(){\n    closeMenus();\n    state.page=1;\n    const query=(q()?.value||"").trim();\n    if(query){\n      await applyQuery();\n      return;\n    }\n    if(typeof loadTrending==="function") await loadTrending();\n    if(typeof loadBrowse==="function") await loadBrowse();\n    document.getElementById("results")?.scrollIntoView({behavior:"smooth",block:"start"});\n  }\n  function onQuery(){\n    // Keep the normal desktop suggestion engine intact; mobile suggestions are intentionally minimal.\n  }\n  function closeMenus(){document.querySelectorAll("#cinevoMobileSearchHub .msh-menu").forEach(m=>m.classList.add("hidden"));}\n  function close(){hub()?.classList.remove("open");closeMenus();}\n  window.cinevoInitMobileSearchHub=build;\n  document.addEventListener("click",e=>{if(!e.target.closest("#cinevoMobileSearchHub"))closeMenus();});\n  document.addEventListener("DOMContentLoaded",()=>{if(window.innerWidth<=700)build();});\n})();\n</script>\n
+<style id="cinevo-mobile-real-final">
+@media (max-width:700px){
+  html,body{overflow-x:hidden!important;scroll-behavior:auto!important}
+  body{padding-bottom:82px!important}
+
+  /* MOBILE HEADER: CINEVO left, account right. */
+  header{position:sticky!important;top:0!important;z-index:1000!important}
+  header .nav{position:relative!important;display:block!important;min-height:0!important;padding:14px 14px 8px!important}
+  header .logo{display:block!important;width:max-content!important;margin:0!important;font-size:23px!important;font-weight:900!important}
+  header .search-wrap,header .nav-actions{display:none!important}
+
+  #cinevoMobileAccount{
+    position:absolute!important;right:14px!important;top:10px!important;
+    width:38px!important;height:38px!important;border-radius:50%!important;
+    border:1px solid rgba(255,255,255,.10)!important;
+    background:#151922!important;color:#fff!important;font-size:17px!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+  }
+
+  /* FIXED MOBILE BOTTOM NAV — exact requested order. */
+  #cinevoMobileNav{
+    position:fixed!important;left:10px!important;right:10px!important;bottom:10px!important;
+    z-index:99999!important;width:auto!important;height:60px!important;
+    display:grid!important;grid-template-columns:repeat(4,1fr)!important;
+    gap:5px!important;padding:6px!important;margin:0!important;
+    border:1px solid rgba(255,255,255,.08)!important;border-radius:18px!important;
+    background:rgba(14,17,23,.96)!important;backdrop-filter:blur(18px)!important;
+    box-shadow:0 12px 40px rgba(0,0,0,.42)!important;
+  }
+  #cinevoMobileNav button{
+    min-width:0!important;width:auto!important;height:46px!important;
+    padding:2px 1px!important;border:0!important;border-radius:12px!important;
+    background:transparent!important;color:#aeb5c0!important;
+    display:flex!important;flex-direction:column!important;align-items:center!important;
+    justify-content:center!important;gap:2px!important;font-size:9px!important;
+    font-weight:800!important;line-height:1!important;white-space:nowrap!important;
+  }
+  #cinevoMobileNav button:nth-child(1){order:1!important}
+  #cinevoMobileNav button:nth-child(2){order:2!important}
+  #cinevoMobileNav button:nth-child(4){order:3!important}
+  #cinevoMobileNav button:nth-child(3){order:4!important}
+  #cinevoMobileNav button:first-child{color:#F5C518!important}
+  #cinevoMobileNav button span{font-size:18px!important;line-height:18px!important}
+
+  /* Home content must clear the fixed nav. */
+  .container{padding-bottom:28px!important}
+  .global-media-filter{padding-bottom:4px!important}
+
+  /* Remove Browse By from HOME on mobile only. */
+  main.container > section.section:has(.browse-box){display:none!important}
+  .browse-box{display:none!important}
+
+  /* Search is its own mobile page/panel. */
+  #cinevoMobileSearchHub{
+    position:fixed!important;inset:0!important;z-index:99990!important;
+    background:#090b10!important;padding:14px 14px 90px!important;overflow:auto!important;
+  }
+  #cinevoMobileSearchHub.open{display:block!important}
+  #cinevoMobileSearchHub .msh-search-row{position:sticky!important;top:0!important;z-index:5!important;padding-bottom:10px!important;background:#090b10!important}
+  #cinevoMobileSearchHub .msh-search-wrap{max-width:none!important}
+  #cinevoMobileSearchHub .msh-search-wrap input{height:42px!important}
+  #cinevoMobileSearchHub .msh-title{margin-top:10px!important}
+
+  /* Trending: mobile is landscape-only; portrait poster is hidden. */
+  #trendingBox.trending{min-height:0!important;height:auto!important;border-radius:18px!important;overflow:hidden!important}
+  #trendingBox .trend-slide{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}
+  #trendingBox .trend-slide.active{position:relative!important;inset:auto!important;height:auto!important;opacity:1!important;pointer-events:auto!important}
+  #trendingBox .trend-visual{position:relative!important;width:100%!important;height:auto!important;aspect-ratio:16/9!important;overflow:hidden!important}
+  #trendingBox .trend-bg{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important}
+  #trendingBox .trend-poster{display:none!important}
+  #trendingBox .trend-overlay{display:none!important}
+  #trendingBox .trend-visual .trend-dots{
+    position:absolute!important;right:12px!important;bottom:10px!important;left:auto!important;
+    z-index:30!important;display:flex!important;gap:5px!important;
+  }
+  #trendingBox .trend-visual .dot{
+    width:6px!important;height:6px!important;padding:0!important;border:0!important;
+    border-radius:50%!important;background:rgba(255,255,255,.55)!important;
+  }
+  #trendingBox .trend-visual .dot.active{
+    width:7px!important;height:7px!important;border-radius:50%!important;
+    background:#F5C518!important;
+  }
+  #trendingBox .trend-content{
+    position:relative!important;width:100%!important;min-height:0!important;
+    padding:13px 84px 15px 13px!important;display:block!important;
+    background:#10141c!important;
+  }
+  #trendingBox .trend-content .trend-arrow{
+    position:absolute!important;top:10px!important;bottom:auto!important;
+    width:31px!important;height:31px!important;z-index:20!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    border-radius:9px!important;background:#191e27!important;
+  }
+  #trendingBox .trend-content .trend-prev{right:47px!important;left:auto!important}
+  #trendingBox .trend-content .trend-next{right:9px!important;left:auto!important}
+  #trendingBox .trend-title{font-size:19px!important}
+  #trendingBox .trend-meta{font-size:10px!important}
+  #trendingBox .trend-overview{font-size:10px!important;line-height:1.42!important;-webkit-line-clamp:2!important}
+  #trendingBox .trend-btn{font-size:10px!important;padding:8px 11px!important;margin-top:9px!important}
+
+  /* Back-to-top must never overlap the fixed bottom nav. */
+  #backToTop,.back-to-top,.scroll-top{bottom:82px!important;right:14px!important;z-index:9000!important}
+
+  /* Account sheet */
+  #cinevoMobileAccountSheet{
+    display:none;position:fixed;inset:0;z-index:99995;background:rgba(0,0,0,.58);
+    align-items:flex-end;justify-content:center;
+  }
+  #cinevoMobileAccountSheet.open{display:flex!important}
+  #cinevoMobileAccountSheet .cas-box{
+    width:100%;max-width:520px;background:#11151c;border:1px solid #2a303a;
+    border-radius:20px 20px 0 0;padding:18px 14px 24px;
+    box-shadow:0 -15px 45px rgba(0,0,0,.45);
+  }
+  #cinevoMobileAccountSheet .cas-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  #cinevoMobileAccountSheet .cas-title{font-size:18px;font-weight:900}
+  #cinevoMobileAccountSheet .cas-close{width:34px;height:34px;border:0;border-radius:9px;background:#1a1f28;color:#fff}
+  #cinevoMobileAccountSheet .cas-btn{
+    width:100%;height:44px;margin-top:8px;border-radius:10px;font-weight:850;
+    border:1px solid #303742;background:#191e27;color:#fff;
+  }
+  #cinevoMobileAccountSheet .cas-btn.primary{background:#F5C518;color:#111;border-color:#F5C518}
+
+  /* Mobile infinite-scroll: hide old numbered pagination. */
+  #pagination{display:none!important}
+  #cinevoMobileInfiniteLoader{display:none;text-align:center;padding:18px;color:#8f97a5;font-size:11px}
+  #cinevoMobileInfiniteLoader.show{display:block}
+}
+@media(min-width:701px){
+  #cinevoMobileAccount,#cinevoMobileAccountSheet,#cinevoMobileInfiniteLoader{display:none!important}
+}
+</style>
+
+<script id="cinevo-mobile-real-final-js">
+(function(){
+  const mobile=()=>window.matchMedia('(max-width:700px)').matches;
+
+  function addAccount(){
+    if(!mobile() || document.getElementById('cinevoMobileAccount')) return;
+    const header=document.querySelector('header .nav');
+    if(!header)return;
+    const b=document.createElement('button');
+    b.id='cinevoMobileAccount'; b.type='button'; b.setAttribute('aria-label','Account');
+    b.textContent='👤';
+    b.onclick=()=>document.getElementById('cinevoMobileAccountSheet')?.classList.add('open');
+    header.appendChild(b);
+
+    const sheet=document.createElement('div');
+    sheet.id='cinevoMobileAccountSheet';
+    sheet.innerHTML='<div class="cas-box"><div class="cas-head"><div class="cas-title">Account</div><button class="cas-close" type="button">×</button></div><button class="cas-btn primary" type="button">Login</button><button class="cas-btn" type="button">Sign Up</button></div>';
+    document.body.appendChild(sheet);
+    sheet.addEventListener('click',e=>{if(e.target===sheet||e.target.closest('.cas-close'))sheet.classList.remove('open')});
+  }
+
+  function fixNav(){
+    const nav=document.getElementById('cinevoMobileNav');
+    if(!nav)return;
+    /* Existing HTML is Home, Search, Watch Journey, Pick for Me.
+       Reorder the actual DOM as Home, Search, Pick, Watch. */
+    const buttons=[...nav.querySelectorAll('button')];
+    if(buttons.length===4){
+      nav.append(buttons[0],buttons[1],buttons[3],buttons[2]);
+      buttons[0].onclick=()=>window.goHome?.();
+      buttons[1].onclick=()=>window.cinevoMobileSearch?.();
+      buttons[2].onclick=()=>document.getElementById('randomBtn')?.click();
+      buttons[3].onclick=()=>document.getElementById('timelineBtn')?.click();
+      buttons[0].innerHTML='<span>🏠</span><b>Home</b>';
+      buttons[1].innerHTML='<span>🔍</span><b>Search</b>';
+      buttons[2].innerHTML='<span>🎲</span><b>Pick for Me</b>';
+      buttons[3].innerHTML='<span>◇</span><b>Watch Timeline</b>';
+    }
+  }
+
+  /* Move the EXISTING carousel controls into the correct visual regions.
+     This is mobile-only, so desktop DOM behavior is unchanged. */
+  function placeTrendingControls(){
+    if(!mobile())return;
+    const box=document.getElementById('trendingBox');
+    if(!box)return;
+    const active=box.querySelector('.trend-slide.active');
+    if(!active)return;
+    const visual=active.querySelector('.trend-visual');
+    const content=active.querySelector('.trend-content');
+    const dots=box.querySelector(':scope > .trend-dots') || box.querySelector('.trend-slide .trend-dots');
+    const prev=box.querySelector(':scope > .trend-prev') || box.querySelector('.trend-prev');
+    const next=box.querySelector(':scope > .trend-next') || box.querySelector('.trend-next');
+    if(dots && visual && dots.parentElement!==visual) visual.appendChild(dots);
+    if(prev && content && prev.parentElement!==content) content.appendChild(prev);
+    if(next && content && next.parentElement!==content) content.appendChild(next);
+  }
+
+  function wrapTrending(){
+    if(typeof window.setTrend==='function' && !window.__cinevoTrendWrapped){
+      const original=window.setTrend;
+      window.setTrend=function(index){
+        const r=original(index);
+        requestAnimationFrame(placeTrendingControls);
+        return r;
+      };
+      window.__cinevoTrendWrapped=true;
+    }
+  }
+
+  function installTrendingObserver(){
+    if(!mobile() || window.__cinevoTrendObserver)return;
+    const box=document.getElementById('trendingBox');
+    if(!box)return;
+    const obs=new MutationObserver(()=>requestAnimationFrame(placeTrendingControls));
+    obs.observe(box,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+    window.__cinevoTrendObserver=obs;
+    wrapTrending();
+    setTimeout(placeTrendingControls,100);
+  }
+
+  /* Infinite scroll uses the app's existing TMDB fetch functions and state.
+     It appends unique IDs instead of replacing the current page. */
+  async function mobileMore(){
+    if(window.__cinevoLoadingMore)return;
+    if(!mobile())return;
+    if(document.getElementById('cinevoMobileSearchHub')?.classList.contains('open'))return;
+    window.__cinevoLoadingMore=true;
+    const loader=document.getElementById('cinevoMobileInfiniteLoader');
+    loader?.classList.add('show');
+    try{
+      const old=Array.isArray(state.currentResults)?state.currentResults.slice():[];
+      const nextPage=Number(state.page||1)+1;
+      let more=[];
+      if(state.filters.genre==="bollywood"){
+        more=await loadBollywood(state.filters.type,nextPage);
+      }else if(state.filters.type==="all"){
+        const [m,t]=await Promise.all([fetch50("movie",nextPage),fetch50("tv",nextPage)]);
+        more=uniqueItems([...m,...t]).sort((a,b)=>Number(b.popularity||0)-Number(a.popularity||0)).slice(0,50);
+      }else{
+        more=await fetch50(state.filters.type,nextPage);
+      }
+      const merged=uniqueItems([...old,...more]);
+      if(merged.length>old.length){
+        state.page=nextPage;
+        state.currentResults=merged;
+        renderResults();
+      }
+    }catch(e){console.error('Mobile infinite scroll:',e)}
+    finally{
+      loader?.classList.remove('show');
+      window.__cinevoLoadingMore=false;
+    }
+  }
+
+  function installInfinite(){
+    if(!mobile() || window.__cinevoInfinite)return;
+    const marker=document.createElement('div');
+    marker.id='cinevoMobileInfiniteLoader';
+    marker.textContent='Loading more…';
+    const pag=document.getElementById('pagination');
+    (pag?.parentNode||document.body).appendChild(marker);
+    const sentinel=document.createElement('div');
+    sentinel.id='cinevoMobileInfiniteSentinel';
+    (pag?.parentNode||document.body).appendChild(sentinel);
+    const io=new IntersectionObserver(entries=>{
+      if(entries[0].isIntersecting)mobileMore();
+    },{rootMargin:'700px 0px 700px 0px'});
+    io.observe(sentinel);
+    window.__cinevoInfinite=io;
+  }
+
+  /* Native pull-to-refresh stays enabled. On a real pull, the browser reloads
+     the page and TMDB content therefore reloads from the network. */
+  function installRefresh(){
+    if(!mobile()||window.__cinevoRefresh)return;
+    let startY=0;
+    document.addEventListener('touchstart',e=>{
+      if(window.scrollY===0)startY=e.touches[0]?.clientY||0;
+    },{passive:true});
+    document.addEventListener('touchend',e=>{
+      const endY=e.changedTouches[0]?.clientY||0;
+      if(window.scrollY===0 && endY-startY>90){
+        /* Do not manufacture duplicate data: a full reload resets app state. */
+        setTimeout(()=>location.reload(),40);
+      }
+    },{passive:true});
+    window.__cinevoRefresh=true;
+  }
+
+  function init(){
+    if(!mobile())return;
+    addAccount();
+    fixNav();
+    installTrendingObserver();
+    installInfinite();
+    installRefresh();
+
+    /* CINEVO always returns home. */
+    document.querySelector('header .logo')?.addEventListener('click',e=>{
+      e.preventDefault(); window.goHome?.();
+    },true);
+
+    /* Search hub gets focus and its existing TMDB suggestion system remains intact. */
+    document.getElementById('cinevoMobileNav')?.addEventListener('click',()=>{
+      setTimeout(()=>document.getElementById('mshQuery')?.focus(),80);
+    });
+
+    /* Never jump down after a mobile page change. */
+    document.getElementById('pagination')?.addEventListener('click',()=>{
+      requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}));
+    });
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+  window.addEventListener('resize',()=>{if(mobile())init()});
+})();
+</script>
+
+</body>
 </html>
