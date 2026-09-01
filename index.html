@@ -541,10 +541,28 @@ header{
 
 .quick-btn{
   width:34px;
-  background:#20252e;
-  border:1px solid #303640;
-  color:#fff;
+  flex:0 0 34px;
+  background:#e9ebee;
+  border:1px solid #e9ebee;
+  color:#080a0e;
   border-radius:8px;
+  font-size:13px;
+  font-weight:800;
+  transition:background .18s,border-color .18s,color .18s;
+}
+
+.quick-btn:hover{
+  background:#fff;
+}
+
+.quick-btn.marked{
+  background:var(--danger);
+  border-color:var(--danger);
+  color:#fff;
+}
+
+.quick-btn.marked:hover{
+  background:#dc3838;
 }
 
 /* PAGINATION */
@@ -789,23 +807,36 @@ header{
 }
 
 .action-btn{
-  border:1px solid #303641;
-  background:#181c24;
-  color:#fff;
+  border:1px solid #e9ebee;
+  background:#e9ebee;
+  color:#080a0e;
   border-radius:9px;
   padding:10px 13px;
   font-size:12px;
   font-weight:750;
+  transition:background .18s,border-color .18s,color .18s;
 }
 
 .action-btn:hover{
-  background:#242a34;
+  background:#fff;
+  border-color:#fff;
 }
 
 .action-btn.primary{
   background:#e9ebee;
   color:#080a0e;
   border-color:#e9ebee;
+}
+
+.action-btn.marked{
+  background:var(--danger);
+  border-color:var(--danger);
+  color:#fff;
+}
+
+.action-btn.marked:hover{
+  background:#dc3838;
+  border-color:#dc3838;
 }
 
 /* DETAIL CONTENT */
@@ -1006,15 +1037,33 @@ header{
 
 .episode-actions{
   margin-top:9px;
+  display:flex;
+  gap:6px;
 }
 
 .episode-action{
-  border:1px solid #303640;
-  background:#1a1f28;
-  color:#fff;
+  border:1px solid #e9ebee;
+  background:#e9ebee;
+  color:#080a0e;
   border-radius:7px;
-  padding:6px 8px;
+  padding:6px 10px;
   font-size:10px;
+  font-weight:800;
+  transition:background .18s,border-color .18s,color .18s;
+}
+
+.episode-action:hover{
+  background:#fff;
+}
+
+.episode-action.marked{
+  background:var(--danger);
+  border-color:var(--danger);
+  color:#fff;
+}
+
+.episode-action.marked:hover{
+  background:#dc3838;
 }
 
 /* RANDOM MODAL */
@@ -1166,6 +1215,82 @@ header{
 
 .date-box{
   width:min(380px,100%);
+}
+
+.modern-date-picker{
+  display:grid;
+  grid-template-columns:1fr 1.3fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+
+.modern-date-picker select{
+  width:100%;
+  background:#181d25;
+  border:1px solid #303640;
+  border-radius:9px;
+  color:#fff;
+  padding:11px 8px;
+  font-size:13px;
+  font-weight:700;
+  text-align:center;
+  outline:none;
+  appearance:none;
+  -webkit-appearance:none;
+  cursor:pointer;
+  transition:border-color .18s;
+}
+
+.modern-date-picker select:focus,
+.modern-date-picker select:hover{
+  border-color:#5a6272;
+}
+
+/* CONFIRM MODAL */
+
+.confirm-box{
+  width:min(360px,100%);
+  text-align:center;
+}
+
+.confirm-box p{
+  color:#d4d8de;
+  font-size:13px;
+  line-height:1.6;
+  margin:10px 0 20px;
+}
+
+.confirm-actions{
+  display:flex;
+  gap:10px;
+}
+
+.confirm-actions button{
+  flex:1;
+  padding:11px;
+  border-radius:9px;
+  font-size:12px;
+  font-weight:800;
+  border:1px solid #303640;
+}
+
+.confirm-cancel{
+  background:#181c24;
+  color:#fff;
+}
+
+.confirm-cancel:hover{
+  background:#242a34;
+}
+
+.confirm-remove{
+  background:var(--danger);
+  border-color:var(--danger);
+  color:#fff;
+}
+
+.confirm-remove:hover{
+  background:#dc3838;
 }
 
 /* TO TOP */
@@ -1726,10 +1851,31 @@ header{
     </div>
 
     <div class="option-title">Date</div>
-    <input id="selectedDate" type="date"
-           style="width:100%;padding:11px;background:#181d25;border:1px solid #303640;border-radius:9px;color:#fff;">
+    <div class="modern-date-picker">
+      <select id="selDay" aria-label="Day"></select>
+      <select id="selMonth" aria-label="Month"></select>
+      <select id="selYear" aria-label="Year"></select>
+    </div>
 
     <button class="pick-btn" id="saveDate">OK</button>
+
+  </div>
+</div>
+
+<div id="confirmModal" class="modal hidden">
+  <div class="modal-box confirm-box">
+
+    <div class="modal-head">
+      <h2 id="confirmTitle">Remove?</h2>
+      <button class="close" id="closeConfirm">×</button>
+    </div>
+
+    <p id="confirmMessage">Are you sure you want to remove this?</p>
+
+    <div class="confirm-actions">
+      <button class="confirm-cancel" id="confirmCancel">Cancel</button>
+      <button class="confirm-remove" id="confirmRemove">Remove</button>
+    </div>
 
   </div>
 </div>
@@ -2557,10 +2703,18 @@ function renderResults(){
               View Details
             </button>
 
-            <button class="quick-btn"
+            <button class="quick-btn ${isMarked('watched',type,item.id)?'marked':''}"
+                    data-track-action="watched" data-track-type="${type}" data-track-id="${item.id}"
                     title="Mark watched"
-                    onclick="quickWatched(event,${item.id},'${type}')">
+                    onclick="handleTrackClick(event,'watched','${type}',${item.id})">
               ✓
+            </button>
+
+            <button class="quick-btn ${isMarked('scheduled',type,item.id)?'marked':''}"
+                    data-track-action="scheduled" data-track-type="${type}" data-track-id="${item.id}"
+                    title="Schedule to watch"
+                    onclick="handleTrackClick(event,'scheduled','${type}',${item.id})">
+              📅
             </button>
           </div>
 
@@ -2739,14 +2893,16 @@ function renderDetail(details,credits,providers){
 
         <div class="detail-buttons">
 
-          <button class="action-btn primary"
-                  onclick="openDatePicker('watched',${details.id},'${type}')">
-            ✓ Mark as Watched
+          <button class="action-btn ${isMarked('watched',type,details.id)?'marked':''}"
+                  id="detailWatchedBtn"
+                  onclick="handleTrackClick(event,'watched','${type}',${details.id})">
+            ${isMarked('watched',type,details.id) ? '✓ Watched' : '✓ Mark as Watched'}
           </button>
 
-          <button class="action-btn"
-                  onclick="openDatePicker('scheduled',${details.id},'${type}')">
-            📅 Schedule to Watch
+          <button class="action-btn ${isMarked('scheduled',type,details.id)?'marked':''}"
+                  id="detailScheduleBtn"
+                  onclick="handleTrackClick(event,'scheduled','${type}',${details.id})">
+            ${isMarked('scheduled',type,details.id) ? '✓ Scheduled' : '📅 Schedule to Watch'}
           </button>
 
         </div>
@@ -2986,10 +3142,11 @@ async function loadSeason(tvId,seasonNumber,clickedButton=null){
     box.innerHTML = `
       <div class="episodes">
         ${episodes.map(ep=>{
-          const watchedKey =
+          const epKey =
             `tv:${tvId}:s${seasonNumber}:e${ep.episode_number}`;
 
-          const watched = getWatched()[watchedKey];
+          const watched = getWatched()[epKey];
+          const scheduled = getScheduled()[epKey];
 
           return `
             <article class="episode">
@@ -3026,8 +3183,10 @@ async function loadSeason(tvId,seasonNumber,clickedButton=null){
                 </div>
 
                 <div class="episode-actions">
-                  <button class="episode-action"
-                          onclick="openEpisodeDatePicker(
+                  <button class="episode-action ${watched?'marked':''}"
+                          data-episode-track="watched:${tvId}:${seasonNumber}:${ep.episode_number}"
+                          onclick="handleEpisodeTrackClick(
+                            event,
                             'watched',
                             ${tvId},
                             ${seasonNumber},
@@ -3038,8 +3197,10 @@ async function loadSeason(tvId,seasonNumber,clickedButton=null){
                     ${watched ? "✓ Watched" : "Mark Watched"}
                   </button>
 
-                  <button class="episode-action"
-                          onclick="openEpisodeDatePicker(
+                  <button class="episode-action ${scheduled?'marked':''}"
+                          data-episode-track="scheduled:${tvId}:${seasonNumber}:${ep.episode_number}"
+                          onclick="handleEpisodeTrackClick(
+                            event,
                             'scheduled',
                             ${tvId},
                             ${seasonNumber},
@@ -3047,7 +3208,7 @@ async function loadSeason(tvId,seasonNumber,clickedButton=null){
                             '${esc(ep.name || "")}',
                             '${ep.still_path || ""}'
                           )">
-                    Schedule
+                    ${scheduled ? "✓ Scheduled" : "Schedule"}
                   </button>
                 </div>
 
@@ -3195,8 +3356,143 @@ async function loadRelated(id,type){
 }
 
 /* ============================================================
-   DATE PICKER
+   TRACK STATE HELPERS
 ============================================================ */
+
+function isMarked(action,type,id){
+  const store = action === "watched" ? getWatched() : getScheduled();
+  return !!store[`${type}:${id}`];
+}
+
+function isEpisodeMarked(action,tvId,season,episodeNumber){
+  const store = action === "watched" ? getWatched() : getScheduled();
+  return !!store[`tv:${tvId}:s${season}:e${episodeNumber}`];
+}
+
+function handleTrackClick(event,action,type,id){
+  event.stopPropagation();
+
+  if(isMarked(action,type,id)){
+    openConfirmRemove(action,type,id);
+  }else{
+    openDatePicker(action,id,type);
+  }
+}
+
+function handleEpisodeTrackClick(event,action,tvId,season,episodeNumber,episodeName,stillPath){
+  event.stopPropagation();
+
+  if(isEpisodeMarked(action,tvId,season,episodeNumber)){
+    openConfirmRemoveEpisode(action,tvId,season,episodeNumber);
+  }else{
+    openEpisodeDatePicker(action,tvId,season,episodeNumber,episodeName,stillPath);
+  }
+}
+
+function refreshAllTrackUI(){
+  document.querySelectorAll("[data-track-action]").forEach(btn=>{
+    const marked = isMarked(
+      btn.dataset.trackAction,
+      btn.dataset.trackType,
+      btn.dataset.trackId
+    );
+    btn.classList.toggle("marked",marked);
+  });
+
+  document.querySelectorAll("[data-episode-track]").forEach(btn=>{
+    const [action,tvId,season,ep] = btn.dataset.episodeTrack.split(":");
+    const marked = isEpisodeMarked(action,tvId,season,ep);
+    btn.classList.toggle("marked",marked);
+    btn.textContent =
+      action === "watched"
+        ? (marked ? "✓ Watched" : "Mark Watched")
+        : (marked ? "✓ Scheduled" : "Schedule");
+  });
+
+  const btnW = document.getElementById("detailWatchedBtn");
+  const btnS = document.getElementById("detailScheduleBtn");
+
+  if((btnW || btnS) && state.currentDetail){
+    const type = state.currentDetail.media_type;
+    const id = state.currentDetail.id;
+
+    if(btnW){
+      const marked = isMarked("watched",type,id);
+      btnW.classList.toggle("marked",marked);
+      btnW.textContent = marked ? "✓ Watched" : "✓ Mark as Watched";
+    }
+
+    if(btnS){
+      const marked = isMarked("scheduled",type,id);
+      btnS.classList.toggle("marked",marked);
+      btnS.textContent = marked ? "✓ Scheduled" : "📅 Schedule to Watch";
+    }
+  }
+}
+
+/* ============================================================
+   DATE PICKER (Day / Month / Year - modern selects)
+============================================================ */
+
+const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function pad2(n){
+  return String(n).padStart(2,"0");
+}
+
+function daysInMonth(year,month){
+  return new Date(year,month,0).getDate();
+}
+
+function rebuildDayOptions(){
+  const daySel = document.getElementById("selDay");
+  const monthSel = document.getElementById("selMonth");
+  const yearSel = document.getElementById("selYear");
+
+  const y = Number(yearSel.value);
+  const m = Number(monthSel.value);
+  const total = daysInMonth(y,m);
+  const keepDay = Math.min(Number(daySel.value) || 1, total);
+
+  daySel.innerHTML = Array.from({length:total},(_,i)=>i+1)
+    .map(day=>`<option value="${day}" ${day===keepDay?"selected":""}>${day}</option>`)
+    .join("");
+}
+
+function populateDateSelects(existingDateStr){
+  const base = existingDateStr || new Date().toISOString().slice(0,10);
+  const [y,m,d] = base.split("-").map(Number);
+
+  const monthSel = document.getElementById("selMonth");
+  const yearSel = document.getElementById("selYear");
+  const daySel = document.getElementById("selDay");
+
+  monthSel.innerHTML = MONTH_NAMES.map((name,idx)=>
+    `<option value="${idx+1}" ${idx+1===m?"selected":""}>${name}</option>`
+  ).join("");
+
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for(let yr=currentYear+2; yr>=currentYear-15; yr--) years.push(yr);
+
+  yearSel.innerHTML = years.map(yr=>
+    `<option value="${yr}" ${yr===y?"selected":""}>${yr}</option>`
+  ).join("");
+
+  daySel.innerHTML = Array.from({length:daysInMonth(y,m)},(_,i)=>i+1)
+    .map(day=>`<option value="${day}" ${day===d?"selected":""}>${day}</option>`)
+    .join("");
+
+  monthSel.onchange = rebuildDayOptions;
+  yearSel.onchange = rebuildDayOptions;
+}
+
+function getSelectedDateString(){
+  const d = Number(document.getElementById("selDay").value);
+  const m = Number(document.getElementById("selMonth").value);
+  const y = Number(document.getElementById("selYear").value);
+  return `${y}-${pad2(m)}-${pad2(d)}`;
+}
 
 function openDatePicker(action,id,type){
   state.dateAction = {
@@ -3221,9 +3517,7 @@ function openDatePicker(action,id,type){
       ? "When did you watch it?"
       : "When will you watch it?";
 
-  document.getElementById("selectedDate").value =
-    existing?.date ||
-    new Date().toISOString().slice(0,10);
+  populateDateSelects(existing?.date);
 
   document.getElementById("dateModal").classList.remove("hidden");
 }
@@ -3262,20 +3556,13 @@ function openEpisodeDatePicker(
       ? "When did you watch this episode?"
       : "When will you watch this episode?";
 
-  document.getElementById("selectedDate").value =
-    existing?.date ||
-    new Date().toISOString().slice(0,10);
+  populateDateSelects(existing?.date);
 
   document.getElementById("dateModal").classList.remove("hidden");
 }
 
 function saveDateAction(){
-  const date = document.getElementById("selectedDate").value;
-
-  if(!date){
-    toast("Please select a date.");
-    return;
-  }
+  const date = getSelectedDateString();
 
   const action = state.dateAction;
 
@@ -3340,6 +3627,8 @@ function saveDateAction(){
   renderTimeline();
   if(!document.getElementById("timelinePage").classList.contains("hidden")) renderTimelinePage();
 
+  refreshAllTrackUI();
+
   toast(
     action.action === "watched"
       ? "Saved as watched."
@@ -3347,10 +3636,79 @@ function saveDateAction(){
   );
 }
 
-function quickWatched(event,id,type){
-  event.stopPropagation();
+/* ============================================================
+   REMOVE / UNDO (with confirmation)
+============================================================ */
 
-  openDatePicker("watched",id,type);
+function openConfirmRemove(action,type,id){
+  state.removeAction = {action,type,id,episode:false};
+
+  document.getElementById("confirmTitle").textContent =
+    action === "watched" ? "Remove from Watched?" : "Remove from Scheduled?";
+
+  document.getElementById("confirmMessage").textContent =
+    action === "watched"
+      ? "This will unmark the title as watched."
+      : "This will remove it from your schedule.";
+
+  document.getElementById("confirmModal").classList.remove("hidden");
+}
+
+function openConfirmRemoveEpisode(action,tvId,season,episodeNumber){
+  state.removeAction = {
+    action,
+    type:"tv",
+    id:tvId,
+    episode:true,
+    season,
+    episodeNumber
+  };
+
+  document.getElementById("confirmTitle").textContent =
+    action === "watched" ? "Remove from Watched?" : "Remove from Scheduled?";
+
+  document.getElementById("confirmMessage").textContent =
+    action === "watched"
+      ? "This will unmark this episode as watched."
+      : "This will remove this episode from your schedule.";
+
+  document.getElementById("confirmModal").classList.remove("hidden");
+}
+
+function closeConfirmModal(){
+  document.getElementById("confirmModal").classList.add("hidden");
+  state.removeAction = null;
+}
+
+function confirmRemoveAction(){
+  const r = state.removeAction;
+
+  if(!r) return;
+
+  const data = r.action === "watched" ? getWatched() : getScheduled();
+
+  const key = r.episode
+    ? `tv:${r.id}:s${r.season}:e${r.episodeNumber}`
+    : `${r.type}:${r.id}`;
+
+  delete data[key];
+
+  if(r.action === "watched"){
+    saveWatched(data);
+  }else{
+    saveScheduled(data);
+  }
+
+  closeConfirmModal();
+
+  renderTimeline();
+  if(!document.getElementById("timelinePage").classList.contains("hidden")) renderTimelinePage();
+
+  refreshAllTrackUI();
+
+  toast(
+    r.action === "watched" ? "Removed from watched." : "Removed from scheduled."
+  );
 }
 
 /* ============================================================
@@ -3790,6 +4148,20 @@ document.getElementById("dateModal")?.addEventListener("click",event=>{
   });
 
 /* ============================================================
+   CONFIRM MODAL EVENTS
+============================================================ */
+
+document.getElementById("closeConfirm")?.addEventListener("click",closeConfirmModal);
+document.getElementById("confirmCancel")?.addEventListener("click",closeConfirmModal);
+document.getElementById("confirmRemove")?.addEventListener("click",confirmRemoveAction);
+
+document.getElementById("confirmModal")?.addEventListener("click",event=>{
+    if(event.target.id === "confirmModal"){
+      closeConfirmModal();
+    }
+  });
+
+/* ============================================================
    TIMELINE BUTTON
 ============================================================ */
 
@@ -3879,6 +4251,12 @@ document.addEventListener("keydown",event=>{
       return;
     }
 
+    if(!document.getElementById("confirmModal")
+      .classList.contains("hidden")){
+      closeConfirmModal();
+      return;
+    }
+
     if(!document.getElementById("dateModal")
       .classList.contains("hidden")){
       document.getElementById("dateModal")
@@ -3946,7 +4324,8 @@ window.goPage = goPage;
 window.loadSeason = loadSeason;
 window.openDatePicker = openDatePicker;
 window.openEpisodeDatePicker = openEpisodeDatePicker;
-window.quickWatched = quickWatched;
+window.handleTrackClick = handleTrackClick;
+window.handleEpisodeTrackClick = handleEpisodeTrackClick;
 window.openSearchSuggestion=openSearchSuggestion;
 window.openRandomResult=openRandomResult;
 window.openTimelinePage=openTimelinePage;
