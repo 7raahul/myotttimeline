@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CineVo — Movie & TV Discovery</title>
+<title>Movie & TV Tracker</title>
 
 <style>
 :root{
@@ -26,31 +26,6 @@
 
 html{
   scroll-behavior:smooth;
-}
-
-/* MODERN THIN SCROLLBARS */
-*{
-  scrollbar-width:thin;
-  scrollbar-color:rgba(255,255,255,.18) transparent;
-}
-
-::-webkit-scrollbar{
-  width:6px;
-  height:6px;
-}
-
-::-webkit-scrollbar-track{
-  background:transparent;
-}
-
-::-webkit-scrollbar-thumb{
-  background:rgba(255,255,255,.18);
-  border-radius:10px;
-  transition:background .2s;
-}
-
-::-webkit-scrollbar-thumb:hover{
-  background:rgba(255,255,255,.32);
 }
 
 body{
@@ -541,28 +516,10 @@ header{
 
 .quick-btn{
   width:34px;
-  flex:0 0 34px;
-  background:#e9ebee;
-  border:1px solid #e9ebee;
-  color:#080a0e;
-  border-radius:8px;
-  font-size:13px;
-  font-weight:800;
-  transition:background .18s,border-color .18s,color .18s;
-}
-
-.quick-btn:hover{
-  background:#fff;
-}
-
-.quick-btn.marked{
-  background:var(--danger);
-  border-color:var(--danger);
+  background:#20252e;
+  border:1px solid #303640;
   color:#fff;
-}
-
-.quick-btn.marked:hover{
-  background:#dc3838;
+  border-radius:8px;
 }
 
 /* PAGINATION */
@@ -807,36 +764,23 @@ header{
 }
 
 .action-btn{
-  border:1px solid #e9ebee;
-  background:#e9ebee;
-  color:#080a0e;
+  border:1px solid #303641;
+  background:#181c24;
+  color:#fff;
   border-radius:9px;
   padding:10px 13px;
   font-size:12px;
   font-weight:750;
-  transition:background .18s,border-color .18s,color .18s;
 }
 
 .action-btn:hover{
-  background:#fff;
-  border-color:#fff;
+  background:#242a34;
 }
 
 .action-btn.primary{
   background:#e9ebee;
   color:#080a0e;
   border-color:#e9ebee;
-}
-
-.action-btn.marked{
-  background:var(--danger);
-  border-color:var(--danger);
-  color:#fff;
-}
-
-.action-btn.marked:hover{
-  background:#dc3838;
-  border-color:#dc3838;
 }
 
 /* DETAIL CONTENT */
@@ -861,6 +805,7 @@ header{
   gap:13px;
   overflow-x:auto;
   padding-bottom:8px;
+  scrollbar-width:thin;
 }
 
 .horizontal-card{
@@ -1037,33 +982,15 @@ header{
 
 .episode-actions{
   margin-top:9px;
-  display:flex;
-  gap:6px;
 }
 
 .episode-action{
-  border:1px solid #e9ebee;
-  background:#e9ebee;
-  color:#080a0e;
-  border-radius:7px;
-  padding:6px 10px;
-  font-size:10px;
-  font-weight:800;
-  transition:background .18s,border-color .18s,color .18s;
-}
-
-.episode-action:hover{
-  background:#fff;
-}
-
-.episode-action.marked{
-  background:var(--danger);
-  border-color:var(--danger);
+  border:1px solid #303640;
+  background:#1a1f28;
   color:#fff;
-}
-
-.episode-action.marked:hover{
-  background:#dc3838;
+  border-radius:7px;
+  padding:6px 8px;
+  font-size:10px;
 }
 
 /* RANDOM MODAL */
@@ -1217,82 +1144,6 @@ header{
   width:min(380px,100%);
 }
 
-.modern-date-picker{
-  display:grid;
-  grid-template-columns:1fr 1.3fr 1fr;
-  gap:8px;
-  margin-top:8px;
-}
-
-.modern-date-picker select{
-  width:100%;
-  background:#181d25;
-  border:1px solid #303640;
-  border-radius:9px;
-  color:#fff;
-  padding:11px 8px;
-  font-size:13px;
-  font-weight:700;
-  text-align:center;
-  outline:none;
-  appearance:none;
-  -webkit-appearance:none;
-  cursor:pointer;
-  transition:border-color .18s;
-}
-
-.modern-date-picker select:focus,
-.modern-date-picker select:hover{
-  border-color:#5a6272;
-}
-
-/* CONFIRM MODAL */
-
-.confirm-box{
-  width:min(360px,100%);
-  text-align:center;
-}
-
-.confirm-box p{
-  color:#d4d8de;
-  font-size:13px;
-  line-height:1.6;
-  margin:10px 0 20px;
-}
-
-.confirm-actions{
-  display:flex;
-  gap:10px;
-}
-
-.confirm-actions button{
-  flex:1;
-  padding:11px;
-  border-radius:9px;
-  font-size:12px;
-  font-weight:800;
-  border:1px solid #303640;
-}
-
-.confirm-cancel{
-  background:#181c24;
-  color:#fff;
-}
-
-.confirm-cancel:hover{
-  background:#242a34;
-}
-
-.confirm-remove{
-  background:var(--danger);
-  border-color:var(--danger);
-  color:#fff;
-}
-
-.confirm-remove:hover{
-  background:#dc3838;
-}
-
 /* TO TOP */
 
 .to-top{
@@ -1382,11 +1233,123 @@ header{
 .page-shell{max-width:1450px;margin:auto;padding:26px 22px 80px}
 .page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding-bottom:22px;border-bottom:1px solid var(--border);margin-bottom:24px}
 .page-head h1{margin:0;font-size:30px}.page-head p{margin:6px 0 0;color:var(--muted)}
-.timeline-columns{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-.timeline-column{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px}
-.timeline-column h2{font-size:17px;margin:0 0 14px}
-.timeline-entry{display:flex;gap:11px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:11px;background:#151922;margin-bottom:9px;cursor:pointer}
-.timeline-entry img{width:52px;height:74px;object-fit:cover;border-radius:7px;flex:0 0 52px}.timeline-entry .te-info{min-width:0;flex:1}.timeline-entry .te-title{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.timeline-entry .te-date{font-size:10px;color:var(--muted);margin-top:5px}.timeline-entry .te-type{font-size:9px;color:#aeb5c0;margin-top:3px;text-transform:uppercase}
+.timeline-columns{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:0;
+  padding:18px 0 30px;
+}
+.timeline-columns::before{
+  content:"";
+  position:absolute;
+  top:18px;
+  bottom:30px;
+  left:50%;
+  width:2px;
+  transform:translateX(-50%);
+  background:linear-gradient(to bottom,transparent,#2d3948 6%,#2d3948 94%,transparent);
+  pointer-events:none;
+}
+.timeline-column{
+  background:transparent;
+  border:0;
+  border-radius:0;
+  padding:0 28px;
+}
+.timeline-column:first-child{
+  border-right:0;
+}
+.timeline-column h2{
+  position:relative;
+  z-index:1;
+  font-size:16px;
+  margin:0 0 18px;
+  padding:11px 14px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#11161e;
+  box-shadow:0 10px 28px rgba(0,0,0,.16);
+}
+.timeline-column:first-child h2{text-align:right}
+.timeline-column:last-child h2{text-align:left}
+.timeline-entry{
+  position:relative;
+  display:flex;
+  gap:13px;
+  align-items:center;
+  width:calc(100% - 18px);
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:linear-gradient(135deg,#151a22,#11151c);
+  margin-bottom:12px;
+  cursor:pointer;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.timeline-entry:hover{
+  transform:translateY(-2px);
+  border-color:#3a4758;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+}
+.timeline-entry::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  width:18px;
+  height:2px;
+  background:#2d3948;
+}
+.timeline-column:first-child .timeline-entry{
+  margin-left:auto;
+}
+.timeline-column:first-child .timeline-entry::after{right:-18px}
+.timeline-column:last-child .timeline-entry::after{left:-18px}
+.timeline-entry img{
+  width:62px;
+  height:88px;
+  object-fit:cover;
+  border-radius:8px;
+  flex:0 0 62px;
+  background:#0c1016;
+}
+.timeline-entry .te-info{min-width:0;flex:1}
+.timeline-entry .te-title{
+  font-size:13px;
+  font-weight:800;
+  line-height:1.3;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.timeline-entry .te-date{font-size:10px;color:var(--muted);margin-top:6px}
+.timeline-entry .te-type{
+  display:inline-block;
+  font-size:9px;
+  color:#b8c1cc;
+  margin-top:5px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.timeline-entry .te-status{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin-top:7px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+.timeline-entry .te-status.watched{color:#6ee7b7}
+.timeline-entry .te-status.scheduled{color:#fbbf24}
+.timeline-empty{
+  padding:28px 16px;
+  border:1px dashed #2d3948;
+  border-radius:14px;
+  color:var(--muted);
+  text-align:center;
+  background:#10141b;
+}
 #randomModal.modal{background:#090b10;backdrop-filter:none;align-items:stretch;padding:0}
 #randomModal .modal-box{width:min(700px,calc(100% - 28px));max-height:none;margin:auto;background:#11141b;border-radius:18px}
 #randomModal .random-result{cursor:pointer}
@@ -1411,7 +1374,43 @@ header{
 .search-wrap{max-width:320px}
 .search{height:38px;padding:8px 12px 8px 34px;font-size:12px}
 .timeline-entry{min-height:78px}
-@media(max-width:700px){.random-page-shell{width:100%;padding:12px 12px 55px}.random-page .modal-head{margin-bottom:12px}.search-wrap{max-width:none}.search{height:37px}}
+@media(max-width:700px){
+  .random-page-shell{width:100%;padding:12px 12px 55px}
+  .random-page .modal-head{margin-bottom:12px}
+  .search-wrap{max-width:none}
+  .search{height:37px}
+
+  .timeline-columns{
+    display:block;
+    padding:8px 0 20px;
+  }
+  .timeline-columns::before{
+    display:none;
+  }
+  .timeline-column{
+    padding:0;
+    margin-bottom:22px;
+  }
+  .timeline-column h2,
+  .timeline-column:first-child h2,
+  .timeline-column:last-child h2{
+    text-align:left;
+    margin-bottom:12px;
+  }
+  .timeline-entry,
+  .timeline-column:first-child .timeline-entry{
+    width:100%;
+    margin-left:0;
+  }
+  .timeline-entry::after{
+    display:none;
+  }
+  .timeline-entry img{
+    width:58px;
+    height:82px;
+    flex-basis:58px;
+  }
+}
 
 /* RESPONSIVE */
 
@@ -1654,297 +1653,71 @@ header{
 .trending-error strong{color:#f1f5f9;font-size:18px}
 .trending-error span{color:#94a3b8;max-width:620px}
 .trending-error .pick-btn{margin-top:8px}
+</style>
 
-/* ============================================================
-   MOBILE APP REDESIGN
-   (bottom tab bar / compact header / full-bleed hero /
-   filter chips + bottom sheet) — mobile only, desktop untouched
-============================================================ */
-
-.bottom-nav{
-  display:none;
+<style id="cinevo-v3-css">
+.global-media-filter{
+  max-width:1450px;
+  margin:0 auto;
+  padding:12px 22px 0;
+  display:flex;
+  align-items:center;
+  gap:4px;
 }
-
-.mobile-search-btn{
-  display:none;
+.global-media-btn{
+  appearance:none;
+  border:1px solid var(--border,#2a303b);
+  background:#131720;
+  color:#aeb5c0;
+  padding:7px 12px;
+  border-radius:9px;
+  font:inherit;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.06em;
+  cursor:pointer;
+  transition:background .16s ease,color .16s ease,border-color .16s ease;
 }
-
-.mobile-search-close{
-  display:none;
+.global-media-btn:hover{background:#1b202a;color:#fff}
+.global-media-btn.active{
+  background:#f5c518;
+  border-color:#f5c518;
+  color:#111;
 }
-
-@media(max-width:850px){
-
-  /* ---- HEADER: compact, icon-triggered search ---- */
-
-  .nav{
-    flex-wrap:nowrap;
-    padding:12px 16px;
-  }
-
-  .logo{
-    order:1;
-  }
-
-  .nav-actions{
-    display:none;
-  }
-
-  .mobile-search-btn{
-    order:2;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    width:38px;
-    height:38px;
-    flex:0 0 38px;
-    margin-left:auto;
-    background:#181c25;
-    border:1px solid #2a303b;
-    border-radius:50%;
-    color:#fff;
-    font-size:16px;
-  }
-
-  .search-wrap{
-    order:3;
-    position:fixed;
-    top:0;
-    left:0;
-    right:0;
-    z-index:500;
-    max-width:none;
-    background:#0b0d12;
-    padding:12px 16px;
-    padding-top:calc(12px + env(safe-area-inset-top));
-    border-bottom:1px solid var(--border);
-    transform:translateY(-110%);
-    transition:transform .22s ease;
-  }
-
-  .search-wrap.mobile-open{
-    transform:translateY(0);
-  }
-
-  .mobile-search-close{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:absolute;
-    right:14px;
-    top:50%;
-    transform:translateY(-50%);
-    width:30px;
-    height:30px;
-    background:transparent;
-    color:#9aa1ac;
-    font-size:15px;
-  }
-
-  .search-wrap.mobile-open input{
-    padding-right:40px;
-  }
-
-  .container{
-    padding-bottom:90px;
-  }
-
-  /* ---- BOTTOM TAB BAR ---- */
-
-  .bottom-nav{
-    display:flex;
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-    z-index:400;
-    background:rgba(11,13,18,.94);
-    backdrop-filter:blur(14px);
-    border-top:1px solid var(--border);
-    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
-  }
-
-  .bottom-nav-btn{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:3px;
-    background:transparent;
-    border:0;
-    color:#8b919c;
-    padding:5px 2px;
-    border-radius:10px;
-  }
-
-  .bottom-nav-btn .bn-icon{
-    font-size:19px;
-    line-height:1;
-  }
-
-  .bottom-nav-btn .bn-label{
-    font-size:10px;
-    font-weight:700;
-  }
-
-  .bottom-nav-btn.active{
-    color:var(--gold);
-  }
-
-  /* ---- FULL-BLEED HERO (Prime Video style) ---- */
-
-  .trending{
-    min-height:480px;
-    border-radius:16px;
-  }
-
-  .trend-bg{
-    width:100%;
-    left:0;
-    right:0;
-    object-position:center 20%;
-  }
-
-  .trend-overlay{
-    width:100%;
-    background:
-      linear-gradient(0deg,#10131a 18%,rgba(16,19,26,.85) 45%,rgba(16,19,26,.15) 75%);
-  }
-
-  .trend-content{
-    width:100%;
-    min-height:480px;
-    padding:20px 16px 46px;
-    justify-content:flex-end;
-  }
-
-  .trend-title{
-    font-size:25px;
-    letter-spacing:-.6px;
-  }
-
-  .trend-overview{
-    font-size:13px;
-    -webkit-line-clamp:2;
-  }
-
-  .trend-dots{
-    left:16px;
-    bottom:14px;
-  }
-
-  .trend-arrow{
-    display:none;
-  }
-
-  /* ---- FILTER CHIPS + BOTTOM SHEET ---- */
-
-  .browse-box{
-    background:transparent;
-    border:0;
-    padding:0;
-  }
-
-  .browse-row{
-    display:flex;
-    flex-wrap:nowrap;
-    overflow-x:auto;
-    gap:8px;
-    padding-bottom:2px;
-  }
-
-  .browse-label{
-    display:none;
-  }
-
-  .filter{
-    flex:0 0 auto;
-  }
-
-  .filter-btn{
-    width:auto;
-    min-width:0;
-    white-space:nowrap;
-    border-radius:20px;
-    padding:8px 14px;
-  }
-
-  .filter:last-of-type{
-    grid-column:auto;
-  }
-
-  .apply-btn{
-    width:auto;
-    flex:0 0 auto;
-    white-space:nowrap;
-    border-radius:20px;
-    padding:8px 16px;
-  }
-
-  .filter-menu{
-    position:fixed;
-    z-index:600;
-    top:auto;
-    left:0;
-    right:0;
-    bottom:0;
-    width:100%;
-    max-width:none;
-    max-height:60vh;
-    border-radius:18px 18px 0 0;
-    padding:10px 10px calc(10px + env(safe-area-inset-bottom));
-    box-shadow:0 -10px 40px rgba(0,0,0,.5);
-  }
-
-  .filter-menu button{
-    padding:12px 12px;
-    font-size:13px;
-  }
+.logo{cursor:pointer}
+.logo:focus-visible{outline:2px solid #f5c518;outline-offset:4px;border-radius:6px}
+@media(max-width:700px){
+  .global-media-filter{padding:9px 14px 0}
+  .global-media-btn{font-size:9px;padding:7px 10px}
 }
 </style>
-</head>
 
-<body>
 
 <header>
   <div class="nav">
-    <div class="logo">Cine<span>Vo</span></div>
+    <div class="logo" role="button" tabindex="0" aria-label="CINEVO Home" onclick="goHome()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goHome()}">CINEVO</div>
 
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
       <input id="searchInput" class="search" type="search" autocomplete="off"
              placeholder="Search movies & TV shows...">
       <div id="searchSuggestions" class="search-suggestions hidden"></div>
-      <button class="mobile-search-close" id="mobileSearchClose">✕</button>
     </div>
 
-    <button class="mobile-search-btn" id="mobileSearchBtn" aria-label="Search">⌕</button>
-
     <div class="nav-actions">
-      <button class="nav-btn" id="timelineBtn">◈ Timeline</button>
-      <button class="nav-btn" id="randomBtn">🎲 Random</button>
+      <button class="nav-btn" id="timelineBtn">◈ Watch Journey</button>
+      <button class="nav-btn" id="randomBtn">🎲 Pick for Me</button>
+      <button class="nav-btn account-btn" id="accountBtn" type="button" aria-label="Account">◉</button>
     </div>
   </div>
 </header>
 
-<nav class="bottom-nav" id="bottomNav">
-  <button class="bottom-nav-btn active" id="bnHome" data-tab="home">
-    <span class="bn-icon">⌂</span>
-    <span class="bn-label">Home</span>
-  </button>
-  <button class="bottom-nav-btn" id="bnSearch" data-tab="search">
-    <span class="bn-icon">⌕</span>
-    <span class="bn-label">Search</span>
-  </button>
-  <button class="bottom-nav-btn" id="bnTimeline" data-tab="timeline">
-    <span class="bn-icon">◈</span>
-    <span class="bn-label">Timeline</span>
-  </button>
-  <button class="bottom-nav-btn" id="bnRandom" data-tab="random">
-    <span class="bn-icon">🎲</span>
-    <span class="bn-label">Random</span>
-  </button>
-</nav>
+<div class="global-media-filter" id="globalMediaFilter" aria-label="Content type">
+  <button type="button" class="global-media-btn active" data-value="all" onclick="setMainMediaType('all')">ALL</button>
+  <button type="button" class="global-media-btn" data-value="movie" onclick="setMainMediaType('movie')">MOVIES</button>
+  <button type="button" class="global-media-btn" data-value="tv" onclick="setMainMediaType('tv')">TV SHOWS</button>
+</div>
+
 
 <main class="container">
 
@@ -2046,12 +1819,18 @@ header{
 <div id="timelinePage" class="page-overlay hidden">
   <div class="page-shell">
     <div class="page-head">
-      <div><h1>Timeline</h1><p>Watched and scheduled titles in one place.</p></div>
+      <div><h1>Watch Journey</h1><p>Watched and scheduled titles in one place.</p></div>
       <button class="close" id="closeTimeline">×</button>
     </div>
     <div class="timeline-columns">
-      <section class="timeline-column watched-col"><h2>✓ Watched</h2><div id="timelineWatched"></div></section>
-      <section class="timeline-column scheduled-col"><h2>◷ Scheduled</h2><div id="timelineScheduled"></div></section>
+      <section class="timeline-column watched-col">
+        <h2>✓ Watched</h2>
+        <div id="timelineWatched"></div>
+      </section>
+      <section class="timeline-column scheduled-col">
+        <h2>◷ Scheduled</h2>
+        <div id="timelineScheduled"></div>
+      </section>
     </div>
   </div>
 </div>
@@ -2120,31 +1899,10 @@ header{
     </div>
 
     <div class="option-title">Date</div>
-    <div class="modern-date-picker">
-      <select id="selDay" aria-label="Day"></select>
-      <select id="selMonth" aria-label="Month"></select>
-      <select id="selYear" aria-label="Year"></select>
-    </div>
+    <input id="selectedDate" type="date"
+           style="width:100%;padding:11px;background:#181d25;border:1px solid #303640;border-radius:9px;color:#fff;">
 
     <button class="pick-btn" id="saveDate">OK</button>
-
-  </div>
-</div>
-
-<div id="confirmModal" class="modal hidden">
-  <div class="modal-box confirm-box">
-
-    <div class="modal-head">
-      <h2 id="confirmTitle">Remove?</h2>
-      <button class="close" id="closeConfirm">×</button>
-    </div>
-
-    <p id="confirmMessage">Are you sure you want to remove this?</p>
-
-    <div class="confirm-actions">
-      <button class="confirm-cancel" id="confirmCancel">Cancel</button>
-      <button class="confirm-remove" id="confirmRemove">Remove</button>
-    </div>
 
   </div>
 </div>
@@ -2320,6 +2078,10 @@ function uniqueAgainst(items, existing){
   });
 }
 
+function sleep(ms){
+  return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
 function toast(message){
   const el = document.getElementById("toast");
   el.textContent = message;
@@ -2389,7 +2151,13 @@ async function loadTrending(){
   const box = document.getElementById("trendingBox");
 
   try{
-    const data = await api("/trending/all/day", {
+    const trendType = state.filters.type;
+    const trendEndpoint =
+      trendType === "movie" ? "/trending/movie/day" :
+      trendType === "tv" ? "/trending/tv/day" :
+      "/trending/all/day";
+
+    const data = await api(trendEndpoint, {
       page:1
     });
 
@@ -2589,52 +2357,6 @@ function getGenreName(id){
   return found ? found[1] : "";
 }
 
-/* ============================================================
-   MOBILE BOTTOM NAV / SEARCH TOGGLE
-============================================================ */
-
-function setActiveBottomTab(tab){
-  document.querySelectorAll(".bottom-nav-btn").forEach(btn=>{
-    btn.classList.toggle("active", btn.dataset.tab === tab);
-  });
-}
-
-function toggleMobileSearch(forceState){
-  const wrap = document.querySelector(".search-wrap");
-  if(!wrap) return;
-
-  const isOpen = wrap.classList.contains("mobile-open");
-  const next = forceState !== undefined ? forceState : !isOpen;
-
-  wrap.classList.toggle("mobile-open", next);
-
-  if(next){
-    setActiveBottomTab("search");
-    setTimeout(()=>document.getElementById("searchInput")?.focus(),60);
-  }else{
-    setActiveBottomTab("home");
-  }
-}
-
-function goHomeMobile(){
-  if(!document.getElementById("detailOverlay").classList.contains("hidden")) closeDetails();
-  if(!document.getElementById("timelinePage").classList.contains("hidden")) closeTimelinePage();
-  if(!document.getElementById("randomModal").classList.contains("hidden")) closeRandom();
-
-  toggleMobileSearch(false);
-
-  window.scrollTo({top:0,behavior:"smooth"});
-  setActiveBottomTab("home");
-}
-
-document.getElementById("mobileSearchBtn")?.addEventListener("click",()=>toggleMobileSearch());
-document.getElementById("mobileSearchClose")?.addEventListener("click",()=>toggleMobileSearch(false));
-
-document.getElementById("bnHome")?.addEventListener("click",goHomeMobile);
-document.getElementById("bnSearch")?.addEventListener("click",()=>toggleMobileSearch());
-document.getElementById("bnTimeline")?.addEventListener("click",openTimelinePage);
-document.getElementById("bnRandom")?.addEventListener("click",openRandomPage);
-
 function setupFilters(){
   const menus = document.querySelectorAll(".filter[data-filter]");
 
@@ -2736,6 +2458,14 @@ function buildFilterMenu(type,menu){
       updateFilterLabels();
 
       menu.classList.add("hidden");
+
+      if(type === "type"){
+        state.page = 1;
+        Promise.allSettled([
+          loadTrending(),
+          loadBrowse()
+        ]);
+      }
     });
   });
 }
@@ -2772,6 +2502,11 @@ function updateFilterLabels(){
   const country = COUNTRIES.find(c=>c[0] === f.country);
   document.getElementById("countryLabel").textContent =
     country ? country[1] : "All Countries";
+
+  document.querySelectorAll(".global-media-btn").forEach(btn=>{
+    btn.classList.toggle("active", btn.dataset.value === f.type);
+  });
+
 }
 
 /* ============================================================
@@ -3018,18 +2753,10 @@ function renderResults(){
               View Details
             </button>
 
-            <button class="quick-btn ${isMarked('watched',type,item.id)?'marked':''}"
-                    data-track-action="watched" data-track-type="${type}" data-track-id="${item.id}"
+            <button class="quick-btn"
                     title="Mark watched"
-                    onclick="handleTrackClick(event,'watched','${type}',${item.id})">
+                    onclick="quickWatched(event,${item.id},'${type}')">
               ✓
-            </button>
-
-            <button class="quick-btn ${isMarked('scheduled',type,item.id)?'marked':''}"
-                    data-track-action="scheduled" data-track-type="${type}" data-track-id="${item.id}"
-                    title="Schedule to watch"
-                    onclick="handleTrackClick(event,'scheduled','${type}',${item.id})">
-              📅
             </button>
           </div>
 
@@ -3208,16 +2935,14 @@ function renderDetail(details,credits,providers){
 
         <div class="detail-buttons">
 
-          <button class="action-btn ${isMarked('watched',type,details.id)?'marked':''}"
-                  id="detailWatchedBtn"
-                  onclick="handleTrackClick(event,'watched','${type}',${details.id})">
-            ${isMarked('watched',type,details.id) ? '✓ Watched' : '✓ Mark as Watched'}
+          <button class="action-btn primary"
+                  onclick="openDatePicker('watched',${details.id},'${type}')">
+            ✓ Mark as Watched
           </button>
 
-          <button class="action-btn ${isMarked('scheduled',type,details.id)?'marked':''}"
-                  id="detailScheduleBtn"
-                  onclick="handleTrackClick(event,'scheduled','${type}',${details.id})">
-            ${isMarked('scheduled',type,details.id) ? '✓ Scheduled' : '📅 Schedule to Watch'}
+          <button class="action-btn"
+                  onclick="openDatePicker('scheduled',${details.id},'${type}')">
+            📅 Schedule to Watch
           </button>
 
         </div>
@@ -3457,11 +3182,10 @@ async function loadSeason(tvId,seasonNumber,clickedButton=null){
     box.innerHTML = `
       <div class="episodes">
         ${episodes.map(ep=>{
-          const epKey =
+          const watchedKey =
             `tv:${tvId}:s${seasonNumber}:e${ep.episode_number}`;
 
-          const watched = getWatched()[epKey];
-          const scheduled = getScheduled()[epKey];
+          const watched = getWatched()[watchedKey];
 
           return `
             <article class="episode">
@@ -3498,10 +3222,8 @@ async function loadSeason(tvId,seasonNumber,clickedButton=null){
                 </div>
 
                 <div class="episode-actions">
-                  <button class="episode-action ${watched?'marked':''}"
-                          data-episode-track="watched:${tvId}:${seasonNumber}:${ep.episode_number}"
-                          onclick="handleEpisodeTrackClick(
-                            event,
+                  <button class="episode-action"
+                          onclick="openEpisodeDatePicker(
                             'watched',
                             ${tvId},
                             ${seasonNumber},
@@ -3512,10 +3234,8 @@ async function loadSeason(tvId,seasonNumber,clickedButton=null){
                     ${watched ? "✓ Watched" : "Mark Watched"}
                   </button>
 
-                  <button class="episode-action ${scheduled?'marked':''}"
-                          data-episode-track="scheduled:${tvId}:${seasonNumber}:${ep.episode_number}"
-                          onclick="handleEpisodeTrackClick(
-                            event,
+                  <button class="episode-action"
+                          onclick="openEpisodeDatePicker(
                             'scheduled',
                             ${tvId},
                             ${seasonNumber},
@@ -3523,7 +3243,7 @@ async function loadSeason(tvId,seasonNumber,clickedButton=null){
                             '${esc(ep.name || "")}',
                             '${ep.still_path || ""}'
                           )">
-                    ${scheduled ? "✓ Scheduled" : "Schedule"}
+                    Schedule
                   </button>
                 </div>
 
@@ -3671,143 +3391,8 @@ async function loadRelated(id,type){
 }
 
 /* ============================================================
-   TRACK STATE HELPERS
+   DATE PICKER
 ============================================================ */
-
-function isMarked(action,type,id){
-  const store = action === "watched" ? getWatched() : getScheduled();
-  return !!store[`${type}:${id}`];
-}
-
-function isEpisodeMarked(action,tvId,season,episodeNumber){
-  const store = action === "watched" ? getWatched() : getScheduled();
-  return !!store[`tv:${tvId}:s${season}:e${episodeNumber}`];
-}
-
-function handleTrackClick(event,action,type,id){
-  event.stopPropagation();
-
-  if(isMarked(action,type,id)){
-    openConfirmRemove(action,type,id);
-  }else{
-    openDatePicker(action,id,type);
-  }
-}
-
-function handleEpisodeTrackClick(event,action,tvId,season,episodeNumber,episodeName,stillPath){
-  event.stopPropagation();
-
-  if(isEpisodeMarked(action,tvId,season,episodeNumber)){
-    openConfirmRemoveEpisode(action,tvId,season,episodeNumber);
-  }else{
-    openEpisodeDatePicker(action,tvId,season,episodeNumber,episodeName,stillPath);
-  }
-}
-
-function refreshAllTrackUI(){
-  document.querySelectorAll("[data-track-action]").forEach(btn=>{
-    const marked = isMarked(
-      btn.dataset.trackAction,
-      btn.dataset.trackType,
-      btn.dataset.trackId
-    );
-    btn.classList.toggle("marked",marked);
-  });
-
-  document.querySelectorAll("[data-episode-track]").forEach(btn=>{
-    const [action,tvId,season,ep] = btn.dataset.episodeTrack.split(":");
-    const marked = isEpisodeMarked(action,tvId,season,ep);
-    btn.classList.toggle("marked",marked);
-    btn.textContent =
-      action === "watched"
-        ? (marked ? "✓ Watched" : "Mark Watched")
-        : (marked ? "✓ Scheduled" : "Schedule");
-  });
-
-  const btnW = document.getElementById("detailWatchedBtn");
-  const btnS = document.getElementById("detailScheduleBtn");
-
-  if((btnW || btnS) && state.currentDetail){
-    const type = state.currentDetail.media_type;
-    const id = state.currentDetail.id;
-
-    if(btnW){
-      const marked = isMarked("watched",type,id);
-      btnW.classList.toggle("marked",marked);
-      btnW.textContent = marked ? "✓ Watched" : "✓ Mark as Watched";
-    }
-
-    if(btnS){
-      const marked = isMarked("scheduled",type,id);
-      btnS.classList.toggle("marked",marked);
-      btnS.textContent = marked ? "✓ Scheduled" : "📅 Schedule to Watch";
-    }
-  }
-}
-
-/* ============================================================
-   DATE PICKER (Day / Month / Year - modern selects)
-============================================================ */
-
-const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-
-function pad2(n){
-  return String(n).padStart(2,"0");
-}
-
-function daysInMonth(year,month){
-  return new Date(year,month,0).getDate();
-}
-
-function rebuildDayOptions(){
-  const daySel = document.getElementById("selDay");
-  const monthSel = document.getElementById("selMonth");
-  const yearSel = document.getElementById("selYear");
-
-  const y = Number(yearSel.value);
-  const m = Number(monthSel.value);
-  const total = daysInMonth(y,m);
-  const keepDay = Math.min(Number(daySel.value) || 1, total);
-
-  daySel.innerHTML = Array.from({length:total},(_,i)=>i+1)
-    .map(day=>`<option value="${day}" ${day===keepDay?"selected":""}>${day}</option>`)
-    .join("");
-}
-
-function populateDateSelects(existingDateStr){
-  const base = existingDateStr || new Date().toISOString().slice(0,10);
-  const [y,m,d] = base.split("-").map(Number);
-
-  const monthSel = document.getElementById("selMonth");
-  const yearSel = document.getElementById("selYear");
-  const daySel = document.getElementById("selDay");
-
-  monthSel.innerHTML = MONTH_NAMES.map((name,idx)=>
-    `<option value="${idx+1}" ${idx+1===m?"selected":""}>${name}</option>`
-  ).join("");
-
-  const currentYear = new Date().getFullYear();
-  const years = [];
-  for(let yr=currentYear+2; yr>=currentYear-15; yr--) years.push(yr);
-
-  yearSel.innerHTML = years.map(yr=>
-    `<option value="${yr}" ${yr===y?"selected":""}>${yr}</option>`
-  ).join("");
-
-  daySel.innerHTML = Array.from({length:daysInMonth(y,m)},(_,i)=>i+1)
-    .map(day=>`<option value="${day}" ${day===d?"selected":""}>${day}</option>`)
-    .join("");
-
-  monthSel.onchange = rebuildDayOptions;
-  yearSel.onchange = rebuildDayOptions;
-}
-
-function getSelectedDateString(){
-  const d = Number(document.getElementById("selDay").value);
-  const m = Number(document.getElementById("selMonth").value);
-  const y = Number(document.getElementById("selYear").value);
-  return `${y}-${pad2(m)}-${pad2(d)}`;
-}
 
 function openDatePicker(action,id,type){
   state.dateAction = {
@@ -3832,7 +3417,9 @@ function openDatePicker(action,id,type){
       ? "When did you watch it?"
       : "When will you watch it?";
 
-  populateDateSelects(existing?.date);
+  document.getElementById("selectedDate").value =
+    existing?.date ||
+    new Date().toISOString().slice(0,10);
 
   document.getElementById("dateModal").classList.remove("hidden");
 }
@@ -3871,13 +3458,20 @@ function openEpisodeDatePicker(
       ? "When did you watch this episode?"
       : "When will you watch this episode?";
 
-  populateDateSelects(existing?.date);
+  document.getElementById("selectedDate").value =
+    existing?.date ||
+    new Date().toISOString().slice(0,10);
 
   document.getElementById("dateModal").classList.remove("hidden");
 }
 
 function saveDateAction(){
-  const date = getSelectedDateString();
+  const date = document.getElementById("selectedDate").value;
+
+  if(!date){
+    toast("Please select a date.");
+    return;
+  }
 
   const action = state.dateAction;
 
@@ -3942,8 +3536,6 @@ function saveDateAction(){
   renderTimeline();
   if(!document.getElementById("timelinePage").classList.contains("hidden")) renderTimelinePage();
 
-  refreshAllTrackUI();
-
   toast(
     action.action === "watched"
       ? "Saved as watched."
@@ -3951,79 +3543,10 @@ function saveDateAction(){
   );
 }
 
-/* ============================================================
-   REMOVE / UNDO (with confirmation)
-============================================================ */
+function quickWatched(event,id,type){
+  event.stopPropagation();
 
-function openConfirmRemove(action,type,id){
-  state.removeAction = {action,type,id,episode:false};
-
-  document.getElementById("confirmTitle").textContent =
-    action === "watched" ? "Remove from Watched?" : "Remove from Scheduled?";
-
-  document.getElementById("confirmMessage").textContent =
-    action === "watched"
-      ? "This will unmark the title as watched."
-      : "This will remove it from your schedule.";
-
-  document.getElementById("confirmModal").classList.remove("hidden");
-}
-
-function openConfirmRemoveEpisode(action,tvId,season,episodeNumber){
-  state.removeAction = {
-    action,
-    type:"tv",
-    id:tvId,
-    episode:true,
-    season,
-    episodeNumber
-  };
-
-  document.getElementById("confirmTitle").textContent =
-    action === "watched" ? "Remove from Watched?" : "Remove from Scheduled?";
-
-  document.getElementById("confirmMessage").textContent =
-    action === "watched"
-      ? "This will unmark this episode as watched."
-      : "This will remove this episode from your schedule.";
-
-  document.getElementById("confirmModal").classList.remove("hidden");
-}
-
-function closeConfirmModal(){
-  document.getElementById("confirmModal").classList.add("hidden");
-  state.removeAction = null;
-}
-
-function confirmRemoveAction(){
-  const r = state.removeAction;
-
-  if(!r) return;
-
-  const data = r.action === "watched" ? getWatched() : getScheduled();
-
-  const key = r.episode
-    ? `tv:${r.id}:s${r.season}:e${r.episodeNumber}`
-    : `${r.type}:${r.id}`;
-
-  delete data[key];
-
-  if(r.action === "watched"){
-    saveWatched(data);
-  }else{
-    saveScheduled(data);
-  }
-
-  closeConfirmModal();
-
-  renderTimeline();
-  if(!document.getElementById("timelinePage").classList.contains("hidden")) renderTimelinePage();
-
-  refreshAllTrackUI();
-
-  toast(
-    r.action === "watched" ? "Removed from watched." : "Removed from scheduled."
-  );
+  openDatePicker("watched",id,type);
 }
 
 /* ============================================================
@@ -4216,14 +3739,12 @@ function openRandomPage(){
   document.getElementById("randomModal").classList.remove("hidden");
   document.body.style.overflow="hidden";
   window.scrollTo(0,0);
-  setActiveBottomTab("random");
 }
 
 function closeRandom(){
   document.getElementById("randomModal").classList.add("hidden");
   if(document.getElementById("detailOverlay").classList.contains("hidden") && document.getElementById("timelinePage").classList.contains("hidden")) document.body.style.overflow="";
   document.getElementById("randomResult")?.classList.remove("show");
-  setActiveBottomTab("home");
 }
 
 async function pickRandom(){
@@ -4419,8 +3940,49 @@ async function loadSearchSuggestions(query){
 function openSearchSuggestion(id,type){
   document.getElementById("searchSuggestions").classList.add("hidden");
   document.getElementById("searchInput").blur();
-  toggleMobileSearch(false);
   openDetails(id,type);
+}
+
+async function performSearch(query){
+  showResultsLoading();
+
+  try{
+    let all = [];
+
+    for(let page=1;page<=3;page++){
+      const data = await api("/search/multi",{
+        query,
+        page,
+        include_adult:false
+      });
+
+      all.push(
+        ...(data.results || [])
+          .filter(x=>x.media_type==="movie" || x.media_type==="tv")
+      );
+    }
+
+    state.currentResults = uniqueItems(all).slice(0,50);
+
+    document.getElementById("resultsTitle").textContent =
+      `Search: ${query}`;
+
+    document.getElementById("resultsCount").textContent =
+      `${state.currentResults.length} unique results`;
+
+    renderResults();
+
+    document.getElementById("pagination").innerHTML = "";
+
+  }catch(error){
+    console.error(error);
+
+    document.getElementById("results").innerHTML = `
+      <div class="empty" style="grid-column:1/-1">
+        Search failed. Try again.
+      </div>
+    `;
+  }
 }
 
 /* ============================================================
@@ -4466,20 +4028,6 @@ document.getElementById("dateModal")?.addEventListener("click",event=>{
   });
 
 /* ============================================================
-   CONFIRM MODAL EVENTS
-============================================================ */
-
-document.getElementById("closeConfirm")?.addEventListener("click",closeConfirmModal);
-document.getElementById("confirmCancel")?.addEventListener("click",closeConfirmModal);
-document.getElementById("confirmRemove")?.addEventListener("click",confirmRemoveAction);
-
-document.getElementById("confirmModal")?.addEventListener("click",event=>{
-    if(event.target.id === "confirmModal"){
-      closeConfirmModal();
-    }
-  });
-
-/* ============================================================
    TIMELINE BUTTON
 ============================================================ */
 
@@ -4489,32 +4037,57 @@ function openTimelinePage(){
   renderTimelinePage();
   document.getElementById("timelinePage").classList.remove("hidden");
   document.body.style.overflow="hidden";
-  setActiveBottomTab("timeline");
 }
 
 function closeTimelinePage(){
   document.getElementById("timelinePage").classList.add("hidden");
   document.body.style.overflow="";
-  setActiveBottomTab("home");
 }
 
 document.getElementById("closeTimeline")?.addEventListener("click",closeTimelinePage);
 
 function timelineEntryHtml(item,status){
-  const title=item.episode ? `${item.title||"TV Show"} — S${item.season} E${item.episode}` : (item.title||"Untitled");
+  const type=item.type || (item.media_type === "movie" ? "movie" : "tv");
+  const title=item.episode
+    ? `${item.title||"TV Show"} — S${item.season} E${item.episode}`
+    : (item.title||"Untitled");
   const poster=item.posterPath||item.stillPath||"";
-  return `<div class="timeline-entry" onclick="openDetails(${item.id},'${item.type||'tv'}')">
+  const icon=status === "WATCHED" ? "✓" : "◷";
+  const label=status === "WATCHED" ? "WATCHED" : "SCHEDULED";
+
+  return `<div class="timeline-entry" role="button" tabindex="0"
+      onclick="openDetails(${Number(item.id)||0},'${type}')"
+      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetails(${Number(item.id)||0},'${type}')}">
     <img src="${image(poster)}" alt="${esc(title)}">
-    <div class="te-info"><div class="te-title">${esc(title)}</div><div class="te-type">${status}</div><div class="te-date">📅 ${esc(formatDate(item.date))}</div></div>
+    <div class="te-info">
+      <div class="te-title">${esc(title)}</div>
+      <div class="te-type">${esc(type === "movie" ? "MOVIE" : "TV SHOW")}</div>
+      <div class="te-date">📅 ${esc(formatDate(item.date))}</div>
+      <div class="te-status ${status === "WATCHED" ? "watched" : "scheduled"}">${icon} ${label}</div>
+    </div>
   </div>`;
 }
 
 function renderTimelinePage(){
-  const watched=Object.values(getWatched()).sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,30);
-  const scheduled=Object.values(getScheduled()).sort((a,b)=>String(a.date).localeCompare(String(b.date))).slice(0,30);
-  const w=document.getElementById("timelineWatched"), q=document.getElementById("timelineScheduled");
-  w.innerHTML=watched.length?watched.map(x=>timelineEntryHtml(x,"WATCHED")).join(""):`<div class="empty">No watched titles yet.</div>`;
-  q.innerHTML=scheduled.length?scheduled.map(x=>timelineEntryHtml(x,"SCHEDULED")).join(""):`<div class="empty">No scheduled titles yet.</div>`;
+  const watched=Object.values(getWatched())
+    .sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")))
+    .slice(0,30);
+
+  const scheduled=Object.values(getScheduled())
+    .sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")))
+    .slice(0,30);
+
+  const w=document.getElementById("timelineWatched");
+  const q=document.getElementById("timelineScheduled");
+  if(!w || !q) return;
+
+  w.innerHTML=watched.length
+    ? watched.map(x=>timelineEntryHtml(x,"WATCHED")).join("")
+    : `<div class="timeline-empty">No watched titles yet.</div>`;
+
+  q.innerHTML=scheduled.length
+    ? scheduled.map(x=>timelineEntryHtml(x,"SCHEDULED")).join("")
+    : `<div class="timeline-empty">No scheduled titles yet.</div>`;
 }
 
 /* ============================================================
@@ -4568,12 +4141,6 @@ document.addEventListener("keydown",event=>{
     if(!document.getElementById("randomModal")
       .classList.contains("hidden")){
       closeRandom();
-      return;
-    }
-
-    if(!document.getElementById("confirmModal")
-      .classList.contains("hidden")){
-      closeConfirmModal();
       return;
     }
 
@@ -4644,8 +4211,7 @@ window.goPage = goPage;
 window.loadSeason = loadSeason;
 window.openDatePicker = openDatePicker;
 window.openEpisodeDatePicker = openEpisodeDatePicker;
-window.handleTrackClick = handleTrackClick;
-window.handleEpisodeTrackClick = handleEpisodeTrackClick;
+window.quickWatched = quickWatched;
 window.openSearchSuggestion=openSearchSuggestion;
 window.openRandomResult=openRandomResult;
 window.openTimelinePage=openTimelinePage;
@@ -4653,5 +4219,141 @@ window.openRandomPage=openRandomPage;
 
 </script>
 
+
+<script id="cinevo-v3-js">
+(function(){
+  window.goHome = function(){
+    const detail = document.getElementById("detailOverlay");
+    const timeline = document.getElementById("timelinePage");
+    const random = document.getElementById("randomModal");
+
+    if(detail && !detail.classList.contains("hidden") && typeof closeDetails === "function"){
+      closeDetails(true);
+    }
+    if(timeline && !timeline.classList.contains("hidden") && typeof closeTimelinePage === "function"){
+      closeTimelinePage();
+    }
+    if(random && !random.classList.contains("hidden") && typeof closeRandom === "function"){
+      closeRandom();
+    }
+
+    if(typeof stopTrendingTimer === "function") stopTrendingTimer();
+
+    state.filters.type = "all";
+    state.page = 1;
+    updateFilterLabels();
+
+    document.querySelectorAll(".global-media-btn").forEach(function(btn){
+      btn.classList.toggle("active", btn.dataset.value === "all");
+    });
+
+    const search = document.getElementById("searchInput");
+    if(search) search.value = "";
+
+    const suggestions = document.getElementById("searchSuggestions");
+    if(suggestions) suggestions.classList.add("hidden");
+
+    if(typeof loadTrending === "function") loadTrending();
+    if(typeof loadBrowse === "function") loadBrowse();
+
+    window.scrollTo({top:0,behavior:"smooth"});
+
+    try{
+      if(location.hash && location.hash !== "#home"){
+        history.pushState({cinevoHome:true},"","#home");
+      }
+    }catch(e){}
+  };
+
+  window.setMainMediaType = async function(type){
+    if(!["all","movie","tv"].includes(type)) type="all";
+
+    state.filters.type = type;
+    state.page = 1;
+
+    document.querySelectorAll(".global-media-btn").forEach(function(btn){
+      btn.classList.toggle("active", btn.dataset.value === type);
+    });
+
+    // Keep the existing Browse by Type dropdown synchronized.
+    if(typeof updateFilterLabels === "function") updateFilterLabels();
+
+    // Clear search so the whole main page is in the selected browse mode.
+    const search = document.getElementById("searchInput");
+    if(search) search.value = "";
+    document.getElementById("searchSuggestions")?.classList.add("hidden");
+
+    // Refresh both Trending and Browse using the selected type.
+    await Promise.allSettled([
+      typeof loadTrending === "function" ? loadTrending() : Promise.resolve(),
+      typeof loadBrowse === "function" ? loadBrowse() : Promise.resolve()
+    ]);
+
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+
+  document.addEventListener("DOMContentLoaded",function(){
+    document.querySelectorAll(".global-media-btn").forEach(function(btn){
+      btn.classList.toggle("active", btn.dataset.value === (state.filters.type || "all"));
+    });
+  });
+})();
+</script>
+
+
+<nav id="cinevoMobileNav" aria-label="Mobile navigation">
+  <button type="button" data-mobile-nav="home" onclick="goHome()"><span class="mobile-nav-icon">🏠</span><span>Home</span></button>
+  <button type="button" data-mobile-nav="search" onclick="openMobileSearch()"><span class="mobile-nav-icon">🔍</span><span>Search</span></button>
+  <button type="button" data-mobile-nav="random" onclick="openRandomPage()"><span class="mobile-nav-icon">🎲</span><span>Pick for Me</span></button>
+  <button type="button" data-mobile-nav="timeline" onclick="openTimelinePage()"><span class="mobile-nav-icon">◇</span><span>Watch Timeline</span></button>
+</nav>
+<div id="mobileSearchView" class="mobile-only-view hidden" aria-hidden="true">
+  <div class="mobile-view-inner">
+    <div class="mobile-view-head"><div><div class="mobile-view-kicker">CINEVO SEARCH</div><h2>Find Movies & TV Shows</h2></div><button type="button" class="mobile-view-close" onclick="closeMobileSearch()">×</button></div>
+    <div class="mobile-search-input-wrap"><span>🔍</span><input id="mobileSearchInput" type="search" autocomplete="off" placeholder="Movie, TV show, actor, actress, director..."></div>
+    <div class="mobile-search-chips" id="mobileSearchTypes"><button class="active" data-type="all">ALL</button><button data-type="movie">MOVIES</button><button data-type="tv">TV SHOWS</button><button data-type="person">PEOPLE</button></div>
+    <div class="mobile-search-filters"><label>Genre<select id="mobileGenreFilter"><option value="">All Genres</option></select></label><label>Year<select id="mobileYearFilter"><option value="">All Years</option></select></label><label>Country<select id="mobileCountryFilter"><option value="">All Countries</option></select></label><label>Sort<select id="mobileSortFilter"><option value="popular">Popular</option><option value="rating">Top Rated</option><option value="newest">Newest</option></select></label></div>
+    <button id="mobileSearchGo" class="mobile-search-go" type="button">SEARCH</button>
+    <div id="mobileSearchPeople" class="mobile-search-people hidden"></div>
+    <div id="mobileSearchResults" class="mobile-search-results"></div>
+    <div id="mobileSearchLoader" class="mobile-search-loader hidden">Loading more…</div>
+  </div>
+</div>
+<div id="mobileAccountView" class="mobile-only-view hidden" aria-hidden="true">
+  <div class="mobile-account-card"><div class="mobile-account-icon">◉</div><h2>Welcome to CINEVO</h2><p>Sign in to keep your watch journey, scheduled titles and preferences in one place.</p><button type="button" class="mobile-account-primary" onclick="mobileAuthAction('signin')">Sign In</button><button type="button" class="mobile-account-secondary" onclick="mobileAuthAction('signup')">Sign Up</button><button type="button" class="mobile-view-close account-close" onclick="closeMobileAccount()">Close</button></div>
+</div>
+<style id="cinevo-mobile-final-v7">
+@media(max-width:700px){
+html{scroll-behavior:auto!important}body{padding-bottom:76px!important;overflow-x:hidden}header{z-index:3000!important}header .nav{min-height:54px!important;padding:9px 14px!important;justify-content:space-between!important}header .logo{font-size:17px!important}header .search-wrap{display:none!important}header .nav-actions{width:auto!important;margin-left:auto!important}header .nav-actions .nav-btn:not(.account-btn){display:none!important}header .account-btn{width:36px!important;height:36px!important;padding:0!important;border-radius:50%!important;display:grid!important;place-items:center!important;font-size:16px!important}
+.container{padding:14px 14px 35px!important}.section{margin-bottom:20px!important}.section-title{font-size:19px!important}.section-subtitle{font-size:11px!important;margin:3px 0 10px!important}main{display:flex!important;flex-direction:column!important}main>.section:first-of-type{order:1}main>.section:nth-of-type(2){display:none!important}main>.section:nth-of-type(3){order:3!important}#globalMediaFilter{order:2!important;display:flex!important;gap:7px!important;padding:0 14px!important;margin:0 0 14px!important;overflow-x:auto!important;white-space:nowrap!important;scrollbar-width:none!important}#globalMediaFilter::-webkit-scrollbar{display:none}.global-media-btn{min-height:38px!important;padding:8px 14px!important;border-radius:11px!important;font-size:10px!important}
+#trendingBox.trending{min-height:0!important;height:auto!important;border-radius:16px!important;overflow:hidden!important;background:#10141b!important}#trendingBox .trend-slide{position:absolute!important;inset:0!important;display:flex!important;flex-direction:column!important;opacity:0!important;pointer-events:none!important}#trendingBox .trend-slide.active{position:relative!important;opacity:1!important;pointer-events:auto!important}#trendingBox .trend-bg{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;aspect-ratio:16/9!important;object-fit:cover!important;object-position:center!important;display:block!important}#trendingBox .trend-overlay{position:absolute!important;z-index:2!important;inset:0!important;width:100%!important;height:65%!important;background:linear-gradient(180deg,transparent,rgba(5,8,12,.78))!important}#trendingBox .trend-content{position:relative!important;z-index:3!important;width:100%!important;min-height:0!important;padding:12px 12px 16px!important;display:block!important;background:#10141b!important}#trendingBox .trend-type{font-size:9px!important;margin-bottom:4px!important}#trendingBox .trend-title{font-size:20px!important;line-height:1.05!important;margin:0 0 6px!important}#trendingBox .trend-meta{font-size:10px!important;gap:7px!important;margin-bottom:7px!important}#trendingBox .trend-overview{font-size:10px!important;line-height:1.45!important;-webkit-line-clamp:2!important;max-height:30px!important}#trendingBox .trend-btn{margin-top:9px!important;padding:8px 12px!important;border-radius:8px!important;font-size:11px!important}#trendingBox .trend-dots{z-index:8!important;left:auto!important;right:12px!important;bottom:12px!important;gap:4px!important}#trendingBox .dot{width:5px!important;height:5px!important;background:rgba(255,255,255,.7)!important}#trendingBox .dot.active{width:18px!important;background:#f5c518!important}#trendingBox .trend-arrow{z-index:9!important;width:30px!important;height:30px!important;font-size:18px!important;display:grid!important;place-items:center!important;background:rgba(0,0,0,.65)!important}#trendingBox .trend-prev{right:48px!important;left:auto!important;top:auto!important;bottom:10px!important;transform:none!important}#trendingBox .trend-next{right:10px!important;top:auto!important;bottom:10px!important;transform:none!important}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}.movie-card{border-radius:12px!important}.poster-type{top:6px!important;left:6px!important;padding:4px 5px!important;font-size:7px!important}.card-body{padding:8px!important}.card-title{font-size:11px!important}.card-meta{font-size:8px!important}.card-actions .quick-btn{display:none!important}.card-actions .details-btn{font-size:9px!important;padding:6px!important}#pagination{display:none!important}#toTop{z-index:2500!important;right:14px!important;bottom:88px!important;width:36px!important;height:36px!important}
+#cinevoMobileNav{display:grid!important;position:fixed!important;z-index:99999!important;left:0!important;right:0!important;bottom:0!important;height:68px!important;padding:5px 7px max(5px,env(safe-area-inset-bottom))!important;grid-template-columns:repeat(4,1fr)!important;gap:2px!important;background:rgba(10,14,21,.98)!important;border-top:1px solid #252c38!important}#cinevoMobileNav button{font-size:8px!important;color:#b8bec8!important;gap:2px!important}#cinevoMobileNav .mobile-nav-icon{font-size:18px!important;line-height:1!important}#cinevoMobileNav button.active{color:#f5c518!important}
+.mobile-only-view{position:fixed!important;inset:0!important;z-index:90000!important;background:#090b10!important;overflow:auto!important;padding-bottom:82px!important}.mobile-view-inner{padding:14px;max-width:720px;margin:auto}.mobile-view-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.mobile-view-kicker{font-size:8px;font-weight:900;letter-spacing:1.3px;color:#7f8794}.mobile-view-head h2{font-size:20px;margin:3px 0 0}.mobile-view-close{width:34px;height:34px;border-radius:50%;border:1px solid #2c333e;background:#171c25;color:#fff;font-size:20px;line-height:1}.mobile-search-input-wrap{display:flex;align-items:center;gap:8px;background:#151a22;border:1px solid #303744;border-radius:12px;padding:0 11px}.mobile-search-input-wrap input{width:100%;height:44px;border:0;outline:0;background:transparent;color:#fff;font-size:12px}.mobile-search-chips{display:flex;gap:6px;overflow-x:auto;margin:10px 0;scrollbar-width:none}.mobile-search-chips::-webkit-scrollbar{display:none}.mobile-search-chips button{flex:none;border:1px solid #2b323e;background:#141922;color:#aeb5c0;border-radius:9px;padding:8px 11px;font-size:9px;font-weight:900}.mobile-search-chips button.active{background:#f5c518;border-color:#f5c518;color:#111}.mobile-search-filters{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}.mobile-search-filters label{font-size:8px;color:#818997;font-weight:800}.mobile-search-filters select{display:block;width:100%;margin-top:4px;background:#151a22;color:#e9edf2;border:1px solid #2b323e;border-radius:9px;padding:9px 7px;font-size:9px;outline:none}.mobile-search-go{width:100%;height:40px;border:0;border-radius:10px;background:#f5c518;color:#111;font-weight:900;font-size:10px;margin-bottom:12px}.mobile-search-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.mobile-search-people{display:grid;gap:7px;margin-bottom:10px}.mobile-person-result{display:flex;align-items:center;gap:10px;background:#141922;border:1px solid #252c37;border-radius:11px;padding:8px;color:#fff;text-align:left}.mobile-person-result img{width:42px;height:55px;border-radius:7px;object-fit:cover;background:#20252e}.mobile-person-result strong{font-size:11px;display:block}.mobile-person-result small{font-size:8px;color:#8f97a5;display:block;margin-top:3px}.mobile-search-loader{text-align:center;color:#7f8794;font-size:10px;padding:14px}
+.mobile-account-view{display:flex;align-items:center;justify-content:center}.mobile-account-card{width:min(340px,calc(100% - 28px));background:#121720;border:1px solid #2a313d;border-radius:18px;padding:25px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.45)}.mobile-account-icon{width:58px;height:58px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;border:1px solid #3a424e;background:#1a202a;font-size:26px}.mobile-account-card h2{font-size:20px;margin:0 0 7px}.mobile-account-card p{font-size:11px;line-height:1.55;color:#9199a6;margin:0 0 18px}.mobile-account-primary,.mobile-account-secondary{width:100%;height:40px;border-radius:10px;font-size:11px;font-weight:900;margin-top:7px}.mobile-account-primary{border:0;background:#f5c518;color:#111}.mobile-account-secondary{border:1px solid #343b47;background:#171c25;color:#fff}.account-close{margin-top:9px;width:100%;border-radius:9px;height:34px;font-size:10px}
+#timelinePage{z-index:85000!important;background:#090b10!important;overflow:auto!important;padding-bottom:82px!important}#timelinePage .page-shell{padding:14px!important;max-width:720px;margin:auto}#timelinePage .page-head{padding:4px 0 13px!important}#timelinePage .page-head h1{font-size:21px!important;margin:0!important}#timelinePage .page-head p{font-size:10px!important;color:#8f97a5!important}#timelinePage .timeline-columns{display:block!important}#timelinePage .timeline-column{display:block!important;background:transparent!important;border:0!important;padding:0!important}#timelinePage .timeline-column h2{display:none!important}.mobile-timeline{position:relative;padding:7px 0 20px}.mobile-timeline:before{content:"";position:absolute;left:16px;top:0;bottom:0;width:2px;background:#2c333d}.mobile-timeline-item{position:relative;padding-left:38px;margin-bottom:12px}.mobile-timeline-dot{position:absolute;left:10px;top:15px;width:14px;height:14px;border-radius:50%;border:3px solid #090b10;z-index:2}.watched-dot{background:#22c55e}.scheduled-dot{background:#ef4444}.mobile-timeline-card{display:flex;gap:9px;align-items:center;background:#141922;border:1px solid #252c37;border-radius:12px;padding:8px}.mobile-timeline-card img{width:45px;height:64px;border-radius:7px;object-fit:cover;flex:none}.mobile-timeline-info{min-width:0;flex:1}.mobile-timeline-title{font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mobile-timeline-date{font-size:8px;color:#8e96a4;margin-top:4px}.mobile-timeline-status{font-size:8px;font-weight:900;margin-top:5px;display:inline-block;padding:4px 6px;border-radius:6px}.watched-status{color:#4ade80;background:rgba(34,197,94,.11)}.scheduled-status{color:#f87171;background:rgba(239,68,68,.11)}
+}
+</style>
+<script id="cinevo-mobile-final-v7-js">
+(function(){
+const isMobile=()=>window.innerWidth<=700;let searchPage=1,searchLoading=false,searchMode='all',infiniteLoading=false;
+function syncNav(a){document.querySelectorAll('#cinevoMobileNav button').forEach(b=>b.classList.toggle('active',b.dataset.mobileNav===a))}
+function moveMediaFilter(){if(!isMobile())return;const gf=document.getElementById('globalMediaFilter'),main=document.querySelector('main');if(gf&&main&&gf.parentElement!==main)main.insertBefore(gf,main.children[1]||null)}
+window.openMobileSearch=()=>{if(!isMobile())return document.getElementById('searchInput')?.focus();closeRandom();closeTimelinePage();document.getElementById('detailOverlay')?.classList.add('hidden');document.getElementById('mobileSearchView').classList.remove('hidden');document.body.style.overflow='hidden';syncNav('search');populateSearchFilters();setTimeout(()=>document.getElementById('mobileSearchInput')?.focus(),80)};
+window.closeMobileSearch=()=>{document.getElementById('mobileSearchView').classList.add('hidden');if(document.getElementById('detailOverlay')?.classList.contains('hidden')&&document.getElementById('timelinePage')?.classList.contains('hidden')&&document.getElementById('randomModal')?.classList.contains('hidden'))document.body.style.overflow='';syncNav('home')};
+window.openMobileAccount=()=>{if(isMobile()){document.getElementById('mobileAccountView').classList.remove('hidden');document.body.style.overflow='hidden'}};window.closeMobileAccount=()=>{document.getElementById('mobileAccountView').classList.add('hidden');if(document.getElementById('detailOverlay')?.classList.contains('hidden'))document.body.style.overflow=''};window.mobileAuthAction=k=>toast(k==='signin'?'Sign In UI is ready for authentication setup.':'Sign Up UI is ready for authentication setup.');
+function populateSearchFilters(){const y=document.getElementById('mobileYearFilter');if(y&&y.options.length===1)for(let i=new Date().getFullYear();i>=1901;i--){let o=document.createElement('option');o.value=i;o.textContent=i;y.appendChild(o)}const g=document.getElementById('mobileGenreFilter');if(g&&g.options.length===1){let a=[['bollywood','Bollywood'],...MOVIE_GENRES.map(x=>[String(x[0]),x[1]]),...TV_GENRES.map(x=>[String(x[0]),x[1]])].filter((x,i,z)=>z.findIndex(q=>q[0]===x[0])===i).sort((a,b)=>a[1].localeCompare(b[1]));a.forEach(x=>{let o=document.createElement('option');o.value=x[0];o.textContent=x[1];g.appendChild(o)})}const c=document.getElementById('mobileCountryFilter');if(c&&c.options.length===1)[...COUNTRIES].sort((a,b)=>a[1].localeCompare(b[1])).forEach(x=>{let o=document.createElement('option');o.value=x[0];o.textContent=x[1];c.appendChild(o)})}
+function card(item){const t=mediaType(item),title=titleOf(item);return `<article class="movie-card" onclick="openDetails(${item.id},'${t}')"><div class="poster-wrap"><img class="poster" src="${image(item.poster_path)}" alt="${esc(title)}" loading="lazy"><div class="poster-type">${t==='tv'?'TV SHOW':'MOVIE'}</div></div><div class="card-body"><div class="card-title">${esc(title)}</div><div class="card-meta"><span class="card-date">${esc(formatDate(dateOf(item)))}</span><span class="card-rating">★ ${Number(item.vote_average||0).toFixed(1)}</span></div><div class="card-actions"><button class="details-btn" onclick="event.stopPropagation();openDetails(${item.id},'${t}')">View Details</button></div></div></article>`}
+function renderSearch(items,append){const box=document.getElementById('mobileSearchResults');if(!append)box.innerHTML='';const seen=new Set([...box.querySelectorAll('.movie-card')].map(x=>x.dataset.key));uniqueItems(items).forEach(x=>{const k=mediaType(x)+':'+x.id;if(seen.has(k))return;const w=document.createElement('div');w.innerHTML=card(x);w.firstElementChild.dataset.key=k;box.appendChild(w.firstElementChild);seen.add(k)})}
+function renderPeople(ps){const box=document.getElementById('mobileSearchPeople');if(!ps.length){box.classList.add('hidden');box.innerHTML='';return}box.classList.remove('hidden');box.innerHTML=ps.slice(0,8).map(p=>`<button class="mobile-person-result" onclick="searchMobilePerson(${p.id})"><img src="${image(p.profile_path,PROFILE_SIZE)}"><span><strong>${esc(p.name)}</strong><small>${esc((p.known_for_department||'Person').toUpperCase())} · View credits</small></span></button>`).join('')}
+window.searchMobilePerson=async(id)=>{try{document.getElementById('mobileSearchPeople').classList.add('hidden');document.getElementById('mobileSearchResults').innerHTML='';const d=await api('/person/'+id+'/combined_credits',{});renderSearch(uniqueItems((d.cast||[]).filter(x=>x.media_type==='movie'||x.media_type==='tv').sort((a,b)=>Number(b.popularity||0)-Number(a.popularity||0)).slice(0,50)),false)}catch(e){document.getElementById('mobileSearchResults').innerHTML='<div class="empty">Unable to load credits.</div>'}};
+async function runSearch(reset=true){if(searchLoading)return;const q=document.getElementById('mobileSearchInput').value.trim(),genre=document.getElementById('mobileGenreFilter').value,year=document.getElementById('mobileYearFilter').value,country=document.getElementById('mobileCountryFilter').value,sort=document.getElementById('mobileSortFilter').value;if(reset){searchPage=1;document.getElementById('mobileSearchResults').innerHTML='';document.getElementById('mobileSearchPeople').classList.add('hidden')}if(!q&&searchMode==='person'){toast('Enter a person name.');return}searchLoading=true;document.getElementById('mobileSearchLoader').classList.remove('hidden');try{if(q){const d=await api('/search/multi',{query:q,page:searchPage,include_adult:false});const all=d.results||[];if(reset&&(searchMode==='all'||searchMode==='person'))renderPeople(all.filter(x=>x.media_type==='person'));let items=all.filter(x=>x.media_type==='movie'||x.media_type==='tv');if(searchMode==='movie')items=items.filter(x=>x.media_type==='movie');if(searchMode==='tv')items=items.filter(x=>x.media_type==='tv');if(searchMode!=='person')renderSearch(items,true)}else{let types=searchMode==='movie'?['movie']:searchMode==='tv'?['tv']:['movie','tv'];let items=[];for(const type of types){const p={page:searchPage,include_adult:false,sort_by:sort==='rating'?'vote_average.desc':sort==='newest'?'primary_release_date.desc':'popularity.desc'};if(genre&&genre!=='bollywood')p.with_genres=genre;if(country)p.with_origin_country=country;if(year){if(type==='movie')p.primary_release_year=year;else p.first_air_date_year=year}if(genre==='bollywood'){p.with_original_language='hi';p.with_origin_country='IN'}const d=await api(type==='tv'?'/discover/tv':'/discover/movie',p);items.push(...(d.results||[]).map(x=>({...x,media_type:type})))}renderSearch(uniqueItems(items),true)}searchPage++}catch(e){console.error(e);if(reset)document.getElementById('mobileSearchResults').innerHTML='<div class="empty">Search failed. Please try again.</div>'}searchLoading=false;document.getElementById('mobileSearchLoader').classList.add('hidden')}
+function bindSearch(){document.querySelectorAll('#mobileSearchTypes button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#mobileSearchTypes button').forEach(x=>x.classList.remove('active'));b.classList.add('active');searchMode=b.dataset.type;runSearch(true)}));document.getElementById('mobileSearchGo').addEventListener('click',()=>runSearch(true));document.getElementById('mobileSearchInput').addEventListener('keydown',e=>{if(e.key==='Enter')runSearch(true)});['mobileGenreFilter','mobileYearFilter','mobileCountryFilter','mobileSortFilter'].forEach(id=>document.getElementById(id).addEventListener('change',()=>runSearch(true)))}
+async function nextHome(){if(infiniteLoading)return;infiniteLoading=true;try{const p=state.page+1;let items=[];if(state.filters.genre==='bollywood')items=await loadBollywood(state.filters.type,p);else if(state.filters.type==='all'){const [m,t]=await Promise.all([fetch50('movie',p),fetch50('tv',p)]);items=uniqueItems([...m,...t]).sort((a,b)=>Number(b.popularity||0)-Number(a.popularity||0)).slice(0,50)}else items=await fetch50(state.filters.type,p);items=uniqueAgainst(uniqueItems(items),state.currentResults);if(items.length){state.currentResults.push(...items);state.page=p;renderResults()}}catch(e){console.error('Infinite scroll failed',e)}infiniteLoading=false}
+const origRender=window.renderResults;window.renderResults=function(){origRender();if(isMobile())document.querySelectorAll('#results .quick-btn').forEach(x=>x.remove())};const origTimeline=window.renderTimelinePage;window.renderTimelinePage=function(){if(!isMobile())return origTimeline();const items=[...Object.values(getWatched()).map(x=>({...x,__s:'watched'})),...Object.values(getScheduled()).map(x=>({...x,__s:'scheduled'}))].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));const wrap=document.querySelector('#timelinePage .timeline-columns');if(!wrap)return;wrap.innerHTML=`<section class="timeline-column"><div class="mobile-timeline">${items.map(x=>{const w=x.__s==='watched',title=x.episode?`${x.title||'TV Show'} — S${x.season} E${x.episode}`:(x.title||'Untitled');return `<div class="mobile-timeline-item"><span class="mobile-timeline-dot ${w?'watched-dot':'scheduled-dot'}"></span><div class="mobile-timeline-card"><img src="${image(x.posterPath||x.stillPath)}"><div class="mobile-timeline-info"><div class="mobile-timeline-title">${esc(title)}</div><div class="mobile-timeline-date">${esc(formatDate(x.date))}</div><span class="mobile-timeline-status ${w?'watched-status':'scheduled-status'}">${w?'✓ WATCHED':'◷ SCHEDULED'}</span></div></div></div>`}).join('')||'<div class="timeline-empty">Nothing on your timeline yet.</div>'}</div></section>`};
+const origRandom=window.openRandomPage;window.openRandomPage=function(){if(isMobile()){closeMobileSearch();closeMobileAccount();document.getElementById('detailOverlay')?.classList.add('hidden');syncNav('random')}return origRandom()};const origTL=window.openTimelinePage;window.openTimelinePage=function(){if(isMobile()){closeMobileSearch();closeMobileAccount();document.getElementById('randomModal')?.classList.add('hidden');syncNav('timeline')}return origTL()};const origHome=window.goHome;window.goHome=function(){if(isMobile()){closeMobileSearch();closeMobileAccount();document.getElementById('randomModal')?.classList.add('hidden');document.getElementById('timelinePage')?.classList.add('hidden');document.getElementById('detailOverlay')?.classList.add('hidden');document.body.style.overflow='';syncNav('home')}return origHome()};
+document.addEventListener('DOMContentLoaded',()=>{moveMediaFilter();bindSearch();populateSearchFilters();document.getElementById('accountBtn')?.addEventListener('click',openMobileAccount);window.addEventListener('resize',moveMediaFilter);window.addEventListener('scroll',()=>{if(!isMobile()||!document.getElementById('mobileSearchView').classList.contains('hidden'))return;if(window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-600)nextHome()},{passive:true});document.getElementById('mobileSearchView')?.addEventListener('click',e=>{if(e.target.id==='mobileSearchView')closeMobileSearch()});document.getElementById('mobileAccountView')?.addEventListener('click',e=>{if(e.target.id==='mobileAccountView')closeMobileAccount()});if(isMobile())syncNav('home')});
+})();
+</script>
 </body>
 </html>
