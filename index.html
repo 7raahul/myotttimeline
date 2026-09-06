@@ -3227,13 +3227,13 @@ function renderDetail(details,credits,providers){
             <button class="detail-mobile-action watched ${watchedActive ? "is-active" : ""}"
                     type="button"
                     onclick="toggleMobileAction('watched',${details.id},'${type}')">
-              ✓ <span>${watchedActive ? "Remove from Watch" : "Watched"}</span>
+              ✓ <span>${watchedActive ? "↶ Remove from Watch" : "Watched"}</span>
             </button>
 
             <button class="detail-mobile-action schedule ${scheduledActive ? "is-active" : ""}"
                     type="button"
                     onclick="toggleMobileAction('scheduled',${details.id},'${type}')">
-              📅 <span>${scheduledActive ? "Remove Schedule" : "Schedule"}</span>
+              📅 <span>${scheduledActive ? "↶ Remove Schedule" : "Schedule"}</span>
             </button>
           </div>
         </div>
@@ -3501,7 +3501,8 @@ const PROVIDER_URLS={
 ============================================================ */
 
 async function loadSeason(tvId,seasonNumber,clickedButton=null){
-  if(Number(seasonNumber) < 1) return;
+  seasonNumber=Number(seasonNumber);
+  if(!Number.isFinite(seasonNumber) || seasonNumber < 1) return;
   state.currentSeason = seasonNumber;
 
   document.querySelectorAll(".season-btn").forEach(btn=>{
@@ -3514,9 +3515,7 @@ async function loadSeason(tvId,seasonNumber,clickedButton=null){
     const buttons = document.querySelectorAll(".season-btn");
 
     buttons.forEach(btn=>{
-      if(btn.textContent.includes(
-        seasonNumber === 0 ? "Specials" : "Season "+seasonNumber
-      )){
+      if(btn.textContent.includes("Season "+seasonNumber)){
         btn.classList.add("active");
       }
     });
@@ -3779,57 +3778,96 @@ function dateFromParts(){
 }
 
 function fillModernDatePicker(dateValue,minDate,action){
-  const day = document.getElementById("selectedDay");
-  const month = document.getElementById("selectedMonth");
-  const year = document.getElementById("selectedYear");
+  const day=document.getElementById("selectedDay");
+  const month=document.getElementById("selectedMonth");
+  const year=document.getElementById("selectedYear");
   if(!day || !month || !year) return;
 
-  const base = dateValue ? new Date(dateValue+"T12:00:00") : new Date();
-  const min = minDate ? new Date(minDate+"T12:00:00") : null;
-  const minYear = min ? min.getFullYear() : new Date().getFullYear();
+  const today=new Date().toISOString().slice(0,10);
+  const min= minDate ? minDate : "";
+  const max= action==="watched" ? today : `${new Date().getFullYear()+10}-12-31`;
 
-  year.innerHTML = "";
-  const maxYear = action === "scheduled"
-    ? Math.max(new Date().getFullYear()+10,minYear+10)
-    : new Date().getFullYear();
+  let base=dateValue || today;
+  if(min && base<min) base=min;
+  if(max && base>max) base=max;
 
+  const baseDate=new Date(base+"T12:00:00");
+  const minDateObj=min ? new Date(min+"T12:00:00") : null;
+  const maxDateObj=max ? new Date(max+"T12:00:00") : null;
+
+  const minYear=minDateObj ? minDateObj.getFullYear() : baseDate.getFullYear();
+  const maxYear=maxDateObj ? maxDateObj.getFullYear() : baseDate.getFullYear();
+
+  year.innerHTML="";
   for(let y=minYear;y<=maxYear;y++){
     const o=document.createElement("option");
-    o.value=y;
-    o.textContent=y;
+    o.value=String(y);
+    o.textContent=String(y);
     year.appendChild(o);
   }
 
-  year.value = String(base.getFullYear());
-  month.value = String(base.getMonth()+1);
+  function refreshMonths(){
+    const y=Number(year.value);
+    const currentMonth=Number(month.value)||baseDate.getMonth()+1;
+
+    Array.from(month.options).forEach(o=>{
+      const m=Number(o.value);
+      const first=`${y}-${pad2(m)}-01`;
+      const last=`${y}-${pad2(m)}-${pad2(daysInMonth(y,m))}`;
+      o.disabled=!!((min && last<min) || (max && first>max));
+    });
+
+    let m=currentMonth;
+    if(month.options[m-1]?.disabled){
+      const enabled=Array.from(month.options).find(o=>!o.disabled);
+      m=enabled ? Number(enabled.value) : 1;
+    }
+    month.value=String(m);
+    refreshDays();
+  }
 
   function refreshDays(){
-    const y=Number(year.value), m=Number(month.value);
+    const y=Number(year.value);
+    const m=Number(month.value);
     const total=daysInMonth(y,m);
-    const old=Number(day.value)||base.getDate();
+    const old=Number(day.value)||baseDate.getDate();
+
     day.innerHTML="";
     for(let d=1;d<=total;d++){
       const iso=`${y}-${pad2(m)}-${pad2(d)}`;
-      if(minDate && iso<minDate) continue;
+      if(min && iso<min) continue;
+      if(max && iso>max) continue;
+
       const o=document.createElement("option");
-      o.value=d;
+      o.value=String(d);
       o.textContent=pad2(d);
       day.appendChild(o);
     }
+
     if(!day.options.length){
       day.innerHTML='<option value="">—</option>';
+      updateModernDatePreview();
       return;
     }
-    day.value=String(Math.min(old,total));
+
+    let target=old;
+    const enabledDates=Array.from(day.options).map(o=>Number(o.value));
+    if(!enabledDates.includes(target)){
+      target=enabledDates.reduce((best,n)=>Math.abs(n-old)<Math.abs(best-old)?n:best,enabledDates[0]);
+    }
+    day.value=String(target);
     updateModernDatePreview();
   }
 
-  year.onchange=refreshDays;
+  year.value=String(baseDate.getFullYear());
+  month.value=String(baseDate.getMonth()+1);
+
+  year.onchange=refreshMonths;
   month.onchange=refreshDays;
   day.onchange=updateModernDatePreview;
-  refreshDays();
-}
 
+  refreshMonths();
+}
 function updateModernDatePreview(){
   const preview=document.getElementById("datePreview");
   if(!preview) return;
@@ -3897,21 +3935,65 @@ function toggleMobileAction(action,id,type){
   if(action!=="watched" && action!=="scheduled") return;
 
   if(store[key]){
-    delete store[key];
-    if(action==="watched") saveWatched(store);
-    else saveScheduled(store);
-
-    renderTimeline();
-    if(!document.getElementById("timelinePage").classList.contains("hidden")){
-      renderTimelinePage();
-    }
-
-    refreshDetailMobileActions();
-    toast(action==="watched" ? "Removed from watch." : "Schedule removed.");
+    openRemoveConfirm(action,id,type);
     return;
   }
 
   openDatePicker(action,id,type);
+}
+
+function openRemoveConfirm(action,id,type){
+  const modal=document.getElementById("removeConfirmModal");
+  if(!modal) return;
+
+  state.removeAction={action,id,type};
+
+  const title=document.getElementById("removeConfirmTitle");
+  const text=document.getElementById("removeConfirmText");
+  const confirmBtn=document.getElementById("confirmRemove");
+
+  const isWatched=action==="watched";
+  if(title) title.textContent=isWatched ? "Remove Watched?" : "Remove Schedule?";
+  if(text){
+    text.textContent=isWatched
+      ? "This title will be removed from your watched history."
+      : "This title will be removed from your schedule.";
+  }
+  if(confirmBtn){
+    confirmBtn.textContent=isWatched ? "Remove from Watch" : "Remove Schedule";
+    confirmBtn.dataset.action=action;
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function closeRemoveConfirm(){
+  const modal=document.getElementById("removeConfirmModal");
+  if(modal) modal.classList.add("hidden");
+  state.removeAction=null;
+}
+
+function confirmRemoveAction(){
+  const action=state.removeAction;
+  if(!action) return;
+
+  const key=`${action.type}:${action.id}`;
+  const store=action.action==="watched" ? getWatched() : getScheduled();
+
+  delete store[key];
+
+  if(action.action==="watched") saveWatched(store);
+  else saveScheduled(store);
+
+  closeRemoveConfirm();
+
+  renderTimeline();
+  if(!document.getElementById("timelinePage").classList.contains("hidden")){
+    renderTimelinePage();
+  }
+
+  refreshDetailMobileActions();
+  toast(action.action==="watched" ? "Removed from watch." : "Schedule removed.");
 }
 
 function refreshDetailMobileActions(){
@@ -3929,12 +4011,12 @@ function refreshDetailMobileActions(){
   if(wb){
     wb.classList.toggle("is-active",w);
     const span=wb.querySelector("span");
-    if(span)span.textContent=w ? "Remove from Watch" : "Watched";
+    if(span)span.textContent=w ? "↶ Remove from Watch" : "Watched";
   }
   if(sb){
     sb.classList.toggle("is-active",s);
     const span=sb.querySelector("span");
-    if(span)span.textContent=s ? "Remove Schedule" : "Schedule";
+    if(span)span.textContent=s ? "↶ Remove Schedule" : "Schedule";
   }
 }
 
@@ -5035,6 +5117,203 @@ async function search(){if(!mobile())return;inject();const q=$('cinevoSearchInpu
 async function personCreditsV2(id,name){const box=$('cinevoSearchResults');if(!box)return;box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8f99a6">Loading credits…</div>';try{const d=await api('/person/'+id+'/combined_credits',{language:'en-US'}),items=uniqueItems([...(d.cast||[]),...(d.crew||[])].filter(x=>x.media_type==='movie'||x.media_type==='tv')).sort((a,b)=>Number(b.popularity||0)-Number(a.popularity||0)).slice(0,50);box.innerHTML='<div style="grid-column:1/-1;padding:4px 2px 10px"><button id="v2PersonBack" class="v2-close" style="width:auto;padding:0 14px;border-radius:10px">← Back</button><strong style="margin-left:10px;font-size:18px">'+esc(name)+'</strong></div>'+(items.length?items.map(x=>'<article class="v2-result" data-id="'+x.id+'" data-type="'+x.media_type+'"><img src="'+image(x.poster_path)+'" alt=""><div class="v2-result-body"><div class="v2-result-title">'+esc(titleOf(x))+'</div><div class="v2-result-meta">'+(x.media_type==='tv'?'TV SHOW':'MOVIE')+' · '+yearFromDate(dateOf(x))+'</div></div></article>').join(''):'<div style="grid-column:1/-1;text-align:center;color:#8f99a6;padding:30px">No credits found.</div>');$('v2PersonBack')?.addEventListener('click',search);box.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>{ $('cinevoSearchPage').hidden=true;document.body.classList.remove('cinevo-view-open');openDetails(Number(e.dataset.id),e.dataset.type)})}catch(e){box.innerHTML='<div style="grid-column:1/-1;color:#ef8f8f;text-align:center;padding:40px">Unable to load credits.</div>'}}
 function boot(){inject();const i=$('cinevoSearchInput');if(!i||i.dataset.advBound)return;i.dataset.advBound='1';i.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(search,220)});}
 new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});document.addEventListener('DOMContentLoaded',boot);
+})();
+</script>
+
+
+<style id="cinevo-mobile-watched-schedule-polish">
+/* Desktop remains unchanged. */
+#removeConfirmModal{display:none}
+
+@media(max-width:700px){
+  /* Compact Day | Month | Year controls */
+  #dateModal .modern-date-fields{
+    display:grid !important;
+    grid-template-columns:.72fr 1.25fr .82fr !important;
+    gap:7px !important;
+    align-items:end !important;
+  }
+
+  #dateModal .date-field{
+    min-width:0 !important;
+  }
+
+  #dateModal .date-field span{
+    display:block !important;
+    margin-bottom:5px !important;
+    font-size:8px !important;
+    letter-spacing:.08em !important;
+    color:#8f99a6 !important;
+    font-weight:900 !important;
+  }
+
+  #dateModal .date-field select{
+    width:100% !important;
+    height:38px !important;
+    min-height:38px !important;
+    padding:0 8px !important;
+    border-radius:9px !important;
+    border:1px solid #303744 !important;
+    background:#171c25 !important;
+    color:#f4f6f8 !important;
+    font-size:10px !important;
+    font-weight:800 !important;
+    outline:none !important;
+  }
+
+  #dateModal .date-field select:focus{
+    border-color:#f5c518 !important;
+    box-shadow:0 0 0 2px rgba(245,197,24,.12) !important;
+  }
+
+  #dateModal .date-field select:disabled{
+    opacity:.42 !important;
+  }
+
+  #dateModal .modern-date-preview{
+    margin-top:10px !important;
+    padding:9px 10px !important;
+    border:1px solid #2b323e !important;
+    border-radius:9px !important;
+    background:#0e1218 !important;
+    color:#e8ebef !important;
+    text-align:center !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+  }
+
+  #dateModal .modern-date-save{
+    height:38px !important;
+    padding:0 12px !important;
+    margin-top:10px !important;
+    border-radius:9px !important;
+    font-size:10px !important;
+  }
+
+  /* Modern remove confirmation */
+  #removeConfirmModal{
+    position:fixed !important;
+    inset:0 !important;
+    z-index:10001 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    padding:18px !important;
+    background:rgba(0,0,0,.72) !important;
+    backdrop-filter:blur(12px) !important;
+    -webkit-backdrop-filter:blur(12px) !important;
+  }
+
+  #removeConfirmModal.hidden{
+    display:none !important;
+  }
+
+  #removeConfirmModal .remove-confirm-box{
+    width:min(330px,100%) !important;
+    padding:18px !important;
+    border:1px solid #303744 !important;
+    border-radius:17px !important;
+    background:#12161d !important;
+    box-shadow:0 25px 70px rgba(0,0,0,.55) !important;
+  }
+
+  #removeConfirmModal h3{
+    margin:0 0 7px !important;
+    font-size:17px !important;
+  }
+
+  #removeConfirmModal p{
+    margin:0 !important;
+    color:#9da5b1 !important;
+    font-size:11px !important;
+    line-height:1.5 !important;
+  }
+
+  #removeConfirmModal .remove-confirm-actions{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:7px !important;
+    margin-top:15px !important;
+  }
+
+  #removeConfirmModal button{
+    height:37px !important;
+    border-radius:9px !important;
+    font-size:10px !important;
+    font-weight:900 !important;
+  }
+
+  #removeConfirmCancel{
+    background:#181d25 !important;
+    color:#e6e9ed !important;
+    border:1px solid #303744 !important;
+  }
+
+  #confirmRemove{
+    background:#ef4444 !important;
+    color:#fff !important;
+    border:1px solid #ef4444 !important;
+  }
+
+  /* Compact active/inactive action buttons */
+  #detailOverlay .detail-mobile-actions{
+    flex:0 0 118px !important;
+    width:118px !important;
+    gap:5px !important;
+  }
+
+  #detailOverlay .detail-mobile-action{
+    height:31px !important;
+    min-height:31px !important;
+    padding:0 7px !important;
+    border-radius:9px !important;
+    font-size:9px !important;
+  }
+}
+
+@media(max-width:390px){
+  #detailOverlay .detail-mobile-actions{
+    flex-basis:108px !important;
+    width:108px !important;
+  }
+  #detailOverlay .detail-mobile-action{
+    font-size:8px !important;
+  }
+}
+</style>
+
+<!-- Mobile remove confirmation -->
+<div id="removeConfirmModal" class="hidden" aria-hidden="true">
+  <div class="remove-confirm-box" role="dialog" aria-modal="true" aria-labelledby="removeConfirmTitle">
+    <h3 id="removeConfirmTitle">Remove?</h3>
+    <p id="removeConfirmText">Are you sure?</p>
+    <div class="remove-confirm-actions">
+      <button id="removeConfirmCancel" type="button">Cancel</button>
+      <button id="confirmRemove" type="button">Remove</button>
+    </div>
+  </div>
+</div>
+
+
+<script id="cinevo-remove-confirm-events">
+(function(){
+  const modal=document.getElementById("removeConfirmModal");
+  const cancel=document.getElementById("removeConfirmCancel");
+  const confirmBtn=document.getElementById("confirmRemove");
+
+  cancel?.addEventListener("click",()=>{
+    if(typeof closeRemoveConfirm==="function") closeRemoveConfirm();
+  });
+
+  confirmBtn?.addEventListener("click",()=>{
+    if(typeof confirmRemoveAction==="function") confirmRemoveAction();
+  });
+
+  modal?.addEventListener("click",(event)=>{
+    if(event.target===modal && typeof closeRemoveConfirm==="function"){
+      closeRemoveConfirm();
+    }
+  });
 })();
 </script>
 
