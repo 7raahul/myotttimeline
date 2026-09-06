@@ -491,6 +491,44 @@ header{
   font-weight:800;
 }
 
+/* Universal yellow percentage rating circle — used on every
+   movie/TV card (browse grid, timeline, trending, detail). */
+.poster-rating-badge{
+  position:absolute;
+  z-index:4;
+  top:9px;
+  right:9px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:36px;
+  min-width:36px;
+  border-radius:50%;
+  box-sizing:border-box;
+  border:2px solid var(--gold);
+  background:rgba(10,12,17,.88);
+  color:var(--gold);
+  box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 0 0 1px rgba(245,197,24,.12);
+  gap:0;
+  backdrop-filter:blur(3px);
+}
+
+.poster-rating-badge span{
+  font-size:11px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-.2px;
+}
+
+.poster-rating-badge small{
+  font-size:6.5px;
+  line-height:1;
+  font-weight:900;
+  margin-left:.5px;
+  margin-top:4px;
+}
+
 .card-date{
   overflow:hidden;
   white-space:nowrap;
@@ -520,6 +558,19 @@ header{
   border:1px solid #303640;
   color:#fff;
   border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.quick-btn .wa-icon{
+  width:16px;
+  height:16px;
+}
+
+.quick-btn.watched-icon-btn:hover{
+  border-color:#22c55e;
+  color:#22c55e;
 }
 
 /* PAGINATION */
@@ -771,6 +822,15 @@ header{
   padding:10px 13px;
   font-size:12px;
   font-weight:750;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+}
+
+.action-btn .wa-icon{
+  width:15px;
+  height:15px;
+  flex:0 0 auto;
 }
 
 .action-btn:hover{
@@ -781,6 +841,32 @@ header{
   background:#e9ebee;
   color:#080a0e;
   border-color:#e9ebee;
+}
+
+/* Watched / Schedule: white by default, green once watched is
+   confirmed, red once a schedule date is confirmed. */
+.action-btn.watched,
+.action-btn.schedule{
+  background:#f2f3f5;
+  color:#111318;
+  border-color:#f2f3f5;
+}
+
+.action-btn.watched:hover,
+.action-btn.schedule:hover{
+  background:#ffffff;
+}
+
+.action-btn.watched.is-active{
+  background:#22c55e;
+  border-color:#22c55e;
+  color:#fff;
+}
+
+.action-btn.schedule.is-active{
+  background:#ef4444;
+  border-color:#ef4444;
+  color:#fff;
 }
 
 /* DETAIL CONTENT */
@@ -1233,89 +1319,102 @@ header{
 .page-shell{max-width:1450px;margin:auto;padding:26px 22px 80px}
 .page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding-bottom:22px;border-bottom:1px solid var(--border);margin-bottom:24px}
 .page-head h1{margin:0;font-size:30px}.page-head p{margin:6px 0 0;color:var(--muted)}
-.timeline-columns{
+.timeline-tabs{
   position:relative;
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  gap:0;
-  padding:18px 0 30px;
+  display:inline-flex;
+  gap:4px;
+  padding:5px;
+  margin-bottom:24px;
+  background:#11151c;
+  border:1px solid var(--border);
+  border-radius:14px;
 }
-.timeline-columns::before{
-  content:"";
-  position:absolute;
-  top:18px;
-  bottom:30px;
-  left:50%;
-  width:2px;
-  transform:translateX(-50%);
-  background:linear-gradient(to bottom,transparent,#2d3948 6%,#2d3948 94%,transparent);
-  pointer-events:none;
-}
-.timeline-column{
-  background:transparent;
-  border:0;
-  border-radius:0;
-  padding:0 28px;
-}
-.timeline-column:first-child{
-  border-right:0;
-}
-.timeline-column h2{
+.timeline-tab{
   position:relative;
   z-index:1;
-  font-size:16px;
-  margin:0 0 18px;
-  padding:11px 14px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:#11161e;
-  box-shadow:0 10px 28px rgba(0,0,0,.16);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  padding:10px 18px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:800;
+  transition:color .25s ease;
 }
-.timeline-column:first-child h2{text-align:right}
-.timeline-column:last-child h2{text-align:left}
+.timeline-tab .wa-icon{width:15px;height:15px;flex:0 0 auto}
+.timeline-tab b{
+  font-size:10px;
+  font-weight:900;
+  background:rgba(255,255,255,.08);
+  color:inherit;
+  padding:2px 7px;
+  border-radius:20px;
+}
+.timeline-tab.active{color:#0b0d11}
+.timeline-tab.active b{background:rgba(0,0,0,.12)}
+.timeline-tab-glider{
+  position:absolute;
+  z-index:0;
+  top:5px;
+  left:5px;
+  height:calc(100% - 10px);
+  width:calc(50% - 5px);
+  border-radius:10px;
+  background:#f5c518;
+  box-shadow:0 6px 18px rgba(245,197,24,.28);
+  transition:transform .32s cubic-bezier(.65,0,.35,1);
+}
+#timelineTabScheduled.active ~ .timeline-tab-glider{
+  transform:translateX(100%);
+  background:#ef4444;
+  box-shadow:0 6px 18px rgba(239,68,68,.28);
+}
+
+.timeline-panels{position:relative}
+.timeline-panel{
+  display:none;
+  opacity:0;
+  transform:translateY(6px);
+  animation:timelineFadeIn .32s ease forwards;
+}
+.timeline-panel.active{display:block}
+@keyframes timelineFadeIn{
+  to{opacity:1;transform:translateY(0)}
+}
+
+.timeline-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:16px;
+  padding:2px 0 30px;
+}
 .timeline-entry{
   position:relative;
-  display:flex;
-  gap:13px;
-  align-items:center;
-  width:calc(100% - 18px);
-  padding:11px;
+  cursor:pointer;
   border:1px solid var(--border);
   border-radius:14px;
   background:linear-gradient(135deg,#151a22,#11151c);
-  margin-bottom:12px;
-  cursor:pointer;
+  overflow:hidden;
   transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
 }
 .timeline-entry:hover{
-  transform:translateY(-2px);
+  transform:translateY(-3px);
   border-color:#3a4758;
-  box-shadow:0 12px 30px rgba(0,0,0,.25);
+  box-shadow:0 14px 32px rgba(0,0,0,.28);
 }
-.timeline-entry::after{
-  content:"";
-  position:absolute;
-  top:50%;
-  width:18px;
-  height:2px;
-  background:#2d3948;
-}
-.timeline-column:first-child .timeline-entry{
-  margin-left:auto;
-}
-.timeline-column:first-child .timeline-entry::after{right:-18px}
-.timeline-column:last-child .timeline-entry::after{left:-18px}
 .timeline-entry img{
-  width:62px;
-  height:88px;
+  width:100%;
+  aspect-ratio:2/3;
   object-fit:cover;
-  border-radius:8px;
-  flex:0 0 62px;
+  display:block;
   background:#0c1016;
 }
-.timeline-entry .te-info{min-width:0;flex:1}
+.timeline-entry .te-info{padding:10px}
 .timeline-entry .te-title{
-  font-size:13px;
+  font-size:12.5px;
   font-weight:800;
   line-height:1.3;
   white-space:nowrap;
@@ -1337,18 +1436,27 @@ header{
   gap:5px;
   margin-top:7px;
   font-size:9px;
-  font-weight:800;
+  font-weight:900;
   letter-spacing:.04em;
 }
-.timeline-entry .te-status.watched{color:#6ee7b7}
-.timeline-entry .te-status.scheduled{color:#fbbf24}
+.timeline-entry .te-status .wa-icon{width:11px;height:11px}
+.timeline-entry .te-status.watched{color:#22c55e}
+.timeline-entry .te-status.scheduled{color:#ef4444}
 .timeline-empty{
-  padding:28px 16px;
+  grid-column:1/-1;
+  padding:38px 16px;
   border:1px dashed #2d3948;
   border-radius:14px;
   color:var(--muted);
   text-align:center;
   background:#10141b;
+}
+
+@media(max-width:700px){
+  .timeline-tabs{width:100%;display:flex}
+  .timeline-tab{flex:1;justify-content:center}
+  .timeline-tab-glider{width:calc(50% - 5px)}
+  .timeline-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
 }
 #randomModal.modal{background:#090b10;backdrop-filter:none;align-items:stretch;padding:0}
 #randomModal .modal-box{width:min(700px,calc(100% - 28px));max-height:none;margin:auto;background:#11141b;border-radius:18px}
@@ -2042,14 +2150,42 @@ header{
       <div><h1>Watch Journey</h1><p>Watched and scheduled titles in one place.</p></div>
       <button class="close" id="closeTimeline">×</button>
     </div>
-    <div class="timeline-columns">
-      <section class="timeline-column watched-col">
-        <h2>✓ Watched</h2>
-        <div id="timelineWatched"></div>
+
+    <div class="timeline-tabs" role="tablist">
+      <button class="timeline-tab active" id="timelineTabWatched"
+              role="tab" aria-selected="true" type="button"
+              onclick="switchTimelineTab('watched')">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="12" cy="12" r="9.25" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M7.5 12.5L10.3 15.3L16.5 8.7" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Watched</span>
+        <b id="timelineCountWatched">0</b>
+      </button>
+      <button class="timeline-tab" id="timelineTabScheduled"
+              role="tab" aria-selected="false" type="button"
+              onclick="switchTimelineTab('scheduled')">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="3.25" y="5" width="17.5" height="15.5" rx="3.2" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M3.5 9.6H20.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M8 3V6.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M16 3V6.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M12 12.3V15.3L14.1 16.9" stroke="currentColor" stroke-width="1.7"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Schedule</span>
+        <b id="timelineCountScheduled">0</b>
+      </button>
+      <span class="timeline-tab-glider" id="timelineTabGlider"></span>
+    </div>
+
+    <div class="timeline-panels">
+      <section class="timeline-panel active" id="timelinePanelWatched">
+        <div class="timeline-grid" id="timelineWatched"></div>
       </section>
-      <section class="timeline-column scheduled-col">
-        <h2>◷ Scheduled</h2>
-        <div id="timelineScheduled"></div>
+      <section class="timeline-panel" id="timelinePanelScheduled">
+        <div class="timeline-grid" id="timelineScheduled"></div>
       </section>
     </div>
   </div>
@@ -2235,6 +2371,32 @@ function saveScheduled(data){
 /* ============================================================
    HELPERS
 ============================================================ */
+
+/* Compact vector icons used across watched/schedule UI so the
+   same crisp glyph is reused everywhere instead of text emoji. */
+const ICON_WATCHED_SVG =
+  `<svg class="wa-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="12" cy="12" r="9.25" stroke="currentColor" stroke-width="1.8"/>
+    <path d="M7.5 12.5L10.3 15.3L16.5 8.7" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+
+const ICON_SCHEDULE_SVG =
+  `<svg class="wa-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="3.25" y="5" width="17.5" height="15.5" rx="3.2" stroke="currentColor" stroke-width="1.8"/>
+    <path d="M3.5 9.6H20.5" stroke="currentColor" stroke-width="1.8"/>
+    <path d="M8 3V6.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M16 3V6.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M12 12.3V15.3L14.1 16.9" stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+
+function ratingBadgeHtml(voteAverage,extraClass=""){
+  const pct = Math.round(Number(voteAverage || 0) * 10);
+  return `<div class="poster-rating-badge ${extraClass}" aria-label="Rating ${pct}%">
+      <span>${pct}</span><small>%</small>
+    </div>`;
+}
 
 function esc(value){
   if(value === null || value === undefined) return "";
@@ -3034,6 +3196,8 @@ function renderResults(){
           <div class="poster-type">
             ${type === "tv" ? "TV SHOW" : "MOVIE"}
           </div>
+
+          ${ratingBadgeHtml(item.vote_average)}
         </div>
 
         <div class="card-body">
@@ -3058,10 +3222,10 @@ function renderResults(){
               View Details
             </button>
 
-            <button class="quick-btn"
+            <button class="quick-btn watched-icon-btn"
                     title="Mark watched"
                     onclick="quickWatched(event,${item.id},'${type}')">
-              ✓
+              ${ICON_WATCHED_SVG}
             </button>
           </div>
 
@@ -3227,13 +3391,13 @@ function renderDetail(details,credits,providers){
             <button class="detail-mobile-action watched ${watchedActive ? "is-active" : ""}"
                     type="button"
                     onclick="toggleMobileAction('watched',${details.id},'${type}')">
-              ✓ <span>${watchedActive ? "↶ Remove from Watch" : "Watched"}</span>
+              ${ICON_WATCHED_SVG} <span>${watchedActive ? "↶ Remove from Watch" : "Watched"}</span>
             </button>
 
             <button class="detail-mobile-action schedule ${scheduledActive ? "is-active" : ""}"
                     type="button"
                     onclick="toggleMobileAction('scheduled',${details.id},'${type}')">
-              📅 <span>${scheduledActive ? "↶ Remove Schedule" : "Schedule"}</span>
+              ${ICON_SCHEDULE_SVG} <span>${scheduledActive ? "↶ Remove Schedule" : "Schedule"}</span>
             </button>
           </div>
         </div>
@@ -3264,14 +3428,14 @@ function renderDetail(details,credits,providers){
 
         <div class="detail-buttons">
 
-          <button class="action-btn primary"
+          <button class="action-btn watched ${watchedActive ? "is-active" : ""}"
                   onclick="openDatePicker('watched',${details.id},'${type}')">
-            ✓ Mark as Watched
+            ${ICON_WATCHED_SVG} <span>${watchedActive ? "Watched" : "Mark as Watched"}</span>
           </button>
 
-          <button class="action-btn"
+          <button class="action-btn schedule ${scheduledActive ? "is-active" : ""}"
                   onclick="openDatePicker('scheduled',${details.id},'${type}')">
-            📅 Schedule to Watch
+            ${ICON_SCHEDULE_SVG} <span>${scheduledActive ? "Scheduled" : "Schedule to Watch"}</span>
           </button>
 
         </div>
@@ -4033,6 +4197,20 @@ function refreshDetailMobileActions(){
     const span=sb.querySelector("span");
     if(span)span.textContent=s ? "↶ Remove Schedule" : "Schedule";
   }
+
+  const wDesktop=hero.querySelector(".action-btn.watched");
+  const sDesktop=hero.querySelector(".action-btn.schedule");
+
+  if(wDesktop){
+    wDesktop.classList.toggle("is-active",w);
+    const span=wDesktop.querySelector("span");
+    if(span)span.textContent=w ? "Watched" : "Mark as Watched";
+  }
+  if(sDesktop){
+    sDesktop.classList.toggle("is-active",s);
+    const span=sDesktop.querySelector("span");
+    if(span)span.textContent=s ? "Scheduled" : "Schedule to Watch";
+  }
 }
 
 async function openEpisodeDatePicker(
@@ -4682,18 +4860,46 @@ document.addEventListener("keydown",event=>{
 
 document.getElementById("timelineBtn")?.addEventListener("click",openTimelinePage);
 
-function openTimelinePage(){
+function openTimelinePage(fromHistory=false){
   renderTimelinePage();
   document.getElementById("timelinePage").classList.remove("hidden");
   document.body.style.overflow="hidden";
+  if(!fromHistory && !window.__popstateNav){
+    history.pushState({view:"timeline"},"","#timeline");
+  }
 }
 
-function closeTimelinePage(){
+function closeTimelinePage(fromHistory=false){
   document.getElementById("timelinePage").classList.add("hidden");
-  document.body.style.overflow="";
+  if(document.getElementById("detailOverlay").classList.contains("hidden")){
+    document.body.style.overflow="";
+  }
+  if(!fromHistory && !window.__popstateNav && location.hash==="#timeline"){
+    history.pushState({},"",location.pathname+location.search);
+  }
 }
 
-document.getElementById("closeTimeline")?.addEventListener("click",closeTimelinePage);
+document.getElementById("closeTimeline")?.addEventListener("click",()=>closeTimelinePage());
+
+function switchTimelineTab(tab){
+  state.timelineTab = tab === "scheduled" ? "scheduled" : "watched";
+
+  const tabWatched=document.getElementById("timelineTabWatched");
+  const tabScheduled=document.getElementById("timelineTabScheduled");
+  const panelWatched=document.getElementById("timelinePanelWatched");
+  const panelScheduled=document.getElementById("timelinePanelScheduled");
+
+  const isScheduled = state.timelineTab === "scheduled";
+
+  tabWatched?.classList.toggle("active", !isScheduled);
+  tabWatched?.setAttribute("aria-selected", String(!isScheduled));
+  tabScheduled?.classList.toggle("active", isScheduled);
+  tabScheduled?.setAttribute("aria-selected", String(isScheduled));
+
+  panelWatched?.classList.toggle("active", !isScheduled);
+  panelScheduled?.classList.toggle("active", isScheduled);
+}
+window.switchTimelineTab = switchTimelineTab;
 
 function timelineEntryHtml(item,status){
   const type=item.type || (item.media_type === "movie" ? "movie" : "tv");
@@ -4701,18 +4907,19 @@ function timelineEntryHtml(item,status){
     ? `${item.title||"TV Show"} — S${item.season} E${item.episode}`
     : (item.title||"Untitled");
   const poster=item.posterPath||item.stillPath||"";
-  const icon=status === "WATCHED" ? "✓" : "◷";
-  const label=status === "WATCHED" ? "WATCHED" : "SCHEDULED";
+  const isWatched=status === "WATCHED";
+  const icon=isWatched ? ICON_WATCHED_SVG : ICON_SCHEDULE_SVG;
+  const label=isWatched ? "WATCHED" : "SCHEDULED";
 
   return `<div class="timeline-entry" role="button" tabindex="0"
       onclick="openDetails(${Number(item.id)||0},'${type}')"
       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetails(${Number(item.id)||0},'${type}')}">
-    <img src="${image(poster)}" alt="${esc(title)}">
+    <img src="${image(poster)}" alt="${esc(title)}" loading="lazy">
     <div class="te-info">
       <div class="te-title">${esc(title)}</div>
       <div class="te-type">${esc(type === "movie" ? "MOVIE" : "TV SHOW")}</div>
       <div class="te-date">📅 ${esc(formatDate(item.date))}</div>
-      <div class="te-status ${status === "WATCHED" ? "watched" : "scheduled"}">${icon} ${label}</div>
+      <div class="te-status ${isWatched ? "watched" : "scheduled"}">${icon} ${label}</div>
     </div>
   </div>`;
 }
@@ -4720,11 +4927,11 @@ function timelineEntryHtml(item,status){
 function renderTimelinePage(){
   const watched=Object.values(getWatched())
     .sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")))
-    .slice(0,30);
+    .slice(0,60);
 
   const scheduled=Object.values(getScheduled())
     .sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")))
-    .slice(0,30);
+    .slice(0,60);
 
   const w=document.getElementById("timelineWatched");
   const q=document.getElementById("timelineScheduled");
@@ -4737,6 +4944,14 @@ function renderTimelinePage(){
   q.innerHTML=scheduled.length
     ? scheduled.map(x=>timelineEntryHtml(x,"SCHEDULED")).join("")
     : `<div class="timeline-empty">No scheduled titles yet.</div>`;
+
+  const countWatched=document.getElementById("timelineCountWatched");
+  const countScheduled=document.getElementById("timelineCountScheduled");
+  if(countWatched) countWatched.textContent=String(watched.length);
+  if(countScheduled) countScheduled.textContent=String(scheduled.length);
+
+  if(!state.timelineTab) state.timelineTab="watched";
+  switchTimelineTab(state.timelineTab);
 }
 
 /* ============================================================
@@ -4809,11 +5024,69 @@ document.addEventListener("keydown",event=>{
 window.addEventListener("popstate", async ()=>{
   const m=location.hash.match(/^#(movie|tv)-(\d+)$/);
   window.__popstateDetail=true;
+  window.__popstateNav=true;
   try{
-    if(m){ await openDetails(Number(m[2]),m[1],true); }
-    else { closeDetails(true); closeRandom(); closeTimelinePage(); }
-  }finally{ window.__popstateDetail=false; }
+    if(m){
+      closeTimelinePage(true);
+      if(typeof closeSearch==="function") closeSearch();
+      if(typeof closeAccount==="function") closeAccount();
+      await openDetails(Number(m[2]),m[1],true);
+    }else if(location.hash==="#timeline"){
+      closeDetails(true);
+      closeRandom();
+      if(typeof closeSearch==="function") closeSearch();
+      if(typeof closeAccount==="function") closeAccount();
+      openTimelinePage(true);
+    }else if(location.hash==="#search" && typeof openSearch==="function"){
+      closeDetails(true);
+      closeRandom();
+      closeTimelinePage(true);
+      if(typeof closeAccount==="function") closeAccount();
+      openSearch();
+    }else if(location.hash==="#account" && typeof openAccount==="function"){
+      closeDetails(true);
+      closeRandom();
+      closeTimelinePage(true);
+      if(typeof closeSearch==="function") closeSearch();
+      openAccount();
+    }else{
+      closeDetails(true);
+      closeRandom();
+      closeTimelinePage(true);
+      if(typeof closeSearch==="function") closeSearch();
+      if(typeof closeAccount==="function") closeAccount();
+    }
+  }finally{
+    window.__popstateDetail=false;
+    window.__popstateNav=false;
+  }
 });
+
+/* Reopen whatever view the URL hash points to — used both on a
+   fresh page load/refresh and is shared by the popstate handler
+   above, so refreshing never silently drops back to the home page. */
+async function restoreViewFromHash(){
+  const hash=location.hash;
+  const m=hash.match(/^#(movie|tv)-(\d+)$/);
+  window.__popstateNav=true;
+  window.__popstateDetail=true;
+  try{
+    if(m){
+      await openDetails(Number(m[2]),m[1],true);
+    }else if(hash==="#timeline"){
+      openTimelinePage(true);
+    }else if(hash==="#search" && typeof openSearch==="function"){
+      openSearch();
+    }else if(hash==="#account" && typeof openAccount==="function"){
+      openAccount();
+    }
+  }catch(error){
+    console.error("Failed to restore view from URL hash:",error);
+  }finally{
+    window.__popstateNav=false;
+    window.__popstateDetail=false;
+  }
+}
 
 /* ============================================================
    INITIALIZE
@@ -4834,6 +5107,13 @@ async function init(){
     loadTrending(),
     loadBrowse()
   ]);
+
+  // Reopen whatever page the URL hash points to, so a browser
+  // refresh stays on the same movie/show/timeline/etc instead of
+  // silently dropping back to the home page.
+  if(location.hash){
+    await restoreViewFromHash();
+  }
 }
 
 init().catch(error=>{
@@ -5103,9 +5383,9 @@ function header(){if(!mobile()||$('cinevoMobileAccount'))return;const n=document
 function tabs(){if(!mobile()||$('mobileMediaTabs'))return;const h=$('trendingBox');if(!h)return;const t=document.createElement('div');t.id='mobileMediaTabs';t.innerHTML='<button data-v="all" class="active">ALL</button><button data-v="movie">MOVIES</button><button data-v="tv">TV SHOWS</button>';t.querySelectorAll('button').forEach(b=>b.onclick=()=>{t.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));if(typeof setMainMediaType==='function')setMainMediaType(b.dataset.v)});h.parentNode.insertBefore(t,h.nextSibling)}
 function searchPage(){if($('cinevoSearchPage'))return;const p=document.createElement('div');p.id='cinevoSearchPage';p.hidden=true;p.innerHTML='<div class="v2-page-head"><h2>Search CINEVO</h2><button class="v2-close" type="button">×</button></div><input id="cinevoSearchInput" type="search" autocomplete="off" placeholder="Search movies, TV shows, actors, actresses, directors..."><div class="v2-search-filters"><button class="active" data-mode="all">ALL</button><button data-mode="movie">MOVIES</button><button data-mode="tv">TV SHOWS</button><button data-mode="person">PEOPLE</button></div><div id="cinevoSearchResults"><div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:40px 10px">Type at least one character to search.</div></div>';document.body.appendChild(p);p.querySelector('.v2-close').onclick=closeSearch;p.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{searchMode=b.dataset.mode;p.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));runSearch(p.querySelector('#cinevoSearchInput').value)});p.querySelector('#cinevoSearchInput').addEventListener('input',e=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>runSearch(e.target.value),180)})}
 async function runSearch(q0){if(!mobile())return;const q=q0.trim(),box=$('cinevoSearchResults');if(!box)return;if(!q){box.innerHTML='<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:40px 10px">Type at least one character to search.</div>';return}const token=++searchToken;box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8f99a6">Searching…</div>';try{const d=await api('/search/multi',{query:q,page:1,include_adult:false});if(token!==searchToken)return;let items=(d.results||[]).filter(x=>['movie','tv','person'].includes(x.media_type));if(searchMode!=='all')items=items.filter(x=>x.media_type===searchMode);items=uniqueItems(items).slice(0,30);if(!items.length){box.innerHTML='<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:40px 10px">No matching results.</div>';return}box.innerHTML=items.map(x=>{if(x.media_type==='person')return '<article class="v2-result v2-person" data-person="'+(Number(x.id)||0)+'"><img src="'+image(x.profile_path,PROFILE_SIZE)+'" alt=""><div><div class="v2-result-title">'+safe(x.name)+'</div><div class="v2-result-meta">PERSON · '+safe(x.known_for_department||'Cast/Director')+'</div></div></article>';return '<article class="v2-result" data-id="'+(Number(x.id)||0)+'" data-type="'+x.media_type+'"><img src="'+image(x.poster_path)+'" alt="'+safe(titleOf(x))+'" loading="lazy"><div class="v2-result-body"><div class="v2-result-title">'+safe(titleOf(x))+'</div><div class="v2-result-meta">'+(x.media_type==='tv'?'TV SHOW':'MOVIE')+' · '+yearFromDate(dateOf(x))+' · ★ '+Number(x.vote_average||0).toFixed(1)+'</div></div></article>'}).join('');box.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>{closeSearch();openDetails(Number(e.dataset.id),e.dataset.type)});box.querySelectorAll('[data-person]').forEach(e=>e.onclick=()=>personCredits(Number(e.dataset.person),e.querySelector('.v2-result-title')?.textContent||''))}catch(e){box.innerHTML='<div style="grid-column:1/-1;color:#ef8f8f;text-align:center;padding:40px 10px">Search failed. Try again.</div>'}}
-function openSearch(){searchPage();viewOpen();active('search');$('cinevoSearchPage').hidden=false;$('cinevoSearchInput').focus()}function closeSearch(){if($('cinevoSearchPage'))$('cinevoSearchPage').hidden=true;viewClose();active('home')}
-function openAccount(){if(!$('cinevoAccountPage')){const p=document.createElement('div');p.id='cinevoAccountPage';p.innerHTML='<div class="v2-page-head"><h2>Account</h2><button class="v2-close" type="button">×</button></div><div class="account-box"><div class="account-avatar">◎</div><h2>Welcome to CINEVO</h2><p>Sign in to keep your watch journey, scheduled titles and preferences in one place.</p><button class="account-signin">Sign In</button><button class="account-signup">Sign Up</button><button class="account-close">Close</button></div>';document.body.appendChild(p);p.querySelector('.v2-close').onclick=closeAccount;p.querySelector('.account-close').onclick=closeAccount}viewOpen();$('cinevoAccountPage').hidden=false}
-function closeAccount(){if($('cinevoAccountPage'))$('cinevoAccountPage').hidden=true;viewClose();active('home')}
+function openSearch(){searchPage();viewOpen();active('search');$('cinevoSearchPage').hidden=false;$('cinevoSearchInput').focus();if(!window.__popstateNav && location.hash!=='#search'){history.pushState({view:'search'},'','#search')}}function closeSearch(){if($('cinevoSearchPage'))$('cinevoSearchPage').hidden=true;viewClose();active('home');if(!window.__popstateNav && location.hash==='#search'){history.pushState({},'',location.pathname+location.search)}}
+function openAccount(){if(!$('cinevoAccountPage')){const p=document.createElement('div');p.id='cinevoAccountPage';p.innerHTML='<div class="v2-page-head"><h2>Account</h2><button class="v2-close" type="button">×</button></div><div class="account-box"><div class="account-avatar">◎</div><h2>Welcome to CINEVO</h2><p>Sign in to keep your watch journey, scheduled titles and preferences in one place.</p><button class="account-signin">Sign In</button><button class="account-signup">Sign Up</button><button class="account-close">Close</button></div>';document.body.appendChild(p);p.querySelector('.v2-close').onclick=closeAccount;p.querySelector('.account-close').onclick=closeAccount}viewOpen();$('cinevoAccountPage').hidden=false;if(!window.__popstateNav && location.hash!=='#account'){history.pushState({view:'account'},'','#account')}}
+function closeAccount(){if($('cinevoAccountPage'))$('cinevoAccountPage').hidden=true;viewClose();active('home');if(!window.__popstateNav && location.hash==='#account'){history.pushState({},'',location.pathname+location.search)}}
 async function personCredits(id,name){searchPage();viewOpen();const box=$('cinevoSearchResults');box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8f99a6">Loading credits…</div>';try{const d=await api('/person/'+id+'/combined_credits',{language:'en-US'});const items=uniqueItems([...(d.cast||[]),...(d.crew||[])].filter(x=>x.media_type==='movie'||x.media_type==='tv')).sort((a,b)=>Number(b.popularity||0)-Number(a.popularity||0)).slice(0,50);box.innerHTML='<div style="grid-column:1/-1;padding:4px 2px 10px"><button id="personBack" class="v2-close" style="width:auto;padding:0 14px;border-radius:10px">← Back</button><strong style="margin-left:10px;font-size:18px">'+safe(name)+'</strong></div>'+(items.length?items.map(x=>'<article class="v2-result" data-id="'+(Number(x.id)||0)+'" data-type="'+x.media_type+'"><img src="'+image(x.poster_path)+'" alt="" loading="lazy"><div class="v2-result-body"><div class="v2-result-title">'+safe(titleOf(x))+'</div><div class="v2-result-meta">'+(x.media_type==='tv'?'TV SHOW':'MOVIE')+' · '+yearFromDate(dateOf(x))+'</div></div></article>').join(''):'<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:30px">No credits found.</div>');$('personBack')?.addEventListener('click',()=>runSearch($('cinevoSearchInput').value));box.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>{closeSearch();openDetails(Number(e.dataset.id),e.dataset.type)})}catch(e){box.innerHTML='<div style="grid-column:1/-1;color:#ef8f8f;text-align:center;padding:40px">Unable to load credits.</div>'}}
 function patchDetail(){
   if(!mobile())return;
@@ -5633,9 +5913,40 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
 </style>
 
 <style id="cinevo-mobile-hero-final">
-/* Desktop: the new mobile-only rating badge remains invisible. */
+/* Rating circle now shows on desktop too — yellow border + yellow
+   percentage text, positioned over the backdrop image. */
 .trend-rating-badge{
-  display:none;
+  position:absolute;
+  z-index:6;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  top:16px;
+  right:16px;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  box-sizing:border-box;
+  background:rgba(8,11,16,.88);
+  border:2px solid var(--gold);
+  color:var(--gold);
+  box-shadow:0 3px 12px rgba(0,0,0,.45);
+  pointer-events:none;
+}
+
+.trend-rating-badge span{
+  font-size:13px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-.3px;
+}
+
+.trend-rating-badge small{
+  font-size:7px;
+  line-height:1;
+  font-weight:900;
+  margin-left:1px;
+  margin-top:5px;
 }
 
 @media(max-width:700px){
@@ -5739,7 +6050,7 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
     box-sizing:border-box !important;
     background:rgba(8,11,16,.88) !important;
     border:2px solid #f5c518 !important;
-    color:#fff !important;
+    color:#f5c518 !important;
     box-shadow:0 3px 12px rgba(0,0,0,.45) !important;
     z-index:6 !important;
     pointer-events:none !important;
@@ -5798,17 +6109,45 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
 </style>
 
 <style id="cinevo-mobile-rating-season-final">
-/* Desktop keeps the normal numeric/star rating. */
+/* Circular yellow percentage rating now shows on desktop too;
+   the old plain star rating is hidden everywhere in favor of it. */
 .detail-rating-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:42px;
+  height:42px;
+  min-width:42px;
+  border-radius:50%;
+  box-sizing:border-box;
+  border:2px solid #f5c518;
+  background:rgba(12,15,20,.90);
+  color:#f5c518;
+  box-shadow:0 3px 12px rgba(0,0,0,.42), inset 0 0 0 1px rgba(245,197,24,.12);
+  vertical-align:middle;
+  gap:0;
+}
+
+.detail-rating-badge span{
+  font-size:12px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-.2px;
+}
+
+.detail-rating-badge small{
+  font-size:7px;
+  line-height:1;
+  font-weight:900;
+  margin-left:1px;
+  margin-top:5px;
+}
+
+.detail-rating-old{
   display:none;
 }
 
 @media(max-width:700px){
-  /* Never show the old star rating in the mobile detail meta row. */
-  #detailOverlay .detail-rating-old{
-    display:none !important;
-  }
-
   /* Modern circular yellow percentage rating. */
   #detailOverlay .detail-rating-badge{
     display:inline-flex !important;
@@ -6165,5 +6504,29 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
 
 #dateModal.hidden{
   display:none !important;
+}
+</style>
+
+<style id="cinevo-wa-icons-fix">
+/* Compact vector icon sizing for the Watched/Schedule buttons,
+   desktop action-btn and mobile detail-mobile-action alike. */
+.detail-mobile-action .wa-icon{
+  width:14px !important;
+  height:14px !important;
+  flex:0 0 auto !important;
+  vertical-align:middle !important;
+}
+
+.detail-mobile-action{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:6px !important;
+}
+
+@media(max-width:390px){
+  .detail-mobile-action .wa-icon{
+    width:12px !important;
+    height:12px !important;
+  }
 }
 </style>
