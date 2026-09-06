@@ -3198,7 +3198,11 @@ function renderDetail(details,credits,providers){
 
           <span>•</span>
 
-          <span class="rating">
+          <span class="detail-rating-badge" aria-label="Rating">
+            <span>${Math.round(Number(details.vote_average || 0) * 10)}</span><small>%</small>
+          </span>
+
+          <span class="detail-rating-old">
             ★ ${Number(details.vote_average||0).toFixed(1)}
           </span>
 
@@ -3351,10 +3355,8 @@ function renderDetailContent(details,credits,providers){
 
   if(details.media_type === "tv"){
     const seasons = (details.seasons || [])
-      .filter(s=>s.season_number >= 0)
+      .filter(s=>s.season_number >= 1)
       .sort((a,b)=>{
-        if(a.season_number===0) return 1;
-        if(b.season_number===0) return -1;
         return a.season_number-b.season_number;
       });
 
@@ -3366,7 +3368,7 @@ function renderDetailContent(details,credits,providers){
           ${seasons.map((season,index)=>`
             <button class="season-btn ${index===0?"active":""}"
                     onclick="loadSeason(${details.id},${season.season_number},this)">
-              ${season.season_number === 0 ? "Specials" : "Season "+season.season_number}
+              Season ${season.season_number}
             </button>
           `).join("")}
         </div>
@@ -3418,7 +3420,7 @@ function renderDetailContent(details,credits,providers){
   if(details.media_type === "tv"){
     const firstSeason =
       (details.seasons || [])
-        .find(s=>s.season_number >= 0);
+        .find(s=>s.season_number >= 1);
 
     if(firstSeason){
       loadSeason(details.id,firstSeason.season_number);
@@ -3454,6 +3456,7 @@ const PROVIDER_URLS={
 ============================================================ */
 
 async function loadSeason(tvId,seasonNumber,clickedButton=null){
+  if(Number(seasonNumber) < 1) return;
   state.currentSeason = seasonNumber;
 
   document.querySelectorAll(".season-btn").forEach(btn=>{
@@ -4776,7 +4779,13 @@ function openSearch(){searchPage();viewOpen();active('search');$('cinevoSearchPa
 function openAccount(){if(!$('cinevoAccountPage')){const p=document.createElement('div');p.id='cinevoAccountPage';p.innerHTML='<div class="v2-page-head"><h2>Account</h2><button class="v2-close" type="button">×</button></div><div class="account-box"><div class="account-avatar">◎</div><h2>Welcome to CINEVO</h2><p>Sign in to keep your watch journey, scheduled titles and preferences in one place.</p><button class="account-signin">Sign In</button><button class="account-signup">Sign Up</button><button class="account-close">Close</button></div>';document.body.appendChild(p);p.querySelector('.v2-close').onclick=closeAccount;p.querySelector('.account-close').onclick=closeAccount}viewOpen();$('cinevoAccountPage').hidden=false}
 function closeAccount(){if($('cinevoAccountPage'))$('cinevoAccountPage').hidden=true;viewClose();active('home')}
 async function personCredits(id,name){searchPage();viewOpen();const box=$('cinevoSearchResults');box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8f99a6">Loading credits…</div>';try{const d=await api('/person/'+id+'/combined_credits',{language:'en-US'});const items=uniqueItems([...(d.cast||[]),...(d.crew||[])].filter(x=>x.media_type==='movie'||x.media_type==='tv')).sort((a,b)=>Number(b.popularity||0)-Number(a.popularity||0)).slice(0,50);box.innerHTML='<div style="grid-column:1/-1;padding:4px 2px 10px"><button id="personBack" class="v2-close" style="width:auto;padding:0 14px;border-radius:10px">← Back</button><strong style="margin-left:10px;font-size:18px">'+safe(name)+'</strong></div>'+(items.length?items.map(x=>'<article class="v2-result" data-id="'+(Number(x.id)||0)+'" data-type="'+x.media_type+'"><img src="'+image(x.poster_path)+'" alt="" loading="lazy"><div class="v2-result-body"><div class="v2-result-title">'+safe(titleOf(x))+'</div><div class="v2-result-meta">'+(x.media_type==='tv'?'TV SHOW':'MOVIE')+' · '+yearFromDate(dateOf(x))+'</div></div></article>').join(''):'<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:30px">No credits found.</div>');$('personBack')?.addEventListener('click',()=>runSearch($('cinevoSearchInput').value));box.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>{closeSearch();openDetails(Number(e.dataset.id),e.dataset.type)})}catch(e){box.innerHTML='<div style="grid-column:1/-1;color:#ef8f8f;text-align:center;padding:40px">Unable to load credits.</div>'}}
-function patchDetail(){if(!mobile())return;const o=$('detailOverlay');if(!o||o.classList.contains('hidden'))return;const p=o.querySelector('.detail-poster');if(p)p.remove();const title=o.querySelector('.detail-title'),d=state.currentDetail;if(title&&d&&!title.dataset.logoChecked){title.dataset.logoChecked='1';api('/'+d.media_type+'/'+d.id+'/images',{include_image_language:'en,null'}).then(x=>{const l=(x.logos||[]).find(a=>a.file_path&&(a.iso_639_1==='en'||!a.iso_639_1));if(l&&title.isConnected){const i=document.createElement('img');i.className='detail-logo';i.src=image(l.file_path,'original');i.alt=title.textContent;title.replaceWith(i)}}).catch(()=>{})}}
+function patchDetail(){
+  if(!mobile())return;
+  const o=$('detailOverlay');
+  if(!o||o.classList.contains('hidden'))return;
+  const p=o.querySelector('.detail-poster');
+  if(p)p.remove();
+}
 if(typeof window.openDetails==='function'&&!window.openDetails.__v2){const old=window.openDetails;const wrap=async function(id,type,fromRandom){const r=await old(id,type,fromRandom);if(mobile()){const o=$('detailOverlay');try{o.__v2Credits=(await api('/'+type+'/'+id+'/credits')).cast||[]}catch(e){o.__v2Credits=[]}patchDetail();const cards=o.querySelectorAll('.cast-card');cards.forEach((c,i)=>{const person=o.__v2Credits[i];if(person&&!c.dataset.v2){c.dataset.v2='1';c.onclick=()=>{if(typeof closeDetails==='function')closeDetails();openSearch();setTimeout(()=>personCredits(person.id,person.name),60)}}})}return r};wrap.__v2=true;window.openDetails=wrap}
 function bindNav(){const n=$('cinevoMobileNav');if(!n||n.dataset.v2)return;n.dataset.v2='1';n.querySelector('[data-mobile-nav="home"]')?.addEventListener('click',()=>{closeSearch();closeAccount();active('home');goHome()});n.querySelector('[data-mobile-nav="search"]')?.addEventListener('click',openSearch);n.querySelector('[data-mobile-nav="journey"]')?.addEventListener('click',()=>{closeSearch();closeAccount();viewOpen();active('journey');openTimelinePage()});n.querySelector('[data-mobile-nav="random"]')?.addEventListener('click',()=>{closeSearch();closeAccount();viewOpen();active('random');openRandomPage()})}
 async function more(){if(!mobile()||moreBusy||moreDone)return;if($('cinevoSearchPage')&&!$('cinevoSearchPage').hidden)return;if($('detailOverlay')&&!$('detailOverlay').classList.contains('hidden'))return;const near=document.documentElement.scrollHeight-innerHeight-scrollY<650;if(!near)return;moreBusy=true;try{const n=state.page+1;let a;if(state.filters.type==='all'){const [m,t]=await Promise.all([fetch50('movie',n),fetch50('tv',n)]);a=uniqueItems([...(m||[]),...(t||[])])}else a=await fetch50(state.filters.type,n);const seen=new Set((state.currentResults||[]).map(x=>x.media_type+':'+x.id));const fresh=uniqueItems(a||[]).filter(x=>{const k=x.media_type+':'+x.id;if(seen.has(k))return false;seen.add(k);return true});if(!fresh.length){moreDone=true;return}state.currentResults=(state.currentResults||[]).concat(fresh);state.page=n;renderResults()}catch(e){console.warn(e)}finally{moreBusy=false}}
@@ -5259,6 +5268,71 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
      Hide the entire old meta row to avoid duplicate rating text. */
   #trendingBox .trend-meta{
     display:none !important;
+  }
+}
+</style>
+
+<style id="cinevo-mobile-rating-season-final">
+/* Desktop keeps the normal numeric/star rating. */
+.detail-rating-badge{
+  display:none;
+}
+
+@media(max-width:700px){
+  /* Never show the old star rating in the mobile detail meta row. */
+  #detailOverlay .detail-rating-old{
+    display:none !important;
+  }
+
+  /* Modern circular yellow percentage rating. */
+  #detailOverlay .detail-rating-badge{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:42px !important;
+    height:42px !important;
+    min-width:42px !important;
+    border-radius:50% !important;
+    box-sizing:border-box !important;
+    border:2px solid #f5c518 !important;
+    background:rgba(12,15,20,.90) !important;
+    color:#f5c518 !important;
+    box-shadow:0 3px 12px rgba(0,0,0,.42), inset 0 0 0 1px rgba(245,197,24,.12) !important;
+    vertical-align:middle !important;
+    gap:0 !important;
+  }
+
+  #detailOverlay .detail-rating-badge span{
+    font-size:12px !important;
+    line-height:1 !important;
+    font-weight:900 !important;
+    letter-spacing:-.2px !important;
+  }
+
+  #detailOverlay .detail-rating-badge small{
+    font-size:7px !important;
+    line-height:1 !important;
+    font-weight:900 !important;
+    margin-left:1px !important;
+    margin-top:5px !important;
+  }
+
+  /* Season buttons: only real seasons, with a cleaner mobile treatment. */
+  #detailOverlay #seasonBar{
+    display:flex !important;
+    gap:7px !important;
+    overflow-x:auto !important;
+    padding:2px 1px 8px !important;
+    scrollbar-width:none !important;
+  }
+
+  #detailOverlay #seasonBar::-webkit-scrollbar{
+    display:none !important;
+  }
+
+  #detailOverlay .season-btn{
+    flex:0 0 auto !important;
+    border-radius:10px !important;
   }
 }
 </style>
