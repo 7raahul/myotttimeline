@@ -3158,7 +3158,6 @@ async function openDetails(id,type,fromRandom=false){
 
 function renderDetail(details,credits,providers){
   const type = details.media_type;
-
   const title = titleOf(details);
 
   const release =
@@ -3176,18 +3175,19 @@ function renderDetail(details,credits,providers){
     <div class="detail-bg-overlay"></div>
 
     <div class="detail-main">
-
-      <img class="detail-poster"
-           src="${image(details.poster_path)}"
-           alt="${esc(title)}">
-
       <div class="detail-info">
 
         <div class="detail-type">
           ${type === "tv" ? "TV SHOW" : "MOVIE"}
         </div>
 
-        <h1 class="detail-title">${esc(title)}</h1>
+        <div class="detail-logo-wrap">
+          <img class="detail-logo"
+               data-detail-logo
+               alt="${esc(title)}"
+               style="display:none">
+          <h1 class="detail-title detail-title-fallback">${esc(title)}</h1>
+        </div>
 
         <div class="detail-meta">
           <span>📅 ${esc(formatDate(release))}</span>
@@ -3227,7 +3227,47 @@ function renderDetail(details,credits,providers){
     </div>
   `;
 
+  loadDetailTmdbLogo(details.id,type,title);
   renderDetailContent(details,credits,providers);
+}
+
+async function loadDetailTmdbLogo(id,type,title){
+  const hero = document.getElementById("detailHero");
+  if(!hero) return;
+
+  const logo = hero.querySelector("[data-detail-logo]");
+  const fallback = hero.querySelector(".detail-title-fallback");
+
+  if(!logo || !fallback) return;
+
+  try{
+    const data = await api(`/${type}/${id}/images`,{
+      include_image_language:"en,null"
+    });
+
+    const logos = Array.isArray(data.logos) ? data.logos : [];
+
+    const selected =
+      logos.find(x=>x.file_path && x.iso_639_1==="en") ||
+      logos.find(x=>x.file_path && !x.iso_639_1);
+
+    if(!selected?.file_path || !logo.isConnected) return;
+
+    logo.src = image(selected.file_path,"original");
+
+    logo.onload = ()=>{
+      if(!logo.isConnected) return;
+      logo.style.display = "block";
+      fallback.style.display = "none";
+    };
+
+    logo.onerror = ()=>{
+      logo.style.display = "none";
+      fallback.style.display = "";
+    };
+  }catch(error){
+    console.warn("Detail TMDB logo unavailable:", error);
+  }
 }
 
 function renderDetailContent(details,credits,providers){
@@ -4870,6 +4910,186 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
   .trend-logo{
     max-width:78%;
     max-height:58px;
+  }
+}
+</style>
+
+<style id="cinevo-detail-backdrop-final">
+/* Detail page: backdrop-first hero, no portrait poster */
+#detailOverlay .detail-hero{
+  position:relative !important;
+  min-height:620px !important;
+  display:flex !important;
+  align-items:flex-end !important;
+  overflow:hidden !important;
+  background:#080a0e !important;
+}
+
+#detailOverlay .detail-bg{
+  position:absolute !important;
+  z-index:1 !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  display:block !important;
+}
+
+#detailOverlay .detail-bg-overlay{
+  position:absolute !important;
+  z-index:2 !important;
+  inset:0 !important;
+  background:
+    linear-gradient(90deg,
+      rgba(8,10,14,.98) 0%,
+      rgba(8,10,14,.88) 25%,
+      rgba(8,10,14,.52) 52%,
+      rgba(8,10,14,.12) 78%,
+      rgba(8,10,14,.02) 100%),
+    linear-gradient(0deg,
+      #080a0e 0%,
+      rgba(8,10,14,.18) 34%,
+      transparent 72%) !important;
+  pointer-events:none !important;
+}
+
+#detailOverlay .detail-main{
+  position:relative !important;
+  z-index:3 !important;
+  width:100% !important;
+  max-width:1450px !important;
+  margin:0 auto !important;
+  padding:80px 42px 55px !important;
+  display:block !important;
+}
+
+#detailOverlay .detail-poster{
+  display:none !important;
+}
+
+#detailOverlay .detail-info{
+  max-width:720px !important;
+  width:min(720px,100%) !important;
+}
+
+#detailOverlay .detail-logo-wrap{
+  display:flex !important;
+  align-items:flex-start !important;
+  width:100% !important;
+  min-height:72px !important;
+  margin:0 0 15px !important;
+}
+
+#detailOverlay .detail-logo{
+  display:block;
+  width:auto !important;
+  max-width:min(470px,90%) !important;
+  max-height:115px !important;
+  height:auto !important;
+  object-fit:contain !important;
+  object-position:left center !important;
+  margin:0 !important;
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,.45)) !important;
+}
+
+#detailOverlay .detail-title-fallback{
+  margin:0 !important;
+}
+
+#detailOverlay .detail-meta{
+  position:relative !important;
+  clear:both !important;
+}
+
+@media(max-width:900px){
+  #detailOverlay .detail-hero{
+    min-height:600px !important;
+  }
+
+  #detailOverlay .detail-main{
+    padding:70px 28px 42px !important;
+  }
+
+  #detailOverlay .detail-info{
+    max-width:650px !important;
+  }
+
+  #detailOverlay .detail-logo{
+    max-width:390px !important;
+    max-height:95px !important;
+  }
+}
+
+@media(max-width:700px){
+  #detailOverlay .detail-hero{
+    min-height:0 !important;
+    display:block !important;
+  }
+
+  #detailOverlay .detail-bg{
+    position:relative !important;
+    inset:auto !important;
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:16/9 !important;
+    object-fit:cover !important;
+    object-position:center center !important;
+  }
+
+  #detailOverlay .detail-bg-overlay{
+    inset:auto !important;
+    top:auto !important;
+    bottom:0 !important;
+    width:100% !important;
+    height:55% !important;
+    background:
+      linear-gradient(0deg,#080b10 0%,rgba(8,11,16,.78) 35%,rgba(8,11,16,0) 100%) !important;
+  }
+
+  #detailOverlay .detail-main{
+    display:block !important;
+    width:100% !important;
+    max-width:none !important;
+    padding:18px 16px 22px !important;
+    margin:0 !important;
+  }
+
+  #detailOverlay .detail-info{
+    width:100% !important;
+    max-width:none !important;
+  }
+
+  #detailOverlay .detail-logo-wrap{
+    min-height:50px !important;
+    margin-bottom:10px !important;
+  }
+
+  #detailOverlay .detail-logo{
+    max-width:82% !important;
+    max-height:72px !important;
+  }
+
+  #detailOverlay .detail-title{
+    font-size:30px !important;
+    line-height:1.05 !important;
+  }
+
+  #detailOverlay .detail-overview{
+    font-size:12px !important;
+    line-height:1.55 !important;
+  }
+
+  #detailOverlay .detail-buttons{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+  }
+
+  #detailOverlay .action-btn{
+    min-width:0 !important;
+    padding:10px 8px !important;
+    font-size:10px !important;
   }
 }
 </style>
