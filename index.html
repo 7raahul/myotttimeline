@@ -3185,12 +3185,28 @@ function renderDetail(details,credits,providers){
           ${type === "tv" ? "TV SHOW" : "MOVIE"}
         </div>
 
-        <div class="detail-logo-wrap">
-          <img class="detail-logo"
-               data-detail-logo
-               alt="${esc(title)}"
-               style="display:none">
-          <h1 class="detail-title detail-title-fallback">${esc(title)}</h1>
+        <div class="detail-logo-action-row">
+          <div class="detail-logo-wrap">
+            <img class="detail-logo"
+                 data-detail-logo
+                 alt="${esc(title)}"
+                 style="display:none">
+            <h1 class="detail-title detail-title-fallback">${esc(title)}</h1>
+          </div>
+
+          <div class="detail-mobile-actions">
+            <button class="detail-mobile-action watched"
+                    type="button"
+                    onclick="openDatePicker('watched',${details.id},'${type}')">
+              ✓ <span>Watched</span>
+            </button>
+
+            <button class="detail-mobile-action schedule"
+                    type="button"
+                    onclick="openDatePicker('scheduled',${details.id},'${type}')">
+              📅 <span>Schedule</span>
+            </button>
+          </div>
         </div>
 
         <div class="detail-meta">
@@ -5333,6 +5349,117 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
   #detailOverlay .season-btn{
     flex:0 0 auto !important;
     border-radius:10px !important;
+  }
+}
+</style>
+
+<style id="cinevo-mobile-logo-actions-final">
+/* Hidden on desktop so the existing desktop UI stays exactly as before. */
+.detail-mobile-actions{
+  display:none;
+}
+
+@media(max-width:700px){
+  /* Logo on the left, Watched above Schedule on the right. */
+  #detailOverlay .detail-logo-action-row{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:12px !important;
+    width:100% !important;
+    margin:0 0 10px !important;
+  }
+
+  #detailOverlay .detail-logo-wrap{
+    flex:1 1 auto !important;
+    min-width:0 !important;
+    width:auto !important;
+    margin:0 !important;
+  }
+
+  #detailOverlay .detail-logo{
+    max-width:100% !important;
+    max-height:62px !important;
+    width:auto !important;
+    height:auto !important;
+  }
+
+  #detailOverlay .detail-title-fallback{
+    font-size:22px !important;
+    line-height:1.05 !important;
+  }
+
+  #detailOverlay .detail-mobile-actions{
+    flex:0 0 128px !important;
+    width:128px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    gap:6px !important;
+    align-self:center !important;
+  }
+
+  #detailOverlay .detail-mobile-action{
+    width:100% !important;
+    height:34px !important;
+    min-height:34px !important;
+    padding:0 9px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:5px !important;
+    border-radius:9px !important;
+    font-size:10px !important;
+    line-height:1 !important;
+    font-weight:900 !important;
+    white-space:nowrap !important;
+    box-sizing:border-box !important;
+    cursor:pointer !important;
+  }
+
+  #detailOverlay .detail-mobile-action.watched{
+    background:#f5c518 !important;
+    color:#111 !important;
+    border:1px solid #f5c518 !important;
+  }
+
+  #detailOverlay .detail-mobile-action.schedule{
+    background:#171d26 !important;
+    color:#fff !important;
+    border:1px solid #343c48 !important;
+  }
+
+  /* The original full-width action row is replaced by the compact stack. */
+  #detailOverlay .detail-buttons{
+    display:none !important;
+  }
+
+  /* Keep the modern circular percentage rating in the existing metadata row. */
+  #detailOverlay .detail-rating-badge{
+    width:42px !important;
+    height:42px !important;
+    min-width:42px !important;
+  }
+}
+
+@media(max-width:390px){
+  #detailOverlay .detail-logo-action-row{
+    gap:8px !important;
+  }
+
+  #detailOverlay .detail-mobile-actions{
+    flex-basis:112px !important;
+    width:112px !important;
+  }
+
+  #detailOverlay .detail-mobile-action{
+    height:32px !important;
+    min-height:32px !important;
+    padding:0 6px !important;
+    font-size:9px !important;
+  }
+
+  #detailOverlay .detail-logo{
+    max-height:56px !important;
   }
 }
 </style>
