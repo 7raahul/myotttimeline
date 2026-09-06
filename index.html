@@ -2111,19 +2111,44 @@ header{
 
 <!-- DATE MODAL -->
 <div id="dateModal" class="modal hidden">
-  <div class="modal-box date-box">
-
+  <div class="modal-box date-box modern-date-box">
     <div class="modal-head">
       <h2 id="dateTitle">Select Date</h2>
       <button class="close" id="closeDate">×</button>
     </div>
 
-    <div class="option-title">Date</div>
-    <input id="selectedDate" type="date"
-           style="width:100%;padding:11px;background:#181d25;border:1px solid #303640;border-radius:9px;color:#fff;">
+    <div class="modern-date-label" id="datePickerLabel">Select a date</div>
 
-    <button class="pick-btn" id="saveDate">OK</button>
+    <div class="modern-date-fields">
+      <div class="date-field">
+        <span>DAY</span>
+        <select id="selectedDay"></select>
+      </div>
+      <div class="date-field date-month">
+        <span>MONTH</span>
+        <select id="selectedMonth">
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+      <div class="date-field">
+        <span>YEAR</span>
+        <select id="selectedYear"></select>
+      </div>
+    </div>
 
+    <div class="modern-date-preview" id="datePreview">—</div>
+    <button class="pick-btn modern-date-save" id="saveDate">Confirm Date</button>
   </div>
 </div>
 
@@ -3195,16 +3220,16 @@ function renderDetail(details,credits,providers){
           </div>
 
           <div class="detail-mobile-actions">
-            <button class="detail-mobile-action watched"
+            <button class="detail-mobile-action watched ${getWatched()[`${type}:${details.id}`] ? "is-active" : ""}"
                     type="button"
-                    onclick="openDatePicker('watched',${details.id},'${type}')">
-              ✓ <span>Watched</span>
+                    onclick="toggleMobileAction('watched',${details.id},'${type}')">
+              ✓ <span>${getWatched()[`${type}:${details.id}`] ? "Remove from Watch" : "Watched"}</span>
             </button>
 
-            <button class="detail-mobile-action schedule"
+            <button class="detail-mobile-action schedule ${getScheduled()[`${type}:${details.id}`] ? "is-active" : ""}"
                     type="button"
-                    onclick="openDatePicker('scheduled',${details.id},'${type}')">
-              📅 <span>Schedule</span>
+                    onclick="toggleMobileAction('scheduled',${details.id},'${type}')">
+              📅 <span>${getScheduled()[`${type}:${details.id}`] ? "Remove Schedule" : "Schedule"}</span>
             </button>
           </div>
         </div>
@@ -3733,6 +3758,93 @@ async function loadRelated(id,type){
    DATE PICKER
 ============================================================ */
 
+function daysInMonth(year,month){
+  return new Date(year,month,0).getDate();
+}
+
+function pad2(n){
+  return String(n).padStart(2,"0");
+}
+
+function dateFromParts(){
+  const y = Number(document.getElementById("selectedYear")?.value);
+  const m = Number(document.getElementById("selectedMonth")?.value);
+  const d = Number(document.getElementById("selectedDay")?.value);
+  if(!y || !m || !d) return "";
+  return `${y}-${pad2(m)}-${pad2(d)}`;
+}
+
+function fillModernDatePicker(dateValue,minDate,action){
+  const day = document.getElementById("selectedDay");
+  const month = document.getElementById("selectedMonth");
+  const year = document.getElementById("selectedYear");
+  if(!day || !month || !year) return;
+
+  const base = dateValue ? new Date(dateValue+"T12:00:00") : new Date();
+  const min = minDate ? new Date(minDate+"T12:00:00") : null;
+  const minYear = min ? min.getFullYear() : new Date().getFullYear();
+
+  year.innerHTML = "";
+  const maxYear = action === "scheduled"
+    ? Math.max(new Date().getFullYear()+10,minYear+10)
+    : new Date().getFullYear();
+
+  for(let y=minYear;y<=maxYear;y++){
+    const o=document.createElement("option");
+    o.value=y;
+    o.textContent=y;
+    year.appendChild(o);
+  }
+
+  year.value = String(base.getFullYear());
+  month.value = String(base.getMonth()+1);
+
+  function refreshDays(){
+    const y=Number(year.value), m=Number(month.value);
+    const total=daysInMonth(y,m);
+    const old=Number(day.value)||base.getDate();
+    day.innerHTML="";
+    for(let d=1;d<=total;d++){
+      const iso=`${y}-${pad2(m)}-${pad2(d)}`;
+      if(minDate && iso<minDate) continue;
+      const o=document.createElement("option");
+      o.value=d;
+      o.textContent=pad2(d);
+      day.appendChild(o);
+    }
+    if(!day.options.length){
+      day.innerHTML='<option value="">—</option>';
+      return;
+    }
+    day.value=String(Math.min(old,total));
+    updateModernDatePreview();
+  }
+
+  year.onchange=refreshDays;
+  month.onchange=refreshDays;
+  day.onchange=updateModernDatePreview;
+  refreshDays();
+}
+
+function updateModernDatePreview(){
+  const preview=document.getElementById("datePreview");
+  if(!preview) return;
+  const iso=dateFromParts();
+  if(!iso){
+    preview.textContent="Select a date";
+    return;
+  }
+  preview.textContent=new Date(iso+"T12:00:00").toLocaleDateString("en-US",{
+    weekday:"short",day:"numeric",month:"long",year:"numeric"
+  });
+}
+
+function getReleaseDateForCurrentDetail(){
+  const d=state.currentDetail;
+  if(!d) return "";
+  return d.media_type==="tv" ? (d.first_air_date||"") : (d.release_date||"");
+}
+
 function openDatePicker(action,id,type){
   state.dateAction = {
     action,
@@ -3743,7 +3855,6 @@ function openDatePicker(action,id,type){
 
   const watched = getWatched();
   const scheduled = getScheduled();
-
   const key = `${type}:${id}`;
 
   const existing =
@@ -3751,19 +3862,77 @@ function openDatePicker(action,id,type){
       ? watched[key]
       : scheduled[key];
 
+  const today = new Date().toISOString().slice(0,10);
+  const release = action==="watched" ? getReleaseDateForCurrentDetail() : "";
+  const minDate = action==="watched"
+    ? (release && release>today ? release : release || "")
+    : today;
+
   document.getElementById("dateTitle").textContent =
     action === "watched"
       ? "When did you watch it?"
       : "When will you watch it?";
 
-  document.getElementById("selectedDate").value =
-    existing?.date ||
-    new Date().toISOString().slice(0,10);
+  document.getElementById("datePickerLabel").textContent =
+    action === "watched"
+      ? "Choose your watched date"
+      : "Choose your scheduled date";
 
+  let initial = existing?.date || today;
+  if(minDate && initial<minDate) initial=minDate;
+  if(action==="watched" && initial>today) initial=today;
+
+  fillModernDatePicker(initial,minDate,action);
   document.getElementById("dateModal").classList.remove("hidden");
 }
 
-function openEpisodeDatePicker(
+function toggleMobileAction(action,id,type){
+  const key=`${type}:${id}`;
+  const store=action==="watched" ? getWatched() : getScheduled();
+
+  if(store[key]){
+    delete store[key];
+    if(action==="watched") saveWatched(store);
+    else saveScheduled(store);
+
+    renderTimeline();
+    if(!document.getElementById("timelinePage").classList.contains("hidden")){
+      renderTimelinePage();
+    }
+
+    refreshDetailMobileActions();
+    toast(action==="watched" ? "Removed from watch." : "Schedule removed.");
+    return;
+  }
+
+  openDatePicker(action,id,type);
+}
+
+function refreshDetailMobileActions(){
+  const d=state.currentDetail;
+  const hero=document.getElementById("detailHero");
+  if(!d || !hero) return;
+
+  const key=`${d.media_type}:${d.id}`;
+  const w=!!getWatched()[key];
+  const s=!!getScheduled()[key];
+
+  const wb=hero.querySelector(".detail-mobile-action.watched");
+  const sb=hero.querySelector(".detail-mobile-action.schedule");
+
+  if(wb){
+    wb.classList.toggle("is-active",w);
+    const span=wb.querySelector("span");
+    if(span)span.textContent=w ? "Remove from Watch" : "Watched";
+  }
+  if(sb){
+    sb.classList.toggle("is-active",s);
+    const span=sb.querySelector("span");
+    if(span)span.textContent=s ? "Remove Schedule" : "Schedule";
+  }
+}
+
+async function openEpisodeDatePicker(
   action,
   tvId,
   seasonNumber,
@@ -3797,15 +3966,20 @@ function openEpisodeDatePicker(
       ? "When did you watch this episode?"
       : "When will you watch this episode?";
 
-  document.getElementById("selectedDate").value =
-    existing?.date ||
-    new Date().toISOString().slice(0,10);
+  const today = new Date().toISOString().slice(0,10);
+  const initial = existing?.date || today;
 
+  document.getElementById("datePickerLabel").textContent =
+    action === "watched"
+      ? "Choose episode watched date"
+      : "Choose episode scheduled date";
+
+  fillModernDatePicker(initial,action==="watched" ? today : today,action);
   document.getElementById("dateModal").classList.remove("hidden");
 }
 
 function saveDateAction(){
-  const date = document.getElementById("selectedDate").value;
+  const date = dateFromParts();
 
   if(!date){
     toast("Please select a date.");
@@ -3813,6 +3987,28 @@ function saveDateAction(){
   }
 
   const action = state.dateAction;
+  const today = new Date().toISOString().slice(0,10);
+
+  if(action?.action==="watched"){
+    const release = action.episode
+      ? ""
+      : getReleaseDateForCurrentDetail();
+
+    if(release && date<release){
+      toast("Watched date cannot be before the release date.");
+      return;
+    }
+
+    if(date>today){
+      toast("Watched date cannot be in the future.");
+      return;
+    }
+  }
+
+  if(action?.action==="scheduled" && date<today){
+    toast("Schedule date cannot be in the past.");
+    return;
+  }
 
   if(!action) return;
 
@@ -3871,6 +4067,8 @@ function saveDateAction(){
   }
 
   document.getElementById("dateModal").classList.add("hidden");
+
+  refreshDetailMobileActions();
 
   renderTimeline();
   if(!document.getElementById("timelinePage").classList.contains("hidden")) renderTimelinePage();
@@ -5460,6 +5658,171 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
 
   #detailOverlay .detail-logo{
     max-height:56px !important;
+  }
+}
+</style>
+
+<style id="cinevo-modern-mobile-actions-date-final">
+@media(max-width:700px){
+  /* Compact, modern action stack beside the logo. */
+  #detailOverlay .detail-mobile-actions{
+    flex:0 0 126px !important;
+    width:126px !important;
+    gap:6px !important;
+  }
+
+  #detailOverlay .detail-mobile-action{
+    height:32px !important;
+    min-height:32px !important;
+    border-radius:10px !important;
+    padding:0 8px !important;
+    font-size:9px !important;
+    letter-spacing:.1px !important;
+    box-shadow:0 2px 7px rgba(0,0,0,.22) !important;
+    transition:background .18s ease,border-color .18s ease,transform .18s ease !important;
+  }
+
+  #detailOverlay .detail-mobile-action:active{
+    transform:scale(.97) !important;
+  }
+
+  #detailOverlay .detail-mobile-action.watched{
+    background:rgba(255,255,255,.96) !important;
+    color:#111 !important;
+    border:1px solid rgba(255,255,255,.82) !important;
+  }
+
+  #detailOverlay .detail-mobile-action.watched.is-active{
+    background:#22c55e !important;
+    border-color:#22c55e !important;
+    color:#fff !important;
+  }
+
+  #detailOverlay .detail-mobile-action.schedule{
+    background:rgba(255,255,255,.96) !important;
+    color:#111 !important;
+    border:1px solid rgba(255,255,255,.82) !important;
+  }
+
+  #detailOverlay .detail-mobile-action.schedule.is-active{
+    background:#ef4444 !important;
+    border-color:#ef4444 !important;
+    color:#fff !important;
+  }
+
+  #detailOverlay .detail-mobile-action span{
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+  }
+}
+
+/* Modern day / month / year picker. */
+.modern-date-box{
+  width:min(430px,calc(100% - 28px)) !important;
+  border-radius:20px !important;
+  background:#11161e !important;
+  border:1px solid #2b333f !important;
+  box-shadow:0 24px 70px rgba(0,0,0,.6) !important;
+}
+
+.modern-date-label{
+  color:#98a2af;
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin:4px 0 12px;
+}
+
+.modern-date-fields{
+  display:grid;
+  grid-template-columns:.7fr 1.35fr .95fr;
+  gap:8px;
+}
+
+.date-field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.date-field>span{
+  color:#7f8996;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.date-field select{
+  width:100%;
+  height:45px;
+  padding:0 10px;
+  border-radius:11px;
+  border:1px solid #303947;
+  outline:none;
+  background:#171d26;
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+  appearance:auto;
+}
+
+.date-field select:focus{
+  border-color:#f5c518;
+  box-shadow:0 0 0 3px rgba(245,197,24,.08);
+}
+
+.modern-date-preview{
+  margin:12px 0;
+  padding:11px 12px;
+  border-radius:11px;
+  border:1px solid rgba(245,197,24,.22);
+  background:rgba(245,197,24,.06);
+  color:#f5c518;
+  text-align:center;
+  font-size:12px;
+  font-weight:900;
+}
+
+.modern-date-save{
+  width:100% !important;
+  height:44px !important;
+  border-radius:11px !important;
+  margin-top:2px !important;
+  font-size:12px !important;
+  font-weight:900 !important;
+  background:#f5c518 !important;
+  color:#111 !important;
+  border:0 !important;
+}
+
+@media(max-width:700px){
+  .modern-date-box{
+    width:calc(100% - 28px) !important;
+    margin:auto !important;
+    padding:16px !important;
+  }
+
+  .modern-date-fields{
+    grid-template-columns:.65fr 1.3fr .9fr;
+  }
+
+  .date-field select{
+    height:43px;
+    font-size:12px;
+  }
+}
+
+@media(max-width:390px){
+  #detailOverlay .detail-mobile-actions{
+    flex-basis:112px !important;
+    width:112px !important;
+  }
+
+  #detailOverlay .detail-mobile-action{
+    font-size:8.5px !important;
+    padding:0 6px !important;
   }
 }
 </style>
