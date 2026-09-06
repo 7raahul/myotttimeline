@@ -2418,6 +2418,8 @@ function renderTrending(){
     return `
       <div class="trend-slide ${index===state.trendIndex ? "active":""}"
            data-index="${index}"
+           data-media-type="${type}"
+           data-media-id="${item.id}"
            onclick="if(!event.target.closest('button'))openDetails(${item.id},'${type}')">
         <img class="trend-bg"
              src="${backdrop(item.backdrop_path)}"
@@ -2430,7 +2432,14 @@ function renderTrending(){
             ${type === "tv" ? "TV SHOW" : "MOVIE"}
           </div>
 
-          <h2 class="trend-title">${esc(title)}</h2>
+          <div class="trend-logo-wrap">
+            <img class="trend-logo"
+                 data-logo-for="${item.id}"
+                 alt="${esc(title)}"
+                 aria-label="${esc(title)}"
+                 style="display:none">
+            <h2 class="trend-title trend-title-fallback">${esc(title)}</h2>
+          </div>
 
           <div class="trend-meta">
             <span>${esc(formatDate(date))}</span>
@@ -2462,6 +2471,52 @@ function renderTrending(){
       `).join("")}
     </div>
   `;
+
+  loadTrendingLogos();
+}
+
+async function loadTrendingLogos(){
+  const slides = [...document.querySelectorAll("#trendingBox .trend-slide")];
+
+  await Promise.allSettled(slides.map(async slide=>{
+    const id = slide.dataset.mediaId;
+    const type = slide.dataset.mediaType;
+    const logo = slide.querySelector(".trend-logo");
+    const fallback = slide.querySelector(".trend-title-fallback");
+
+    if(!id || !type || !logo || !fallback) return;
+
+    try{
+      const data = await api(`/${type}/${id}/images`, {
+        include_image_language:"en,null"
+      });
+
+      const logos = Array.isArray(data.logos) ? data.logos : [];
+
+      // Prefer an English logo, then a logo without a language.
+      const selected =
+        logos.find(x=>x.file_path && x.iso_639_1==="en") ||
+        logos.find(x=>x.file_path && !x.iso_639_1);
+
+      if(selected?.file_path && logo.isConnected){
+        logo.src = image(selected.file_path,"original");
+
+        logo.onload = ()=>{
+          if(!logo.isConnected) return;
+          logo.style.display = "block";
+          fallback.style.display = "none";
+        };
+
+        logo.onerror = ()=>{
+          logo.style.display = "none";
+          fallback.style.display = "";
+        };
+      }
+    }catch(error){
+      // Keep the normal title if TMDB has no logo or the logo request fails.
+      console.warn("Trending logo unavailable:", error);
+    }
+  }));
 }
 
 function setTrend(index){
@@ -4775,6 +4830,46 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
   #trendingBox .trend-dots .dot.active{
     width:14px !important;
     height:5px !important;
+  }
+}
+</style>
+
+<style id="cinevo-tmdb-hero-logo">
+.trend-logo-wrap{
+  display:flex;
+  align-items:flex-start;
+  min-height:48px;
+  margin:0 0 12px;
+}
+.trend-logo{
+  display:block;
+  width:auto;
+  max-width:min(420px,100%);
+  height:auto;
+  max-height:88px;
+  object-fit:contain;
+  object-position:left center;
+  filter:drop-shadow(0 3px 10px rgba(0,0,0,.35));
+}
+.trend-title-fallback{
+  margin:0 !important;
+}
+
+@media(max-width:850px){
+  .trend-logo{
+    max-width:330px;
+    max-height:68px;
+  }
+}
+
+@media(max-width:600px){
+  .trend-logo-wrap{
+    min-height:38px;
+    margin-bottom:6px;
+  }
+  .trend-logo{
+    max-width:78%;
+    max-height:58px;
   }
 }
 </style>
