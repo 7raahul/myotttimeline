@@ -2009,61 +2009,7 @@ header{
       </div>
     </div>
   </section>
-
-  <!-- BROWSE -->
-  <section class="section">
-    <div class="browse-box">
-      <div class="browse-row">
-
-        <div class="browse-label">BROWSE BY</div>
-
-        <div class="filter" data-filter="type">
-          <button class="filter-btn">
-            <span id="typeLabel">Movies & TV Shows</span>
-            <span>⌄</span>
-          </button>
-          <div class="filter-menu hidden"></div>
-        </div>
-
-        <div class="filter" data-filter="year">
-          <button class="filter-btn">
-            <span id="yearLabel">All Years</span>
-            <span>⌄</span>
-          </button>
-          <div class="filter-menu hidden"></div>
-        </div>
-
-        <div class="filter" data-filter="popular">
-          <button class="filter-btn">
-            <span id="popularLabel">Popular</span>
-            <span>⌄</span>
-          </button>
-          <div class="filter-menu hidden"></div>
-        </div>
-
-        <div class="filter" data-filter="genre">
-          <button class="filter-btn">
-            <span id="genreLabel">All Genres</span>
-            <span>⌄</span>
-          </button>
-          <div class="filter-menu hidden"></div>
-        </div>
-
-        <div class="filter" data-filter="country">
-          <button class="filter-btn">
-            <span id="countryLabel">All Countries</span>
-            <span>⌄</span>
-          </button>
-          <div class="filter-menu hidden"></div>
-        </div>
-
-        <button class="apply-btn" id="applyFilters">APPLY</button>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- RESULTS -->
+<!-- RESULTS -->
   <section class="section">
     <div class="results-head">
       <div>
@@ -2747,7 +2693,8 @@ function buildFilterMenu(type,menu){
 }
 
 function updateFilterLabels(){
-  const f = state.filters;
+  if(!document.getElementById("typeLabel")) return;
+const f = state.filters;
 
   document.getElementById("typeLabel").textContent =
     f.type === "movie" ? "Movies" :
@@ -4389,8 +4336,7 @@ window.addEventListener("scroll",()=>{
    APPLY FILTERS
 ============================================================ */
 
-document.getElementById("applyFilters")
-  .addEventListener("click",()=>{
+document.getElementById("applyFilters")?.addEventListener("click",()=>{
     document.querySelectorAll(".filter-menu").forEach(m=>m.classList.add("hidden"));
     /*
       Search input is cleared so Browse mode
