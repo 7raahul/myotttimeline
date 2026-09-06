@@ -1988,13 +1988,6 @@ header{
   </div>
 </header>
 
-<div class="global-media-filter" id="globalMediaFilter" aria-label="Content type">
-  <button type="button" class="global-media-btn active" data-value="all" onclick="setMainMediaType('all')">ALL</button>
-  <button type="button" class="global-media-btn" data-value="movie" onclick="setMainMediaType('movie')">MOVIES</button>
-  <button type="button" class="global-media-btn" data-value="tv" onclick="setMainMediaType('tv')">TV SHOWS</button>
-</div>
-
-
 <main class="container">
 
   <!-- TRENDING -->
@@ -2006,6 +1999,14 @@ header{
       </div>
     </div>
   </section>
+
+  <!-- CONTENT TYPE -->
+  <div class="global-media-filter" id="globalMediaFilter" aria-label="Content type">
+    <button type="button" class="global-media-btn active" data-value="all" onclick="setMainMediaType('all')">ALL</button>
+    <button type="button" class="global-media-btn" data-value="movie" onclick="setMainMediaType('movie')">MOVIES</button>
+    <button type="button" class="global-media-btn" data-value="tv" onclick="setMainMediaType('tv')">TV SHOWS</button>
+  </div>
+
 <!-- RESULTS -->
   <section class="section">
     <div class="results-head">
@@ -4711,3 +4712,69 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
 
 </body>
 </html>
+
+<style id="cinevo-hero-controls-final">
+/* Content type buttons: directly below hero, aligned right */
+.global-media-filter{
+  justify-content:flex-end !important;
+  margin-top:-10px !important;
+  margin-bottom:24px !important;
+  padding-top:0 !important;
+}
+
+/* Slider dots: inside the backdrop image, bottom-left */
+.trending .trend-dots{
+  left:calc(50% + 18px) !important;
+  right:auto !important;
+  bottom:14px !important;
+  gap:5px !important;
+}
+
+.trending .trend-dots .dot{
+  width:6px !important;
+  height:6px !important;
+}
+
+.trending .trend-dots .dot.active{
+  width:16px !important;
+  height:6px !important;
+}
+
+@media(max-width:700px){
+  /* The mobile media tabs are created directly after the hero. */
+  #mobileMediaTabs{
+    width:max-content !important;
+    margin:10px 0 16px auto !important;
+    display:flex !important;
+    justify-content:flex-end !important;
+    gap:6px !important;
+  }
+
+  #mobileMediaTabs button{
+    width:auto !important;
+    min-width:0 !important;
+    padding:9px 14px !important;
+    flex:0 0 auto !important;
+  }
+
+  /* Mobile backdrop image is 16:9 and the dots sit inside its bottom-left. */
+  #trendingBox .trend-dots{
+    left:12px !important;
+    right:auto !important;
+    bottom:auto !important;
+    top:calc((100vw - 28px) * 0.5625 - 18px) !important;
+    gap:4px !important;
+    z-index:6 !important;
+  }
+
+  #trendingBox .trend-dots .dot{
+    width:5px !important;
+    height:5px !important;
+  }
+
+  #trendingBox .trend-dots .dot.active{
+    width:14px !important;
+    height:5px !important;
+  }
+}
+</style>
