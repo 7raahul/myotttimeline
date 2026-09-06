@@ -3194,6 +3194,10 @@ function renderDetail(details,credits,providers){
       ? details.first_air_date
       : details.release_date;
 
+  const statusKey = `${type}:${details.id}`;
+  const watchedActive = !!getWatched()[statusKey];
+  const scheduledActive = !!getScheduled()[statusKey];
+
   const hero = document.getElementById("detailHero");
 
   hero.innerHTML = `
@@ -3220,16 +3224,16 @@ function renderDetail(details,credits,providers){
           </div>
 
           <div class="detail-mobile-actions">
-            <button class="detail-mobile-action watched ${getWatched()[`${type}:${details.id}`] ? "is-active" : ""}"
+            <button class="detail-mobile-action watched ${watchedActive ? "is-active" : ""}"
                     type="button"
                     onclick="toggleMobileAction('watched',${details.id},'${type}')">
-              ✓ <span>${getWatched()[`${type}:${details.id}`] ? "Remove from Watch" : "Watched"}</span>
+              ✓ <span>${watchedActive ? "Remove from Watch" : "Watched"}</span>
             </button>
 
-            <button class="detail-mobile-action schedule ${getScheduled()[`${type}:${details.id}`] ? "is-active" : ""}"
+            <button class="detail-mobile-action schedule ${scheduledActive ? "is-active" : ""}"
                     type="button"
                     onclick="toggleMobileAction('scheduled',${details.id},'${type}')">
-              📅 <span>${getScheduled()[`${type}:${details.id}`] ? "Remove Schedule" : "Schedule"}</span>
+              📅 <span>${scheduledActive ? "Remove Schedule" : "Schedule"}</span>
             </button>
           </div>
         </div>
@@ -3889,6 +3893,8 @@ function openDatePicker(action,id,type){
 function toggleMobileAction(action,id,type){
   const key=`${type}:${id}`;
   const store=action==="watched" ? getWatched() : getScheduled();
+
+  if(action!=="watched" && action!=="scheduled") return;
 
   if(store[key]){
     delete store[key];
@@ -5823,6 +5829,27 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
   #detailOverlay .detail-mobile-action{
     font-size:8.5px !important;
     padding:0 6px !important;
+  }
+}
+</style>
+
+<style id="cinevo-mobile-actions-click-fix">
+@media(max-width:700px){
+  #detailOverlay .detail-mobile-actions{
+    position:relative !important;
+    z-index:20 !important;
+    pointer-events:auto !important;
+  }
+
+  #detailOverlay .detail-mobile-action{
+    position:relative !important;
+    z-index:21 !important;
+    pointer-events:auto !important;
+    -webkit-tap-highlight-color:transparent !important;
+  }
+
+  #dateModal{
+    z-index:9000 !important;
   }
 }
 </style>
