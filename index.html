@@ -3403,41 +3403,45 @@ function renderDetail(details,credits,providers){
 
       <div class="detail-bg-overlay"></div>
 
-      <div class="detail-hero-badge" aria-label="Rating">
-        <span>${Math.round(Number(details.vote_average || 0) * 10)}</span><small>%</small>
-      </div>
-
       <div class="detail-hero-title-overlay">
-        <div class="detail-type">
-          ${type === "tv" ? "TV SHOW" : "MOVIE"}
+        <div class="detail-hero-top-row">
+          <div class="detail-type">
+            ${type === "tv" ? "TV SHOW" : "MOVIE"}
+          </div>
+
+          <div class="detail-hero-badge" aria-label="Rating">
+            <span>${Math.round(Number(details.vote_average || 0) * 10)}</span><small>%</small>
+          </div>
         </div>
 
-        <img class="detail-logo"
-             data-detail-logo
-             alt="${esc(title)}"
-             style="display:none">
-        <h1 class="detail-title detail-title-fallback">${esc(title)}</h1>
-      </div>
-    </div>
+        <div class="detail-hero-logo-actions-row">
+          <div class="detail-logo-wrap">
+            <img class="detail-logo"
+                 data-detail-logo
+                 alt="${esc(title)}"
+                 style="display:none">
+            <h1 class="detail-title detail-title-fallback">${esc(title)}</h1>
+          </div>
 
-    <div class="detail-main">
-      <div class="detail-info">
-
-        <div class="detail-logo-action-row">
           <div class="detail-mobile-actions">
             <button class="detail-mobile-action watched ${watchedActive ? "is-active" : ""}"
                     type="button"
                     onclick="toggleMobileAction('watched',${details.id},'${type}')">
-              ${ICON_WATCHED_SVG} <span>${watchedActive ? "↶ Remove from Watch" : "Watched"}</span>
+              ${ICON_WATCHED_SVG} <span>${watchedActive ? "↶ Remove" : "Watched"}</span>
             </button>
 
             <button class="detail-mobile-action schedule ${scheduledActive ? "is-active" : ""}"
                     type="button"
                     onclick="toggleMobileAction('scheduled',${details.id},'${type}')">
-              ${ICON_SCHEDULE_SVG} <span>${scheduledActive ? "↶ Remove Schedule" : "Schedule"}</span>
+              ${ICON_SCHEDULE_SVG} <span>${scheduledActive ? "↶ Remove" : "Schedule"}</span>
             </button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="detail-main">
+      <div class="detail-info">
 
         <div class="detail-meta">
           <span>📅 ${esc(formatDate(release))}</span>
@@ -4217,12 +4221,12 @@ function refreshDetailMobileActions(){
   if(wb){
     wb.classList.toggle("is-active",w);
     const span=wb.querySelector("span");
-    if(span)span.textContent=w ? "↶ Remove from Watch" : "Watched";
+    if(span)span.textContent=w ? "↶ Remove" : "Watched";
   }
   if(sb){
     sb.classList.toggle("is-active",s);
     const span=sb.querySelector("span");
-    if(span)span.textContent=s ? "↶ Remove Schedule" : "Schedule";
+    if(span)span.textContent=s ? "↶ Remove" : "Schedule";
   }
 
   const wDesktop=hero.querySelector(".action-btn.watched");
@@ -5457,7 +5461,7 @@ function patchDetail(){
   if(p)p.remove();
 }
 if(typeof window.openDetails==='function'&&!window.openDetails.__v2){const old=window.openDetails;const wrap=async function(id,type,fromRandom){const r=await old(id,type,fromRandom);if(mobile()){const o=$('detailOverlay');try{o.__v2Credits=(await api('/'+type+'/'+id+'/credits')).cast||[]}catch(e){o.__v2Credits=[]}patchDetail();const cards=o.querySelectorAll('.cast-card');cards.forEach((c,i)=>{const person=o.__v2Credits[i];if(person&&!c.dataset.v2){c.dataset.v2='1';c.onclick=()=>{if(typeof closeDetails==='function')closeDetails();openSearch();setTimeout(()=>personCredits(person.id,person.name),60)}}})}return r};wrap.__v2=true;window.openDetails=wrap}
-function bindNav(){const n=$('cinevoMobileNav');if(!n||n.dataset.v2)return;n.dataset.v2='1';n.querySelector('[data-mobile-nav="home"]')?.addEventListener('click',()=>{closeSearch();closeAccount();active('home');goHome()});n.querySelector('[data-mobile-nav="search"]')?.addEventListener('click',openSearch);n.querySelector('[data-mobile-nav="journey"]')?.addEventListener('click',()=>{closeSearch();closeAccount();viewOpen();active('journey');openTimelinePage()});n.querySelector('[data-mobile-nav="random"]')?.addEventListener('click',()=>{closeSearch();closeAccount();viewOpen();active('random');openRandomPage()})}
+function bindNav(){const n=$('cinevoMobileNav');if(!n||n.dataset.v2)return;n.dataset.v2='1';const closeDetailIfOpen=()=>{const d=$('detailOverlay');if(d&&!d.classList.contains('hidden')&&typeof closeDetails==='function')closeDetails(true)};n.querySelector('[data-mobile-nav="home"]')?.addEventListener('click',()=>{closeSearch();closeAccount();active('home');goHome()});n.querySelector('[data-mobile-nav="search"]')?.addEventListener('click',()=>{closeDetailIfOpen();closeAccount();openSearch()});n.querySelector('[data-mobile-nav="journey"]')?.addEventListener('click',()=>{closeDetailIfOpen();closeSearch();closeAccount();viewOpen();active('journey');openTimelinePage()});n.querySelector('[data-mobile-nav="random"]')?.addEventListener('click',()=>{closeDetailIfOpen();closeSearch();closeAccount();viewOpen();active('random');openRandomPage()})}
 async function more(){if(!mobile()||moreBusy||moreDone)return;if($('cinevoSearchPage')&&!$('cinevoSearchPage').hidden)return;if($('detailOverlay')&&!$('detailOverlay').classList.contains('hidden'))return;const near=document.documentElement.scrollHeight-innerHeight-scrollY<650;if(!near)return;moreBusy=true;try{const n=state.page+1;let a;if(state.filters.type==='all'){const [m,t]=await Promise.all([fetch50('movie',n),fetch50('tv',n)]);a=uniqueItems([...(m||[]),...(t||[])])}else a=await fetch50(state.filters.type,n);const seen=new Set((state.currentResults||[]).map(x=>x.media_type+':'+x.id));const fresh=uniqueItems(a||[]).filter(x=>{const k=x.media_type+':'+x.id;if(seen.has(k))return false;seen.add(k);return true});if(!fresh.length){moreDone=true;return}state.currentResults=(state.currentResults||[]).concat(fresh);state.page=n;renderResults()}catch(e){console.warn(e)}finally{moreBusy=false}}
 document.addEventListener('click',e=>{if(mobile()&&e.target.closest('.search-wrap')){e.preventDefault();e.stopPropagation();openSearch()}},true);window.addEventListener('scroll',more,{passive:true});window.addEventListener('resize',()=>{header();tabs();bindNav();patchDetail()});document.addEventListener('DOMContentLoaded',()=>{header();tabs();searchPage();bindNav()});new MutationObserver(()=>{if(mobile()){header();tabs();bindNav();patchDetail()}}).observe(document.body,{childList:true,subtree:true});
 })();
@@ -6872,6 +6876,170 @@ body.cinevo-view-open #cinevoMobileNav{
   #detailOverlay .detail-mobile-actions{
     width:100% !important;
   }
+}
+</style>
+
+<style id="cinevo-detail-hero-v2-final">
+/* Rebuilt hero header: rating badge sits next to the type label
+   (right above the logo), and Watched/Schedule move onto the same
+   row as the logo, pinned to the right — instead of the rating
+   floating alone in the corner and the actions stacking below the
+   image. The logo itself also renders larger. */
+#detailOverlay .detail-hero-title-overlay{
+  padding:0 16px 14px !important;
+}
+
+#detailOverlay .detail-hero-top-row{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  margin-bottom:8px !important;
+}
+
+#detailOverlay .detail-hero-top-row .detail-type{
+  margin:0 !important;
+}
+
+#detailOverlay .detail-hero-badge{
+  position:static !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:32px !important;
+  height:32px !important;
+  min-width:32px !important;
+  border-radius:50% !important;
+  box-sizing:border-box !important;
+  border:2px solid #f5c518 !important;
+  background:rgba(12,15,20,.90) !important;
+  color:#f5c518 !important;
+  box-shadow:0 3px 12px rgba(0,0,0,.42), inset 0 0 0 1px rgba(245,197,24,.12) !important;
+  gap:0 !important;
+}
+
+#detailOverlay .detail-hero-badge span{
+  font-size:9px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  letter-spacing:-.2px !important;
+}
+
+#detailOverlay .detail-hero-badge small{
+  font-size:5.5px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  margin-left:1px !important;
+  margin-top:4px !important;
+}
+
+#detailOverlay .detail-hero-logo-actions-row{
+  display:flex !important;
+  align-items:flex-end !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  width:100% !important;
+}
+
+#detailOverlay .detail-logo-wrap{
+  flex:1 1 auto !important;
+  min-width:0 !important;
+  width:auto !important;
+  margin:0 !important;
+}
+
+#detailOverlay .detail-logo{
+  display:block !important;
+  max-width:100% !important;
+  max-height:82px !important;
+  width:auto !important;
+  height:auto !important;
+  object-fit:contain !important;
+}
+
+#detailOverlay .detail-title-fallback{
+  margin:0 !important;
+  font-size:32px !important;
+  line-height:1.05 !important;
+  letter-spacing:-.8px !important;
+}
+
+#detailOverlay .detail-mobile-actions{
+  flex:0 0 auto !important;
+  width:auto !important;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:6px !important;
+}
+
+#detailOverlay .detail-mobile-action{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:5px !important;
+  width:auto !important;
+  height:30px !important;
+  min-height:30px !important;
+  padding:0 11px !important;
+  border-radius:9px !important;
+  font-size:10px !important;
+  white-space:nowrap !important;
+}
+
+#detailOverlay .detail-mobile-action .wa-icon{
+  width:12px !important;
+  height:12px !important;
+}
+
+@media(max-width:360px){
+  #detailOverlay .detail-title-fallback{
+    font-size:26px !important;
+  }
+  #detailOverlay .detail-logo{
+    max-height:66px !important;
+  }
+  #detailOverlay .detail-mobile-action{
+    padding:0 8px !important;
+    font-size:9px !important;
+  }
+}
+
+/* Compact, modern icon-only back button instead of the large
+   text pill, on both mobile and desktop. */
+#detailOverlay .detail-back{
+  top:14px !important;
+  left:14px !important;
+  z-index:30 !important;
+  width:38px !important;
+  height:38px !important;
+  padding:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:50% !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  background:rgba(5,8,12,.62) !important;
+  backdrop-filter:blur(10px) !important;
+  font-size:0 !important;
+}
+
+#detailOverlay .detail-back::before{
+  content:"";
+  width:9px;
+  height:9px;
+  border-left:2px solid #fff;
+  border-bottom:2px solid #fff;
+  transform:rotate(45deg) translate(1px,-1px);
+}
+</style>
+
+<style id="cinevo-search-account-zindex-fix">
+/* Search/Account were rendering *behind* the still-open detail
+   page (100001), so tapping Search from the nav while a movie/show
+   was open looked like the button did nothing. */
+#cinevoAccountPage,
+#cinevoSearchPage{
+  z-index:150000 !important;
 }
 </style>
 
