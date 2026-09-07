@@ -2090,7 +2090,7 @@ header{
     </div>
 
     <div class="nav-actions">
-      <button class="nav-btn" id="timelineBtn">◈ Watch Journey</button>
+      <button class="nav-btn" id="timelineBtn">◈ Timeline</button>
       <button class="nav-btn" id="randomBtn">🎲 Pick for Me</button>
     </div>
   </div>
@@ -2147,7 +2147,7 @@ header{
 <div id="timelinePage" class="page-overlay hidden">
   <div class="page-shell">
     <div class="page-head">
-      <div><h1>Watch Journey</h1><p>Watched and scheduled titles in one place.</p></div>
+      <div><h1>Timeline</h1><p>Watched and scheduled titles in one place.</p></div>
       <button class="close" id="closeTimeline">×</button>
     </div>
 
@@ -3396,26 +3396,28 @@ function renderDetail(details,credits,providers){
   const hero = document.getElementById("detailHero");
 
   hero.innerHTML = `
-    <img class="detail-bg"
-         src="${backdrop(details.backdrop_path)}"
-         alt="${esc(title)}">
+    <div class="detail-hero-image">
+      <img class="detail-bg"
+           src="${backdrop(details.backdrop_path)}"
+           alt="${esc(title)}">
 
-    <div class="detail-bg-overlay"></div>
+      <div class="detail-bg-overlay"></div>
 
-    <div class="detail-hero-badge" aria-label="Rating">
-      <span>${Math.round(Number(details.vote_average || 0) * 10)}</span><small>%</small>
-    </div>
-
-    <div class="detail-hero-title-overlay">
-      <div class="detail-type">
-        ${type === "tv" ? "TV SHOW" : "MOVIE"}
+      <div class="detail-hero-badge" aria-label="Rating">
+        <span>${Math.round(Number(details.vote_average || 0) * 10)}</span><small>%</small>
       </div>
 
-      <img class="detail-logo"
-           data-detail-logo
-           alt="${esc(title)}"
-           style="display:none">
-      <h1 class="detail-title detail-title-fallback">${esc(title)}</h1>
+      <div class="detail-hero-title-overlay">
+        <div class="detail-type">
+          ${type === "tv" ? "TV SHOW" : "MOVIE"}
+        </div>
+
+        <img class="detail-logo"
+             data-detail-logo
+             alt="${esc(title)}"
+             style="display:none">
+        <h1 class="detail-title detail-title-fallback">${esc(title)}</h1>
+      </div>
     </div>
 
     <div class="detail-main">
@@ -5257,17 +5259,38 @@ window.openRandomPage=openRandomPage;
 
 
 <nav id="cinevoMobileNav" aria-label="Mobile navigation">
+  <span class="nav-glider" id="navGlider"></span>
   <button type="button" data-mobile-nav="home">
-    <span class="mobile-nav-icon">🏠</span><span>Home</span>
+    <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M4 11.2L12 4l8 7.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 9.8V19a1 1 0 0 0 1 1h3.2v-5.1a1.8 1.8 0 0 1 1.8-1.8v0a1.8 1.8 0 0 1 1.8 1.8V20H17a1 1 0 0 0 1-1V9.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Home</span>
   </button>
   <button type="button" data-mobile-nav="search">
-    <span class="mobile-nav-icon">⌕</span><span>Search</span>
+    <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.9"/>
+      <path d="M20 20L15.6 15.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </svg>
+    <span>Search</span>
   </button>
   <button type="button" data-mobile-nav="journey">
-    <span class="mobile-nav-icon">◇</span><span>Watch Journey</span>
+    <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.9"/>
+      <path d="M12 7.3V12l3.2 2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Timeline</span>
   </button>
   <button type="button" data-mobile-nav="random">
-    <span class="mobile-nav-icon">🎲</span><span>Pick for Me</span>
+    <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="4" y="4" width="16" height="16" rx="4.2" stroke="currentColor" stroke-width="1.9"/>
+      <circle cx="8.6" cy="8.6" r="1.35" fill="currentColor"/>
+      <circle cx="15.4" cy="8.6" r="1.35" fill="currentColor"/>
+      <circle cx="12" cy="12" r="1.35" fill="currentColor"/>
+      <circle cx="8.6" cy="15.4" r="1.35" fill="currentColor"/>
+      <circle cx="15.4" cy="15.4" r="1.35" fill="currentColor"/>
+    </svg>
+    <span>Pick for Me</span>
   </button>
 </nav>
 
@@ -5403,13 +5426,27 @@ main.container{padding:20px 14px 40px!important}.section{margin-bottom:22px!impo
 <script id="cinevo-mobile-v2-final-js">
 (function(){
 const mobile=()=>window.innerWidth<=700,$=id=>document.getElementById(id),safe=s=>typeof esc==='function'?esc(s):String(s||'');let searchTimer,searchMode='all',searchToken=0,moreBusy=false,moreDone=false;
-function active(n){document.querySelectorAll('#cinevoMobileNav button').forEach(b=>b.classList.toggle('active',b.dataset.mobileNav===n))}function viewOpen(){document.body.classList.add('cinevo-view-open')}function viewClose(){document.body.classList.remove('cinevo-view-open')}
+function active(n){
+  const buttons=document.querySelectorAll('#cinevoMobileNav button');
+  let activeBtn=null;
+  buttons.forEach(b=>{
+    const isActive=b.dataset.mobileNav===n;
+    b.classList.toggle('active',isActive);
+    if(isActive) activeBtn=b;
+  });
+  const glider=document.getElementById('navGlider');
+  if(glider && activeBtn){
+    glider.style.transform=`translateX(${activeBtn.offsetLeft - buttons[0].offsetLeft}px)`;
+    glider.style.width=activeBtn.offsetWidth+'px';
+  }
+}
+function viewOpen(){document.body.classList.add('cinevo-view-open')}function viewClose(){document.body.classList.remove('cinevo-view-open')}
 function header(){if(!mobile()||$('cinevoMobileAccount'))return;const n=document.querySelector('header .nav');if(!n)return;const b=document.createElement('button');b.id='cinevoMobileAccount';b.type='button';b.textContent='◎';b.setAttribute('aria-label','Account');b.onclick=openAccount;n.appendChild(b)}
 function tabs(){if(!mobile()||$('mobileMediaTabs'))return;const h=$('trendingBox');if(!h)return;const t=document.createElement('div');t.id='mobileMediaTabs';t.innerHTML='<button data-v="all" class="active">ALL</button><button data-v="movie">MOVIES</button><button data-v="tv">TV SHOWS</button>';t.querySelectorAll('button').forEach(b=>b.onclick=()=>{t.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));if(typeof setMainMediaType==='function')setMainMediaType(b.dataset.v)});h.parentNode.insertBefore(t,h.nextSibling)}
 function searchPage(){if($('cinevoSearchPage'))return;const p=document.createElement('div');p.id='cinevoSearchPage';p.hidden=true;p.innerHTML='<div class="v2-page-head"><h2>Search CINEVO</h2><button class="v2-close" type="button">×</button></div><input id="cinevoSearchInput" type="search" autocomplete="off" placeholder="Search movies, TV shows, actors, actresses, directors..."><div class="v2-search-filters"><button class="active" data-mode="all">ALL</button><button data-mode="movie">MOVIES</button><button data-mode="tv">TV SHOWS</button><button data-mode="person">PEOPLE</button></div><div id="cinevoSearchResults"><div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:40px 10px">Type at least one character to search.</div></div>';document.body.appendChild(p);p.querySelector('.v2-close').onclick=closeSearch;p.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{searchMode=b.dataset.mode;p.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));runSearch(p.querySelector('#cinevoSearchInput').value)});p.querySelector('#cinevoSearchInput').addEventListener('input',e=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>runSearch(e.target.value),180)})}
 async function runSearch(q0){if(!mobile())return;const q=q0.trim(),box=$('cinevoSearchResults');if(!box)return;if(!q){box.innerHTML='<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:40px 10px">Type at least one character to search.</div>';return}const token=++searchToken;box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8f99a6">Searching…</div>';try{const d=await api('/search/multi',{query:q,page:1,include_adult:false});if(token!==searchToken)return;let items=(d.results||[]).filter(x=>['movie','tv','person'].includes(x.media_type));if(searchMode!=='all')items=items.filter(x=>x.media_type===searchMode);items=uniqueItems(items).slice(0,30);if(!items.length){box.innerHTML='<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:40px 10px">No matching results.</div>';return}box.innerHTML=items.map(x=>{if(x.media_type==='person')return '<article class="v2-result v2-person" data-person="'+(Number(x.id)||0)+'"><img src="'+image(x.profile_path,PROFILE_SIZE)+'" alt=""><div><div class="v2-result-title">'+safe(x.name)+'</div><div class="v2-result-meta">PERSON · '+safe(x.known_for_department||'Cast/Director')+'</div></div></article>';return '<article class="v2-result" data-id="'+(Number(x.id)||0)+'" data-type="'+x.media_type+'"><img src="'+image(x.poster_path)+'" alt="'+safe(titleOf(x))+'" loading="lazy"><div class="v2-result-body"><div class="v2-result-title">'+safe(titleOf(x))+'</div><div class="v2-result-meta">'+(x.media_type==='tv'?'TV SHOW':'MOVIE')+' · '+yearFromDate(dateOf(x))+' · ★ '+Number(x.vote_average||0).toFixed(1)+'</div></div></article>'}).join('');box.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>{closeSearch();openDetails(Number(e.dataset.id),e.dataset.type)});box.querySelectorAll('[data-person]').forEach(e=>e.onclick=()=>personCredits(Number(e.dataset.person),e.querySelector('.v2-result-title')?.textContent||''))}catch(e){box.innerHTML='<div style="grid-column:1/-1;color:#ef8f8f;text-align:center;padding:40px 10px">Search failed. Try again.</div>'}}
 function openSearch(){searchPage();viewOpen();active('search');$('cinevoSearchPage').hidden=false;$('cinevoSearchInput').focus();if(!window.__popstateNav && location.hash!=='#search'){history.pushState({view:'search'},'','#search')}}function closeSearch(){if($('cinevoSearchPage'))$('cinevoSearchPage').hidden=true;viewClose();active('home');if(!window.__popstateNav && location.hash==='#search'){history.pushState({},'',location.pathname+location.search)}}
-function openAccount(){if(!$('cinevoAccountPage')){const p=document.createElement('div');p.id='cinevoAccountPage';p.innerHTML='<div class="v2-page-head"><h2>Account</h2><button class="v2-close" type="button">×</button></div><div class="account-box"><div class="account-avatar">◎</div><h2>Welcome to CINEVO</h2><p>Sign in to keep your watch journey, scheduled titles and preferences in one place.</p><button class="account-signin">Sign In</button><button class="account-signup">Sign Up</button><button class="account-close">Close</button></div>';document.body.appendChild(p);p.querySelector('.v2-close').onclick=closeAccount;p.querySelector('.account-close').onclick=closeAccount}viewOpen();$('cinevoAccountPage').hidden=false;if(!window.__popstateNav && location.hash!=='#account'){history.pushState({view:'account'},'','#account')}}
+function openAccount(){if(!$('cinevoAccountPage')){const p=document.createElement('div');p.id='cinevoAccountPage';p.innerHTML='<div class="v2-page-head"><h2>Account</h2><button class="v2-close" type="button">×</button></div><div class="account-box"><div class="account-avatar">◎</div><h2>Welcome to CINEVO</h2><p>Sign in to keep your timeline, scheduled titles and preferences in one place.</p><button class="account-signin">Sign In</button><button class="account-signup">Sign Up</button><button class="account-close">Close</button></div>';document.body.appendChild(p);p.querySelector('.v2-close').onclick=closeAccount;p.querySelector('.account-close').onclick=closeAccount}viewOpen();$('cinevoAccountPage').hidden=false;if(!window.__popstateNav && location.hash!=='#account'){history.pushState({view:'account'},'','#account')}}
 function closeAccount(){if($('cinevoAccountPage'))$('cinevoAccountPage').hidden=true;viewClose();active('home');if(!window.__popstateNav && location.hash==='#account'){history.pushState({},'',location.pathname+location.search)}}
 async function personCredits(id,name){searchPage();viewOpen();const box=$('cinevoSearchResults');box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#8f99a6">Loading credits…</div>';try{const d=await api('/person/'+id+'/combined_credits',{language:'en-US'});const items=uniqueItems([...(d.cast||[]),...(d.crew||[])].filter(x=>x.media_type==='movie'||x.media_type==='tv')).sort((a,b)=>Number(b.popularity||0)-Number(a.popularity||0)).slice(0,50);box.innerHTML='<div style="grid-column:1/-1;padding:4px 2px 10px"><button id="personBack" class="v2-close" style="width:auto;padding:0 14px;border-radius:10px">← Back</button><strong style="margin-left:10px;font-size:18px">'+safe(name)+'</strong></div>'+(items.length?items.map(x=>'<article class="v2-result" data-id="'+(Number(x.id)||0)+'" data-type="'+x.media_type+'"><img src="'+image(x.poster_path)+'" alt="" loading="lazy"><div class="v2-result-body"><div class="v2-result-title">'+safe(titleOf(x))+'</div><div class="v2-result-meta">'+(x.media_type==='tv'?'TV SHOW':'MOVIE')+' · '+yearFromDate(dateOf(x))+'</div></div></article>').join(''):'<div style="grid-column:1/-1;color:#8f99a6;text-align:center;padding:30px">No credits found.</div>');$('personBack')?.addEventListener('click',()=>runSearch($('cinevoSearchInput').value));box.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>{closeSearch();openDetails(Number(e.dataset.id),e.dataset.type)})}catch(e){box.innerHTML='<div style="grid-column:1/-1;color:#ef8f8f;text-align:center;padding:40px">Unable to load credits.</div>'}}
 function patchDetail(){
@@ -5650,6 +5687,82 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
 
 </body>
 </html>
+<style id="cinevo-permanent-nav-final">
+/* Bottom navigation is now permanent: it stays visible above the
+   detail page, timeline, search and account overlays instead of
+   disappearing whenever one of them opens. */
+body.cinevo-view-open #cinevoMobileNav{
+  display:grid !important;
+}
+
+#cinevoMobileNav{
+  z-index:300000 !important;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Smooth sliding highlight behind the active tab, instead of an
+   instant background swap. */
+.nav-glider{
+  position:absolute;
+  z-index:0;
+  top:6px;
+  bottom:6px;
+  left:6px;
+  width:calc(25% - 4.5px);
+  border-radius:11px;
+  background:#1b222d;
+  transition:transform .28s cubic-bezier(.65,0,.35,1);
+  pointer-events:none;
+}
+
+#cinevoMobileNav button{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px !important;
+  transition:color .2s ease;
+}
+
+#cinevoMobileNav .mobile-nav-icon{
+  width:19px;
+  height:19px;
+  transition:transform .22s ease;
+}
+
+#cinevoMobileNav button.active .mobile-nav-icon{
+  transform:translateY(-1px) scale(1.06);
+}
+
+#cinevoMobileNav button:active{
+  transform:scale(.94);
+}
+
+/* Give every page enough bottom clearance so the always-on nav
+   never covers the last bit of content or a call-to-action. */
+#detailContent{
+  padding-bottom:110px !important;
+}
+
+.page-shell{
+  padding-bottom:110px !important;
+}
+
+#cinevoSearchPage,
+#cinevoAccountPage{
+  padding-bottom:110px;
+}
+
+@media(max-width:700px){
+  #detailOverlay{
+    padding-bottom:100px !important;
+  }
+}
+</style>
+
 
 <style id="cinevo-hero-controls-final">
 /* Content type buttons: directly below hero, aligned right */
@@ -6638,59 +6751,104 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
 </style>
 
 <style id="cinevo-detail-hero-overlay-final">
-/* Detail page hero, made to match the home page hero card:
-   type-label + title sit on top of the backdrop image, with the
-   smaller rating circle in the corner. Everything else (meta,
-   watched/schedule, overview) flows normally below the image. */
-.detail-hero{
+/* Detail page hero, rebuilt around a dedicated image wrapper so
+   the title/badge overlay is always positioned relative to the
+   backdrop image itself — never the taller block below it. This
+   fixes the title sliding down and overlapping the overview text.
+   Works the same way on desktop and mobile; only sizes scale. */
+#detailOverlay .detail-hero{
+  position:relative !important;
+  min-height:0 !important;
+  display:block !important;
+  padding:0 !important;
+  background:#080b10 !important;
+}
+
+#detailOverlay .detail-hero-image{
+  position:relative !important;
+  z-index:1 !important;
+  width:100% !important;
+  overflow:hidden !important;
+}
+
+#detailOverlay .detail-bg{
+  position:relative !important;
+  display:block !important;
+  left:auto !important;
+  right:auto !important;
+  top:auto !important;
+  width:100% !important;
+  height:auto !important;
+  aspect-ratio:16/9 !important;
+  object-fit:cover !important;
+  object-position:center !important;
+}
+
+#detailOverlay .detail-bg-overlay{
+  position:absolute !important;
+  z-index:2 !important;
+  inset:0 !important;
+  top:auto !important;
+  height:65% !important;
+  bottom:0 !important;
+  background:linear-gradient(0deg,#080b10 8%,rgba(8,11,16,.6) 55%,transparent 100%) !important;
+}
+
+#detailOverlay .detail-hero-badge{
+  position:absolute !important;
+  z-index:3 !important;
+  top:14px !important;
+  right:14px !important;
+}
+
+#detailOverlay .detail-hero-title-overlay{
+  position:absolute !important;
+  z-index:3 !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  padding:0 22px 18px !important;
+  margin:0 !important;
+  max-width:1450px !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
+#detailOverlay .detail-hero-title-overlay .detail-title{
+  margin:0 !important;
+}
+
+#detailOverlay .detail-main{
+  position:relative !important;
+  z-index:1 !important;
+  display:block !important;
+  width:auto !important;
+  padding:18px 22px 26px !important;
+  margin:0 !important;
+}
+
+#detailOverlay .detail-logo-action-row{
   display:flex !important;
-  flex-direction:column !important;
+  align-items:center !important;
   justify-content:flex-end !important;
-  align-items:stretch !important;
-}
-
-.detail-hero-title-overlay{
-  position:relative;
-  z-index:3;
-  max-width:1450px;
-  width:100%;
-  margin:0 auto;
-  padding:0 22px 16px;
-}
-
-.detail-hero-title-overlay .detail-type{
-  margin-bottom:8px;
-}
-
-.detail-main{
-  padding-top:10px !important;
-}
-
-.detail-logo-action-row{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:16px;
-  margin-bottom:4px;
+  gap:16px !important;
+  margin-bottom:4px !important;
 }
 
 @media(max-width:700px){
+  #detailOverlay .detail-hero-badge{
+    top:12px !important;
+    right:12px !important;
+  }
+
   #detailOverlay .detail-hero-title-overlay{
-    position:absolute !important;
-    z-index:4 !important;
-    left:0 !important;
-    right:0 !important;
-    bottom:0 !important;
     padding:0 16px 14px !important;
-    margin:0 !important;
-    max-width:none !important;
   }
 
   #detailOverlay .detail-hero-title-overlay .detail-title{
     font-size:28px !important;
     line-height:1.08 !important;
     letter-spacing:-.7px !important;
-    margin:0 !important;
   }
 
   #detailOverlay .detail-hero-title-overlay .detail-logo{
@@ -6703,8 +6861,6 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
   }
 
   #detailOverlay .detail-main{
-    position:relative !important;
-    z-index:2 !important;
     padding:16px 16px 18px !important;
   }
 
@@ -6718,3 +6874,4 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
   }
 }
 </style>
+
