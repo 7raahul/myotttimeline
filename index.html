@@ -2542,12 +2542,45 @@ async function api(path, params={}){
     return await response.json();
   }catch(error){
     if(error?.name === "AbortError") {
-      throw new Error("TMDB request timed out. Check your internet connection and API key.");
+      const timeoutError = new Error("TMDB request timed out. Check your internet connection and API key.");
+      timeoutError.isNetworkBlock = true;
+      throw timeoutError;
+    }
+    // A plain TypeError from fetch (no HTTP response at all) almost
+    // always means the request never reached TMDB — most commonly
+    // an ISP-level block, which is a known, well-documented issue
+    // for some Indian ISPs (Jio, and occasionally Airtel) rather
+    // than a bug in this app. Tag it so the UI can show a helpful
+    // DNS-switch tip instead of a generic error.
+    if(error instanceof TypeError){
+      error.isNetworkBlock = true;
     }
     throw error;
   }finally{
     clearTimeout(timeout);
   }
+}
+
+function networkIssueHtml(){
+  return `
+    <div class="network-issue-box">
+      <div class="network-issue-icon">📡</div>
+      <div class="network-issue-title">Can't reach the movie database</div>
+      <div class="network-issue-text">
+        This usually happens when your mobile network (often Jio,
+        sometimes Airtel) blocks access to the data provider — it's
+        a known ISP issue, not a bug in the app.
+      </div>
+      <div class="network-issue-text">
+        Try switching your device's DNS to <b>1.1.1.1</b> (Cloudflare)
+        or <b>8.8.8.8</b> (Google) in your network/Wi-Fi settings, then
+        retry.
+      </div>
+      <button class="network-issue-retry" onclick="location.reload()">
+        ↻ Retry
+      </button>
+    </div>
+  `;
 }
 
 /* ============================================================
@@ -2585,7 +2618,9 @@ async function loadTrending(){
 
   }catch(error){
     console.error("Trending load failed:", error);
-    box.innerHTML = `
+    box.innerHTML = error?.isNetworkBlock
+      ? networkIssueHtml()
+      : `
       <div class="empty trending-error">
         <strong>Unable to load trending recommendations.</strong>
         <span>${esc(error?.message || "TMDB could not be reached.")}</span>
@@ -2634,10 +2669,6 @@ function renderTrending(){
 
           <div class="trend-meta">
             <span>${esc(formatDate(date))}</span>
-            <span>•</span>
-            <span class="rating">
-              ★ ${Number(item.vote_average || 0).toFixed(1)}
-            </span>
           </div>
 
           <div class="trend-overview">
@@ -3087,7 +3118,9 @@ async function loadBrowse(){
   }catch(error){
     console.error(error);
 
-    document.getElementById("results").innerHTML = `
+    document.getElementById("results").innerHTML = error?.isNetworkBlock
+      ? `<div style="grid-column:1/-1">${networkIssueHtml()}</div>`
+      : `
       <div class="empty" style="grid-column:1/-1">
         Unable to load results. Please try again.
       </div>
@@ -3209,10 +3242,6 @@ function renderResults(){
           <div class="card-meta">
             <span class="card-date">
               ${esc(formatDate(date))}
-            </span>
-
-            <span class="card-rating">
-              ★ ${Number(item.vote_average||0).toFixed(1)}
             </span>
           </div>
 
@@ -3341,7 +3370,9 @@ async function openDetails(id,type,fromRandom=false){
   }catch(error){
     console.error(error);
 
-    document.getElementById("detailHero").innerHTML = `
+    document.getElementById("detailHero").innerHTML = error?.isNetworkBlock
+      ? networkIssueHtml()
+      : `
       <div class="empty" style="width:100%;margin:100px 20px">
         Unable to load details.
       </div>
@@ -3371,22 +3402,26 @@ function renderDetail(details,credits,providers){
 
     <div class="detail-bg-overlay"></div>
 
+    <div class="detail-hero-badge" aria-label="Rating">
+      <span>${Math.round(Number(details.vote_average || 0) * 10)}</span><small>%</small>
+    </div>
+
+    <div class="detail-hero-title-overlay">
+      <div class="detail-type">
+        ${type === "tv" ? "TV SHOW" : "MOVIE"}
+      </div>
+
+      <img class="detail-logo"
+           data-detail-logo
+           alt="${esc(title)}"
+           style="display:none">
+      <h1 class="detail-title detail-title-fallback">${esc(title)}</h1>
+    </div>
+
     <div class="detail-main">
       <div class="detail-info">
 
-        <div class="detail-type">
-          ${type === "tv" ? "TV SHOW" : "MOVIE"}
-        </div>
-
         <div class="detail-logo-action-row">
-          <div class="detail-logo-wrap">
-            <img class="detail-logo"
-                 data-detail-logo
-                 alt="${esc(title)}"
-                 style="display:none">
-            <h1 class="detail-title detail-title-fallback">${esc(title)}</h1>
-          </div>
-
           <div class="detail-mobile-actions">
             <button class="detail-mobile-action watched ${watchedActive ? "is-active" : ""}"
                     type="button"
@@ -3404,16 +3439,6 @@ function renderDetail(details,credits,providers){
 
         <div class="detail-meta">
           <span>📅 ${esc(formatDate(release))}</span>
-
-          <span>•</span>
-
-          <span class="detail-rating-badge" aria-label="Rating">
-            <span>${Math.round(Number(details.vote_average || 0) * 10)}</span><small>%</small>
-          </span>
-
-          <span class="detail-rating-old">
-            ★ ${Number(details.vote_average||0).toFixed(1)}
-          </span>
 
           ${
             type === "movie"
@@ -5500,7 +5525,7 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
   #removeConfirmModal{
     position:fixed !important;
     inset:0 !important;
-    z-index:10001 !important;
+    z-index:200001 !important;
     display:flex !important;
     align-items:center !important;
     justify-content:center !important;
@@ -6109,76 +6134,115 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
 </style>
 
 <style id="cinevo-mobile-rating-season-final">
-/* Circular yellow percentage rating now shows on desktop too;
-   the old plain star rating is hidden everywhere in favor of it. */
-.detail-rating-badge{
+/* Rating circle now sits ON the hero backdrop image itself (like
+   the home page hero card) instead of the text meta row, and is
+   smaller than the home hero's circle. Positioned on the right. */
+.detail-hero-badge{
+  position:absolute;
+  z-index:5;
+  top:14px;
+  right:14px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  width:42px;
-  height:42px;
-  min-width:42px;
+  width:34px;
+  height:34px;
+  min-width:34px;
   border-radius:50%;
   box-sizing:border-box;
   border:2px solid #f5c518;
   background:rgba(12,15,20,.90);
   color:#f5c518;
   box-shadow:0 3px 12px rgba(0,0,0,.42), inset 0 0 0 1px rgba(245,197,24,.12);
-  vertical-align:middle;
   gap:0;
 }
 
-.detail-rating-badge span{
-  font-size:12px;
+.detail-hero-badge span{
+  font-size:10px;
   line-height:1;
   font-weight:900;
   letter-spacing:-.2px;
 }
 
-.detail-rating-badge small{
-  font-size:7px;
+.detail-hero-badge small{
+  font-size:6px;
   line-height:1;
   font-weight:900;
   margin-left:1px;
-  margin-top:5px;
-}
-
-.detail-rating-old{
-  display:none;
+  margin-top:4px;
 }
 
 @media(max-width:700px){
-  /* Modern circular yellow percentage rating. */
-  #detailOverlay .detail-rating-badge{
-    display:inline-flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    width:42px !important;
-    height:42px !important;
-    min-width:42px !important;
-    border-radius:50% !important;
-    box-sizing:border-box !important;
+  #detailOverlay .detail-hero-badge{
+    top:12px !important;
+    right:12px !important;
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
     border:2px solid #f5c518 !important;
     background:rgba(12,15,20,.90) !important;
     color:#f5c518 !important;
     box-shadow:0 3px 12px rgba(0,0,0,.42), inset 0 0 0 1px rgba(245,197,24,.12) !important;
-    vertical-align:middle !important;
-    gap:0 !important;
   }
 
-  #detailOverlay .detail-rating-badge span{
-    font-size:12px !important;
+  #detailOverlay .detail-hero-badge span{
+    font-size:9px !important;
     line-height:1 !important;
     font-weight:900 !important;
     letter-spacing:-.2px !important;
   }
 
-  #detailOverlay .detail-rating-badge small{
-    font-size:7px !important;
+  #detailOverlay .detail-hero-badge small{
+    font-size:5.5px !important;
     line-height:1 !important;
     font-weight:900 !important;
     margin-left:1px !important;
-    margin-top:5px !important;
+    margin-top:4px !important;
+  }
+
+  /* Restore the hero-overlay layout on mobile too: title/actions
+     sit ON TOP of the backdrop image with a bottom gradient, the
+     same visual language as the home page hero card — instead of
+     the image and text being stacked as two separate blocks. */
+  #detailOverlay .detail-hero{
+    position:relative !important;
+    min-height:0 !important;
+    display:block !important;
+    padding:0 !important;
+    background:#080b10 !important;
+  }
+
+  #detailOverlay .detail-bg{
+    position:relative !important;
+    left:auto !important;
+    right:auto !important;
+    top:auto !important;
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:16/9 !important;
+    object-fit:cover !important;
+    display:block !important;
+  }
+
+  #detailOverlay .detail-bg-overlay{
+    position:absolute !important;
+    inset:0 !important;
+    top:auto !important;
+    height:62% !important;
+    bottom:0 !important;
+    background:linear-gradient(0deg,#080b10 10%,rgba(8,11,16,.55) 55%,transparent 100%) !important;
+  }
+
+  #detailOverlay .detail-main{
+    position:absolute !important;
+    z-index:4 !important;
+    left:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    display:block !important;
+    width:auto !important;
+    padding:16px 16px 18px !important;
+    margin:0 !important;
   }
 
   /* Season buttons: only real seasons, with a cleaner mobile treatment. */
@@ -6527,6 +6591,130 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
   .detail-mobile-action .wa-icon{
     width:12px !important;
     height:12px !important;
+  }
+}
+</style>
+
+<style id="cinevo-network-issue-fix">
+.network-issue-box{
+  grid-column:1/-1;
+  max-width:520px;
+  margin:20px auto;
+  padding:26px 22px;
+  border:1px solid #3a2f1a;
+  border-radius:16px;
+  background:linear-gradient(135deg,#171310,#12151c);
+  text-align:center;
+}
+.network-issue-icon{
+  font-size:30px;
+  margin-bottom:10px;
+}
+.network-issue-title{
+  font-size:16px;
+  font-weight:900;
+  margin-bottom:10px;
+  color:#f4f6f8;
+}
+.network-issue-text{
+  font-size:12.5px;
+  line-height:1.55;
+  color:#aeb7c3;
+  margin-bottom:10px;
+}
+.network-issue-text b{
+  color:#f5c518;
+}
+.network-issue-retry{
+  margin-top:8px;
+  padding:11px 22px;
+  border:0;
+  border-radius:10px;
+  background:#f5c518;
+  color:#0b0d11;
+  font-weight:900;
+  font-size:13px;
+}
+</style>
+
+<style id="cinevo-detail-hero-overlay-final">
+/* Detail page hero, made to match the home page hero card:
+   type-label + title sit on top of the backdrop image, with the
+   smaller rating circle in the corner. Everything else (meta,
+   watched/schedule, overview) flows normally below the image. */
+.detail-hero{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-end !important;
+  align-items:stretch !important;
+}
+
+.detail-hero-title-overlay{
+  position:relative;
+  z-index:3;
+  max-width:1450px;
+  width:100%;
+  margin:0 auto;
+  padding:0 22px 16px;
+}
+
+.detail-hero-title-overlay .detail-type{
+  margin-bottom:8px;
+}
+
+.detail-main{
+  padding-top:10px !important;
+}
+
+.detail-logo-action-row{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:16px;
+  margin-bottom:4px;
+}
+
+@media(max-width:700px){
+  #detailOverlay .detail-hero-title-overlay{
+    position:absolute !important;
+    z-index:4 !important;
+    left:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    padding:0 16px 14px !important;
+    margin:0 !important;
+    max-width:none !important;
+  }
+
+  #detailOverlay .detail-hero-title-overlay .detail-title{
+    font-size:28px !important;
+    line-height:1.08 !important;
+    letter-spacing:-.7px !important;
+    margin:0 !important;
+  }
+
+  #detailOverlay .detail-hero-title-overlay .detail-logo{
+    display:block !important;
+    max-width:72% !important;
+    max-height:64px !important;
+    width:auto !important;
+    height:auto !important;
+    object-fit:contain !important;
+  }
+
+  #detailOverlay .detail-main{
+    position:relative !important;
+    z-index:2 !important;
+    padding:16px 16px 18px !important;
+  }
+
+  #detailOverlay .detail-logo-action-row{
+    justify-content:stretch !important;
+    margin-bottom:6px !important;
+  }
+
+  #detailOverlay .detail-mobile-actions{
+    width:100% !important;
   }
 }
 </style>
