@@ -135,6 +135,27 @@ header{
   background:#1b202a;
 }
 
+.nav-account-btn{
+  width:38px !important;
+  height:38px !important;
+  padding:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:50% !important;
+  border-color:rgba(20,232,196,.35) !important;
+  color:var(--brand) !important;
+}
+
+.nav-account-btn svg{
+  width:18px;
+  height:18px;
+}
+
+.nav-account-btn:hover{
+  background:#1e2633 !important;
+}
+
 /* MAIN */
 
 .container{
@@ -578,12 +599,7 @@ header{
 /* PAGINATION */
 
 .pagination{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:6px;
-  margin-top:28px;
-  flex-wrap:wrap;
+  display:none;
 }
 
 .page-btn{
@@ -2094,6 +2110,12 @@ header{
     <div class="nav-actions">
       <button class="nav-btn" id="timelineBtn">◈ Timeline</button>
       <button class="nav-btn" id="randomBtn">🎲 Pick for Me</button>
+      <button class="nav-btn nav-account-btn" id="desktopAccountBtn" type="button" aria-label="Account">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="12" cy="8.2" r="3.4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M4.8 19.4c1.3-3.1 4-4.9 7.2-4.9s5.9 1.8 7.2 4.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 </header>
@@ -4494,6 +4516,8 @@ function renderTimeline(){
 
 document.getElementById("randomBtn")?.addEventListener("click",openRandomPage);
 
+document.getElementById("desktopAccountBtn")?.addEventListener("click",openAccount);
+
 function setupRandom(){
   setupRandomChoices();
   setupRandomGenre();
@@ -5035,7 +5059,9 @@ window.addEventListener("scroll",()=>{
   const btn = document.getElementById("toTop");
 
   if(btn){
-    btn.style.opacity = window.scrollY > 450 ? "1" : ".35";
+    const isVisible = window.scrollY > 300;
+    btn.style.display = isVisible ? "flex" : "none";
+    btn.style.opacity = isVisible ? "1" : "0";
   }
 });
 
@@ -5497,7 +5523,7 @@ function patchDetail(){
 }
 if(typeof window.openDetails==='function'&&!window.openDetails.__v2){const old=window.openDetails;const wrap=async function(id,type,fromRandom){const r=await old(id,type,fromRandom);if(mobile()){const o=$('detailOverlay');try{o.__v2Credits=(await api('/'+type+'/'+id+'/credits')).cast||[]}catch(e){o.__v2Credits=[]}patchDetail();const cards=o.querySelectorAll('.cast-card');cards.forEach((c,i)=>{const person=o.__v2Credits[i];if(person&&!c.dataset.v2){c.dataset.v2='1';c.onclick=()=>{if(typeof closeDetails==='function')closeDetails();openSearch();setTimeout(()=>personCredits(person.id,person.name),60)}}})}return r};wrap.__v2=true;window.openDetails=wrap}
 function bindNav(){const n=$('cinevoMobileNav');if(!n||n.dataset.v2)return;n.dataset.v2='1';const closeDetailIfOpen=()=>{const d=$('detailOverlay');if(d&&!d.classList.contains('hidden')&&typeof closeDetails==='function')closeDetails(true)};n.querySelector('[data-mobile-nav="home"]')?.addEventListener('click',()=>{closeSearch();closeAccount();active('home');goHome()});n.querySelector('[data-mobile-nav="search"]')?.addEventListener('click',()=>{closeDetailIfOpen();closeAccount();openSearch()});n.querySelector('[data-mobile-nav="journey"]')?.addEventListener('click',()=>{closeDetailIfOpen();closeSearch();closeAccount();viewOpen();active('journey');openTimelinePage()});n.querySelector('[data-mobile-nav="random"]')?.addEventListener('click',()=>{closeDetailIfOpen();closeSearch();closeAccount();viewOpen();active('random');openRandomPage()})}
-async function more(){if(!mobile()||moreBusy||moreDone)return;if($('cinevoSearchPage')&&!$('cinevoSearchPage').hidden)return;if($('detailOverlay')&&!$('detailOverlay').classList.contains('hidden'))return;const near=document.documentElement.scrollHeight-innerHeight-scrollY<650;if(!near)return;moreBusy=true;try{const n=state.page+1;let a;if(state.filters.type==='all'){const [m,t]=await Promise.all([fetch50('movie',n),fetch50('tv',n)]);a=uniqueItems([...(m||[]),...(t||[])])}else a=await fetch50(state.filters.type,n);const seen=new Set((state.currentResults||[]).map(x=>x.media_type+':'+x.id));const fresh=uniqueItems(a||[]).filter(x=>{const k=x.media_type+':'+x.id;if(seen.has(k))return false;seen.add(k);return true});if(!fresh.length){moreDone=true;return}state.currentResults=(state.currentResults||[]).concat(fresh);state.page=n;renderResults()}catch(e){console.warn(e)}finally{moreBusy=false}}
+async function more(){if(moreBusy||moreDone)return;if($('cinevoSearchPage')&&!$('cinevoSearchPage').hidden)return;if($('detailOverlay')&&!$('detailOverlay').classList.contains('hidden'))return;const near=document.documentElement.scrollHeight-innerHeight-scrollY<650;if(!near)return;moreBusy=true;try{const n=state.page+1;let a;if(state.filters.type==='all'){const [m,t]=await Promise.all([fetch50('movie',n),fetch50('tv',n)]);a=uniqueItems([...(m||[]),...(t||[])])}else a=await fetch50(state.filters.type,n);const seen=new Set((state.currentResults||[]).map(x=>x.media_type+':'+x.id));const fresh=uniqueItems(a||[]).filter(x=>{const k=x.media_type+':'+x.id;if(seen.has(k))return false;seen.add(k);return true});if(!fresh.length){moreDone=true;return}state.currentResults=(state.currentResults||[]).concat(fresh);state.page=n;renderResults()}catch(e){console.warn(e)}finally{moreBusy=false}}
 document.addEventListener('click',e=>{if(mobile()&&e.target.closest('.search-wrap')){e.preventDefault();e.stopPropagation();openSearch()}},true);window.addEventListener('scroll',more,{passive:true});window.addEventListener('resize',()=>{header();tabs();bindNav();patchDetail()});document.addEventListener('DOMContentLoaded',()=>{header();tabs();searchPage();bindNav()});new MutationObserver(()=>{if(mobile()){header();tabs();bindNav();patchDetail()}}).observe(document.body,{childList:true,subtree:true});
 })();
 </script>
@@ -5529,9 +5555,7 @@ new MutationObserver(boot).observe(document.body,{childList:true,subtree:true});
 
 
 <style id="cinevo-mobile-watched-schedule-polish">
-/* Desktop remains unchanged. */
-#removeConfirmModal{display:none}
-
+/* Mobile date picker styling */
 @media(max-width:700px){
   /* Compact Day | Month | Year controls */
   #dateModal .modern-date-fields{
@@ -6819,8 +6843,15 @@ body.cinevo-view-open #cinevoMobileNav{
   width:100% !important;
   height:auto !important;
   aspect-ratio:16/9 !important;
+  max-height:520px !important;
   object-fit:cover !important;
   object-position:center !important;
+}
+
+@media(max-width:700px){
+  #detailOverlay .detail-bg{
+    max-height:none !important;
+  }
 }
 
 #detailOverlay .detail-bg-overlay{
@@ -7024,19 +7055,6 @@ body.cinevo-view-open #cinevoMobileNav{
 #detailOverlay .detail-mobile-action .wa-icon{
   width:12px !important;
   height:12px !important;
-}
-
-@media(max-width:360px){
-  #detailOverlay .detail-title-fallback{
-    font-size:26px !important;
-  }
-  #detailOverlay .detail-logo{
-    max-height:66px !important;
-  }
-  #detailOverlay .detail-mobile-action{
-    padding:0 8px !important;
-    font-size:9px !important;
-  }
 }
 
 /* Compact, modern icon-only back button instead of the large
