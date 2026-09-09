@@ -7254,4 +7254,98 @@ body.cinevo-view-open #cinevoMobileNav{
   color:#1c0808;
 }
 </style>
+/* ============================================================
+   APNI ORIGINAL FILE KE END MEIN YE CODE REPLACE / ADD KAREIN
+============================================================ */
+    <h2>Related Content</h2>
+    <div id="relatedBox" class="horizontal"></div>
+  </section>`;
+  
+  content.innerHTML = html;
 
+  if (details.media_type === "tv" && details.seasons?.length) {
+    const firstSeason = details.seasons.find(s => s.season_number >= 1) || details.seasons[0];
+    if (firstSeason) {
+      loadSeason(details.id, firstSeason.season_number);
+    }
+  }
+}
+
+async function loadSeason(tvId, seasonNumber, btnElement) {
+  if (btnElement) {
+    document.querySelectorAll(".season-btn").forEach(b => b.classList.remove("active"));
+    btnElement.classList.add("active");
+  }
+  const box = document.getElementById("episodesBox");
+  if (!box) return;
+
+  box.innerHTML = `<div class="loading"><div class="spinner"></div>Loading episodes...</div>`;
+
+  try {
+    const seasonData = await api(`/tv/${tvId}/season/${seasonNumber}`);
+    if (!seasonData.episodes || !seasonData.episodes.length) {
+      box.innerHTML = `<div class="empty">No episodes available.</div>`;
+      return;
+    }
+
+    box.innerHTML = `<div class="episodes">` +
+      seasonData.episodes.map(ep => `
+        <div class="episode">
+          <img class="episode-image" src="${image(ep.still_path, STILL_SIZE)}" alt="${esc(ep.name)}" loading="lazy">
+          <div class="episode-info">
+            <div class="episode-name">E${ep.episode_number}. ${esc(ep.name)}</div>
+            <div class="episode-meta">
+              <span>📅 ${esc(formatDate(ep.air_date))}</span>
+              ${ep.vote_average ? `<span>★ ${ep.vote_average.toFixed(1)}</span>` : ""}
+            </div>
+            <div class="episode-overview">${esc(ep.overview || "No overview available.")}</div>
+          </div>
+        </div>
+      `).join("") + `</div>`;
+  } catch (err) {
+    box.innerHTML = `<div class="empty">Unable to load episodes.</div>`;
+  }
+}
+
+function goHome() {
+  document.getElementById("detailOverlay")?.classList.add("hidden");
+  document.getElementById("timelinePage")?.classList.add("hidden");
+  document.getElementById("randomModal")?.classList.add("hidden");
+  document.body.style.overflow = "";
+  if (typeof state !== "undefined") {
+    state.filters.type = "all";
+    state.page = 1;
+  }
+  if (typeof updateFilterLabels === "function") updateFilterLabels();
+  if (typeof loadTrending === "function") loadTrending();
+  if (typeof loadBrowse === "function") loadBrowse();
+}
+
+function setMainMediaType(type) {
+  if (typeof state !== "undefined") {
+    state.filters.type = type;
+    state.page = 1;
+  }
+  if (typeof updateFilterLabels === "function") updateFilterLabels();
+  if (typeof loadTrending === "function") loadTrending();
+  if (typeof loadBrowse === "function") loadBrowse();
+}
+
+// Global Initialization
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof setupFilters === "function") setupFilters();
+  if (typeof loadTrending === "function") loadTrending();
+  if (typeof loadBrowse === "function") loadBrowse();
+
+  document.getElementById("toTop")?.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  document.getElementById("detailBack")?.addEventListener("click", () => {
+    document.getElementById("detailOverlay")?.classList.add("hidden");
+    document.body.style.overflow = "";
+  });
+});
+</script>
+</body>
+</html>
